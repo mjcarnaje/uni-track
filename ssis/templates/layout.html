@@ -15,8 +15,23 @@
       type="text/javascript"
       src="{{ url_for('static', filename='index.jx') }}"
     ></script>
+    <link
+      href="{{url_for('static',filename='css/main.css')}}"
+      rel="stylesheet"
+    />
   </head>
+
   <body>
-    <div>{% block content %} {% endblock %}</div>
+    <nav class="bg-white border-b h-[70px] px-8">
+      <ul class="flex items-center h-full space-x-8">
+        <li>
+          <a class="hover:font-semibold" href="/"> Home </a>
+        </li>
+        <li>
+          <a class="hover:font-semibold" href="/dashboard"> Dashboard </a>
+        </li>
+      </ul>
+    </nav>
+    <div class="p-4">{% block content %} {% endblock %}</div>
   </body>
 </html>

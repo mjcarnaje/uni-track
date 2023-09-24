@@ -1,0 +1,14 @@
+{
+  "name": "web-ssis",
+  "version": "1.0.0",
+  "description": "Welcome to the Web-based Simple Student Information System (SSIS) repository! SSIS is a straightforward web application designed to help you manage student information, colleges, and courses.",
+  "main": "index.js",
+  "scripts": {
+    "compile:css": "npx tailwindcss -i ./ssis/static/src/input.css -o ./ssis/static/css/main.css --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tailwindcss": "^3.3.3"
+  }
+}
