@@ -7,6 +7,7 @@ Welcome to the Web-based Simple Student Information System (SSIS) repository! SS
 Before you begin working on or using this project, ensure you have the following prerequisites installed on your system:
 
 - Python 3.x (recommended: Python 3.9+)
+- Node.js 18.x (recommended: Node.js 18.18.0 LTS)
 
 ## Getting Started
 
@@ -29,15 +30,15 @@ Follow these steps to set up and run the project on your local machine:
 
    - On macOS and Linux:
 
-   ```shell
-   source venv/bin/activate
-   ```
+     ```shell
+     source venv/bin/activate
+     ```
 
    - On Windows:
 
-   ```shell
-   venv\Scripts\activate
-   ```
+     ```shell
+     venv\Scripts\activate
+     ```
 
 4. **Install Dependencies:**
 
@@ -45,10 +46,20 @@ Follow these steps to set up and run the project on your local machine:
    pip install -r requirements.txt
    ```
 
-5. **Run the Flask Application**:
+   ```shell
+   npm install
+   ```
+
+5. **Run the Flask Application & TailwindCSS Compiler**:
+
    ```shell
    python main.py
    ```
+
+   ```shell
+   npm run compile:css
+   ```
+
    The application will be available at http://localhost:5000/ by default.
 
 ## Folder Structure
