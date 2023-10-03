@@ -1,0 +1,38 @@
+{% extends "layout.html" %} {% block title %}SSIS - Home{% endblock %} {% block
+content %}
+<h2 class="text-3xl font-bold">This is home page!</h2>
+
+{% if colleges | length == 0 %}
+<h1 class="text-4xl font-bold text-red-800">No data!</h1>
+{% else %}
+<div class="max-w-lg py-8 space-y-8">
+  {% for college in colleges %}
+  <div class="flex justify-between p-4 border rounded-lg">
+    <a class="font-medium"
+    href="/college/{{ college.id }}"
+    >{{ college.name }}</a>
+    <button
+      class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium"
+      onClick="deleteCollege({{ college.id }})"
+    >
+      Delete
+    </button>
+  </div>
+  {% endfor %}
+</div>
+
+{% endif %} {% block javascript %}
+<script type="text/javascript">
+  function deleteCollege(id) {
+    fetch(`/college/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          window.location.reload();
+        }
+      });
+  }
+</script>
+{% endblock %} {% endblock %}

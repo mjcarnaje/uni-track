@@ -28,10 +28,15 @@
           <a class="hover:font-semibold" href="/"> Home </a>
         </li>
         <li>
-          <a class="hover:font-semibold" href="/dashboard"> Dashboard </a>
+          <a class="hover:font-semibold" href="/student"> Student </a>
+        </li>
+        <li>
+          <a class="hover:font-semibold" href="/college"> College </a>
         </li>
       </ul>
     </nav>
-    <div class="p-4">{% block content %} {% endblock %}</div>
+    <div class="max-w-2xl px-4 py-8 mx-auto">
+      {% block content %} {% endblock %}
+    </div>
   </body>
 </html>
