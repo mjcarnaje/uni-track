@@ -23,7 +23,7 @@ Follow these steps to set up and run the project on your local machine:
 2. **Create an environment:**
 
    ```shell
-   python -m venv venv
+   python3 -m venv .venv
    ```
 
 3. **Activate the Virtual Environment:**
@@ -31,13 +31,13 @@ Follow these steps to set up and run the project on your local machine:
    - On macOS and Linux:
 
      ```shell
-     source venv/bin/activate
+     source .venv/bin/activate
      ```
 
    - On Windows:
 
      ```shell
-     venv\Scripts\activate
+     .venv\Scripts\activate
      ```
 
 4. **Install Dependencies:**
