@@ -1,0 +1,353 @@
+{
+    "type": "MySQLNotebook",
+    "version": "1.0",
+    "caption": "DB Notebook",
+    "content": "SHOW DATABASES;\nDROP DATABASE ssis;\nCREATE DATABASE ssis;\nuse ssis;\n-- Create the college table\nCREATE TABLE college (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(256) UNIQUE NOT NULL,\n    code VARCHAR(16) UNIQUE NOT NULL,\n    photo TEXT\n);\n\n-- Create the course table\nCREATE TABLE course (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(256) UNIQUE NOT NULL,\n    code VARCHAR(16) UNIQUE NOT NULL,\n    photo TEXT,\n    college_id INTEGER REFERENCES college(id)\n);\n\n-- Create the student table\nCREATE TABLE student (\n    id SERIAL PRIMARY KEY,\n    student_id VARCHAR(16) UNIQUE NOT NULL,\n    first_name VARCHAR(256) NOT NULL,\n    last_name VARCHAR(256) NOT NULL,\n    gender VARCHAR(16) NOT NULL,\n    birthday DATE NOT NULL,\n    photo TEXT,\n    created_at TIMESTAMP NOT NULL,\n    college_id INTEGER REFERENCES college(id),\n    course_id INTEGER REFERENCES course(id)\n);\n\n-- Insert dummy data into the college table\nINSERT INTO college (name, code, photo) VALUES\n    ('College A', 'CA001', NULL),\n    ('College B', 'CB002', NULL),\n    ('College C', 'CC003', NULL);\n\n-- Insert dummy data into the course table\nINSERT INTO course (name, code, photo, college_id) VALUES\n    ('Course 1', 'C001', NULL, 1),\n    ('Course 2', 'C002', NULL, 2),\n    ('Course 3', 'C003', NULL, 3);\n\n-- Insert dummy data into the student table\nINSERT INTO student (student_id, first_name, last_name, gender, birthday, photo, created_at, college_id, course_id) VALUES\n    ('S001', 'John', 'Doe', 'Male', '2000-01-01', NULL, '2023-10-03 12:00:00', 1, 1),\n    ('S002', 'Jane', 'Smith', 'Female', '2001-02-15', NULL, '2023-10-03 12:15:00', 2, 2),\n    ('S003', 'Mike', 'Johnson', 'Male', '1999-07-10', NULL, '2023-10-03 12:30:00', 3, 3);\n\n",
+    "options": {
+        "tabSize": 4,
+        "indentSize": 4,
+        "insertSpaces": true,
+        "defaultEOL": "LF",
+        "trimAutoWhitespace": true
+    },
+    "viewState": {
+        "cursorState": [
+            {
+                "inSelectionMode": false,
+                "selectionStart": {
+                    "lineNumber": 54,
+                    "column": 1
+                },
+                "position": {
+                    "lineNumber": 54,
+                    "column": 1
+                }
+            }
+        ],
+        "viewState": {
+            "scrollLeft": 0,
+            "firstPosition": {
+                "lineNumber": 29,
+                "column": 1
+            },
+            "firstPositionDeltaTop": -18
+        },
+        "contributionsState": {
+            "editor.contrib.folding": {},
+            "editor.contrib.wordHighlighter": false
+        }
+    },
+    "contexts": [
+        {
+            "state": {
+                "start": 1,
+                "end": 1,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "63f5c97b-c866-4514-9918-2f331923322b"
+                    ]
+                },
+                "currentHeight": 36,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 15
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "414ec86d-c6a4-4a5e-a677-7099e0800941",
+                    "resultId": "63f5c97b-c866-4514-9918-2f331923322b",
+                    "rows": [
+                        {
+                            "0": "information_schema"
+                        },
+                        {
+                            "0": "mysql"
+                        },
+                        {
+                            "0": "performance_schema"
+                        },
+                        {
+                            "0": "ssis"
+                        },
+                        {
+                            "0": "sys"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Database",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17
+                            }
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 1.814ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SHOW DATABASES"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 2,
+                "end": 2,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 0,
+                            "index": 0,
+                            "content": "MySQL Error (1008): ClassicSession.run_sql: Can't drop database 'ssis'; database doesn't exist",
+                            "language": "ansi"
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": ""
+                    }
+                },
+                "currentHeight": 28,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 19
+                        },
+                        "contentStart": 1,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 3,
+                "end": 3,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 4,
+                            "index": 0,
+                            "resultId": "deaf096f-d0af-4c43-b1a5-d795e69750f2",
+                            "content": "OK, 0 records retrieved in 1.176ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 21
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 4,
+                "end": 4,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 4,
+                            "index": 0,
+                            "resultId": "a46c0c20-510f-48ae-d765-64928859c543",
+                            "content": "OK, 0 records retrieved in 1.158ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 9
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 5,
+                "end": 35,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 4,
+                            "index": 0,
+                            "resultId": "e7d69722-bb52-4f8a-a150-5e92964d892f",
+                            "content": "OK, 0 records retrieved in 13.664ms"
+                        },
+                        {
+                            "type": 4,
+                            "index": 1,
+                            "resultId": "916f147f-0143-4bcc-9def-405232829832",
+                            "content": "OK, 0 records retrieved in 10.909ms"
+                        },
+                        {
+                            "type": 4,
+                            "index": 2,
+                            "resultId": "48fa5f80-8e18-4040-b0a2-e9e440a79f70",
+                            "content": "OK, 0 records retrieved in 16.707ms"
+                        }
+                    ]
+                },
+                "currentHeight": 66.5,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 172
+                        },
+                        "contentStart": 28,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 172,
+                            "length": 219
+                        },
+                        "contentStart": 201,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 391,
+                            "length": 404
+                        },
+                        "contentStart": 421,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 795,
+                            "length": 1
+                        },
+                        "contentStart": 794,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 36,
+                "end": 53,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 4,
+                            "index": 0,
+                            "resultId": "b101a81c-9758-49bb-c310-306c7560caf5",
+                            "content": "OK, 0 records retrieved in 4.894ms"
+                        },
+                        {
+                            "type": 4,
+                            "index": 1,
+                            "resultId": "df843338-798c-4ce5-ab36-2ff89d28746c",
+                            "content": "OK, 0 records retrieved in 2.852ms"
+                        },
+                        {
+                            "type": 4,
+                            "index": 2,
+                            "resultId": "4bdb1151-0bef-41a5-f028-d1a3e24ccd69",
+                            "content": "OK, 0 records retrieved in 2.44ms"
+                        }
+                    ]
+                },
+                "currentHeight": 66.5,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 192
+                        },
+                        "contentStart": 44,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 192,
+                            "length": 207
+                        },
+                        "contentStart": 237,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 399,
+                            "length": 434
+                        },
+                        "contentStart": 445,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 833,
+                            "length": 1
+                        },
+                        "contentStart": 832,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 54,
+                "end": 54,
+                "language": "mysql",
+                "currentHeight": 180,
+                "statements": []
+            },
+            "data": []
+        }
+    ]
+}
