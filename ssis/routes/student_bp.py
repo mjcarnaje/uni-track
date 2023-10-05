@@ -31,10 +31,31 @@ def add_student():
         db.session.commit()
         return redirect("/student/")
 
-    colleges = db.session.execute(
-        db.select(College).order_by(College.name)).scalars().all()
+    colleges = College.query.all()
 
     return render_template("add-student.html", colleges=colleges)
+
+
+@student_bp.route("/update/<int:id>", methods=["GET", "POST"])
+def update_student(id):
+    student = Student.query.get(id)
+
+    if request.method == "POST":
+        student.student_id = request.form.get('student_id')
+        student.first_name = request.form.get('first_name')
+        student.last_name = request.form.get('last_name')
+        student.gender = request.form.get('gender')
+        student.birthday = request.form.get('birthday')
+        student.photo = request.form.get('photo')
+        student.college_id = request.form.get('college_id')
+        student.course_id = request.form.get('course_id')
+        db.session.commit()
+        return redirect("/student")
+
+    colleges = College.query.all()
+    courses = Course.query.filter_by(college_id=student.college_id).all()
+
+    return render_template("update-student.html", student=student, colleges=colleges, courses=courses)
 
 
 @student_bp.route('/<int:id>', methods=['DELETE'])
