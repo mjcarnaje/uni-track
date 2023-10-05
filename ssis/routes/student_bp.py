@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, jsonify, render_template, request, redirect
 from sqlalchemy.sql.operators import ilike_op
 
@@ -80,9 +81,15 @@ def update_student(id):
     return render_template("update-student.html", student=student, colleges=colleges, courses=courses)
 
 
-@student_bp.route('/<int:id>', methods=['DELETE'])
+@student_bp.route('/<int:id>', methods=['GET', 'DELETE'])
 def student(id):
-    student = Student.query.get(id)
-    db.session.delete(student)
-    db.session.commit()
-    return jsonify({'success': True})
+    if request.method == "DELETE":
+        student = Student.query.get(id)
+        db.session.delete(student)
+        db.session.commit()
+        return jsonify({'success': True})
+
+    student = Student.query.join(College).join(Course).filter(
+        Student.id == id).one()
+
+    return render_template("student.html", student=student)

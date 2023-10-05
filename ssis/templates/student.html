@@ -1,0 +1,13 @@
+{% extends "layout.html" %} {% block title %}SSIS - Home{% endblock %} {% block
+content %}
+
+<div>
+  <h1>Student id: {{student.student_id}}</h1>
+  <h1>Name: {{student.first_name}} {{student.last_name}}</h1>
+  <h1>Birthday: {{student.birthday}}</h1>
+  <h1>Gender: {{student.gender}}</h1>
+  <h1>College: {{student.college.name}}</h1>
+  <h1>Course: {{student.course.name}}</h1>
+</div>
+
+{% block javascript %} {% endblock %} {% endblock %}

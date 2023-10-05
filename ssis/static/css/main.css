@@ -583,14 +583,6 @@ video {
   max-width: 32rem;
 }
 
-.max-w-xl {
-  max-width: 36rem;
-}
-
-.cursor-not-allowed {
-  cursor: not-allowed;
-}
-
 .items-center {
   align-items: center;
 }
@@ -704,24 +696,14 @@ video {
   padding-bottom: 0.5rem;
 }
 
-.py-8 {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-}
-
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
 
-.py-16 {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-}
-
-.py-32 {
-  padding-top: 8rem;
-  padding-bottom: 8rem;
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 
 .text-3xl {

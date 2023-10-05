@@ -1,7 +1,7 @@
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy import ForeignKey, Integer, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy_serializer import SerializerMixin
 
 from .. import db
@@ -14,6 +14,8 @@ class Course(db.Model, SerializerMixin):
     code: Mapped[str] = mapped_column(String(16), unique=True)
     photo: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     college_id: Mapped[int] = mapped_column(Integer, ForeignKey("college.id"))
+    students: Mapped[List["Student"]] = relationship(
+        "Student", back_populates="course")
 
     def __repr__(self):
         return f"<Course name:{self.name} college_id:{self.college_id}>"

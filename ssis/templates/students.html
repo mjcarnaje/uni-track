@@ -1,9 +1,7 @@
 {% extends "layout.html" %} {% block title %}SSIS - Home{% endblock %} {% block
 content %}
 
-<div class="p-8 border rounded-md">
-  <h2 class="text-3xl font-bold">Students</h2>
-</div>
+
 
 <div class="py-8">
   <a href="/student/add" class="font-medium"> Add Student </a>
@@ -52,7 +50,9 @@ content %}
 <div class="w-full py-8 space-y-8">
   {% for student in students %}
   <div class="flex justify-between p-4 border rounded-lg">
-    <p class="font-medium">{{ student.first_name }}</p>
+    <a class="font-medium"
+    href="/student/{{ student.id }}"
+    >{{ student.first_name }}</a>
     <div class="flex space-x-4">
       <a
         class="px-2 py-1 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
@@ -85,41 +85,5 @@ content %}
 </div>
 
 {% endif %} {% block javascript %}
-<script type="text/javascript">
-  const collegeSelect = document.querySelector("select[name=college_id]");
-  const courseSelect = document.querySelector("select[name=course_id]");
 
-  collegeSelect.addEventListener("change", (e) => {
-    getCourses(e.target.value);
-  });
-
-  function getCourses(collegId) {
-    fetch(`/course/college/${collegId}`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data && data.length > 0) {
-          courseSelect.innerHTML = "";
-          courseSelect.innerHTML += `<option value="">None</option>`;
-          data.forEach((course) => {
-            courseSelect.innerHTML += `<option value="${course.id}">${course.name}</option>`;
-          });
-        }
-      })
-      .catch((error) => console.log(error));
-  }
-
-  function deleteStudent(id) {
-    fetch(`/student/${id}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          window.location.reload();
-        }
-      });
-  }
-</script>
 {% endblock %} {% endblock %}

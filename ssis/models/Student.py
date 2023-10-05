@@ -1,9 +1,11 @@
 import datetime
 import enum
-from typing import Optional
+from typing import Optional, Set
 
 from sqlalchemy import TIMESTAMP, Date, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy_serializer import SerializerMixin
+
 
 from .. import db
 
@@ -14,7 +16,7 @@ class Gender(enum.Enum):
     OTHER = "Other"
 
 
-class Student(db.Model):
+class Student(db.Model, SerializerMixin):
     __tablename__ = 'student'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     student_id: Mapped[str] = mapped_column(String(16), unique=True)
@@ -29,3 +31,7 @@ class Student(db.Model):
     )
     college_id: Mapped[int] = mapped_column(Integer, ForeignKey("college.id"))
     course_id: Mapped[int] = mapped_column(Integer, ForeignKey("course.id"))
+    college: Mapped[Set["College"]] = relationship(
+        "College", back_populates="students")
+    course: Mapped[Set["Course"]] = relationship(
+        "Course", back_populates="students")
