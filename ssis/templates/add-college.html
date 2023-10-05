@@ -3,4 +3,16 @@ content %}
 
 <h2 class="text-3xl font-bold">Add College</h2>
 
+<form class="w-full py-4 space-y-4" method="POST">
+  <input class="w-full p-2 border rounded" placeholder="Name" name="name" />
+  <input class="w-full p-2 border rounded" placeholder="Code" name="code" />
+  <input type="hidden" name="photo" value="" />
+  <button
+    type="submit"
+    class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg"
+  >
+    Add College
+  </button>
+</form>
+
 {% endblock %}

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, render_template, request, redirect
 
 from .. import db
 from ..models.College import College
@@ -14,8 +14,17 @@ def colleges():
     return render_template("colleges.html", colleges=colleges)
 
 
-@college_bp.route("/add")
+@college_bp.route("/add", methods=["GET", "POST"])
 def add_college():
+    if request.method == "POST":
+        college = College()
+        college.name = request.form.get('name')
+        college.code = request.form.get('code')
+        college.photo = request.form.get('photo')
+        db.session.add(college)
+        db.session.commit()
+        return redirect("/college/")
+
     return render_template("add-college.html")
 
 
