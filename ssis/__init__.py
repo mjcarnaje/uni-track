@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-
 db = SQLAlchemy()
 DBNAME = "ssis"
 
@@ -20,19 +19,21 @@ def create_app():
 
     db.init_app(app)
 
-    from .views import views_blue_print
-    from .student import student_blue_print
-    from .auth import auth_blue_print
-    from .college import college_blue_print
-    from .course import course_blue_print
+    from ssis.routes.auth_bp import auth_bp
+    from ssis.routes.college_bp import college_bp
+    from ssis.routes.student_bp import student_bp
+    from ssis.routes.main_bp import main_bp
+    from ssis.routes.course_bp import course_bp
 
-    app.register_blueprint(views_blue_print, url_prefix='/')
-    app.register_blueprint(student_blue_print, url_prefix='/student/')
-    app.register_blueprint(college_blue_print, url_prefix='/college/')
-    app.register_blueprint(course_blue_print, url_prefix='/course/')
-    app.register_blueprint(auth_blue_print, url_prefix='/auth/')
+    app.register_blueprint(main_bp, url_prefix='/')
+    app.register_blueprint(student_bp, url_prefix='/student/')
+    app.register_blueprint(college_bp, url_prefix='/college/')
+    app.register_blueprint(course_bp, url_prefix='/course/')
+    app.register_blueprint(auth_bp, url_prefix='/auth/')
 
-    from .models import Student, Course, College
+    from .models.College import College
+    from .models.Course import Course
+    from .models.Student import Student
 
     create_database(app)
 

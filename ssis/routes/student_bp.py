@@ -1,18 +1,19 @@
-from flask import Blueprint, render_template, jsonify
-from . import db
-from .models import Student
+from flask import Blueprint, jsonify, render_template
 
-student_blue_print = Blueprint('student', __name__)
+from .. import db
+from ..models.Student import Student
+
+student_bp = Blueprint('student', __name__)
 
 
-@student_blue_print.route('/')
+@student_bp.route('/')
 def students():
     students = db.session.execute(
         db.select(Student).order_by(Student.first_name)).scalars().all()
     return render_template("students.html", students=students)
 
 
-@student_blue_print.route('/<int:id>', methods=['DELETE'])
+@student_bp.route('/<int:id>', methods=['DELETE'])
 def student(id):
     student = Student.query.get(id)
     db.session.delete(student)
