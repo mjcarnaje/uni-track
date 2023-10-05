@@ -28,6 +28,20 @@ def add_college():
     return render_template("add-college.html")
 
 
+@college_bp.route("/update/<int:id>", methods=["GET", "POST"])
+def update_college(id):
+    college = College.query.get(id)
+
+    if request.method == "POST":
+        college.name = request.form.get('name')
+        college.code = request.form.get('code')
+        college.photo = request.form.get('photo')
+        db.session.commit()
+        return redirect("/college/")
+
+    return render_template("update-college.html", college=college)
+
+
 @college_bp.route('/<int:id>', methods=['GET', 'POST', 'DELETE'])
 def college(id):
     if request.method == "DELETE":
