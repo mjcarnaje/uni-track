@@ -2,6 +2,11 @@
 content %}
 
 <div>
+  <img
+    src="{{ url_for('static', filename='uploads/' + student.photo) }}"
+    alt="{{student.photo}}"
+    class="rounded w-25 h-25"
+  />
   <h1>Student id: {{student.student_id}}</h1>
   <h1>Name: {{student.first_name}} {{student.last_name}}</h1>
   <h1>Birthday: {{student.birthday}}</h1>

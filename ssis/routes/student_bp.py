@@ -1,6 +1,8 @@
-import json
-from flask import Blueprint, jsonify, render_template, request, redirect
+import os
+from flask import Blueprint, jsonify, render_template, request, redirect, current_app as app
 from sqlalchemy.sql.operators import ilike_op
+
+from ssis.utils.upload_file import save_file
 
 
 from .. import db
@@ -47,9 +49,11 @@ def add_student():
         student.last_name = request.form.get('last_name')
         student.gender = request.form.get('gender')
         student.birthday = request.form.get('birthday')
-        student.photo = request.form.get('photo')
         student.college_id = request.form.get('college_id')
         student.course_id = request.form.get('course_id')
+
+        student.photo = save_file(key='photo') or 'default.png'
+
         db.session.add(student)
         db.session.commit()
         return redirect("/student/")
@@ -85,8 +89,14 @@ def update_student(id):
 def student(id):
     if request.method == "DELETE":
         student = Student.query.get(id)
+
+        # delete photo
+        if student.photo and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], student.photo)):
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], student.photo))
+
         db.session.delete(student)
         db.session.commit()
+
         return jsonify({'success': True})
 
     student = Student.query.join(College).join(Course).filter(

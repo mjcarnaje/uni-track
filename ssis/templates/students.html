@@ -16,9 +16,7 @@ content %}
     placeholder="Search..."
   />
  <select class="w-full p-2 border rounded" name="college_id">
-      <option value="">
-      None
-    </option>
+    <option value="">Select College</option>
     {% for college in colleges %}
     <option
       value="{{ college.id }}"
@@ -29,9 +27,7 @@ content %}
     {% endfor %}
   </select>
   <select class="w-full p-2 border rounded" name="course_id">
-        <option value="">
-      None
-    </option>
+    <option value="">Select Course</option>
     {% for course in courses %}
     <option
       value="{{ course.id }}"
@@ -85,5 +81,42 @@ content %}
 </div>
 
 {% endif %} {% block javascript %}
+<script type="text/javascript">
+  const collegeSelect = document.querySelector("select[name=college_id]");
+  const courseSelect = document.querySelector("select[name=course_id]");
 
+   collegeSelect.addEventListener("change", (e) => {
+    getCourses(e.target.value);
+  });
+  
+
+  function getCourses(collegId) {
+      fetch(`/course/college/${collegId}`, {
+        method: "GET",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.length > 0) {
+            courseSelect.innerHTML = "<option value=''>Select Course</option>";
+            data.forEach((course) => {
+              courseSelect.innerHTML += `<option value="${course.id}">${course.name}</option>`;
+            });
+          }
+        })
+        .catch((error) => console.log(error));
+    }
+
+    function deleteStudent(id) {
+        fetch(`/student/${id}`, {
+          method: "DELETE",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              window.location.reload();
+            }
+          });
+      }
+        
+</script>
 {% endblock %} {% endblock %}

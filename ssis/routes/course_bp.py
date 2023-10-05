@@ -39,6 +39,6 @@ def course(id):
 @course_bp.route('/college/<int:id>', methods=['GET'])
 def courses_by_college(id):
     courses = Course.query.filter_by(college_id=id).all()
-    result = [c.to_dict(rules=('-college_id', '-college'))
+    result = [c.to_dict(rules=('-college_id', '-college', '-students'))
               for c in courses]
     return json.dumps(result, default=str)
