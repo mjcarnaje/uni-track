@@ -9,6 +9,16 @@ content %}
   <a href="/college/add" class="font-medium"> Add College </a>
 </div>
 
+<form>
+  <input
+    name="query"
+    type="text"
+    class="w-full p-2 border rounded-lg"
+    value="{{query}}"
+    placeholder="Search..."
+  />
+</form>
+
 {% if colleges | length == 0 %}
 <h1 class="text-4xl font-bold text-red-800">No data!</h1>
 {% else %}
@@ -34,6 +44,19 @@ content %}
     </div>
   </div>
   {% endfor %}
+</div>
+
+<div class="flex justify-center space-x-4">
+  <a
+    href="/college?page={{ page - 1 }}"
+    class="{{'pointer-events-none opacity-50' if not has_previous_page }}"
+    >Previous</a
+  >
+  <a
+    href="/college?page={{ page + 1 }}"
+    class="{{'pointer-events-none opacity-50' if not has_next_page }}"
+    >Next</a
+  >
 </div>
 
 {% endif %} {% block javascript %}

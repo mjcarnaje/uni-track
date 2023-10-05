@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, render_template, request, redirect
+from sqlalchemy.sql.operators import ilike_op
 
 from .. import db
 from ..models.College import College
@@ -9,9 +10,18 @@ college_bp = Blueprint('college', __name__)
 
 @college_bp.route('/')
 def colleges():
-    colleges = db.session.execute(
-        db.select(College).order_by(College.name)).scalars().all()
-    return render_template("colleges.html", colleges=colleges)
+    page = request.args.get('page', 1, type=int)
+    query = request.args.get('query', '', type=str)
+
+    college_query = College.query
+
+    if query:
+        college_query = college_query.filter(
+            ilike_op(College.name, f"%{query}%"))
+
+    college_query = college_query.paginate(page=page, per_page=10)
+
+    return render_template("colleges.html", colleges=college_query.items, page=page, has_previous_page=college_query.has_prev, has_next_page=college_query.has_next, query=query)
 
 
 @college_bp.route("/add", methods=["GET", "POST"])
