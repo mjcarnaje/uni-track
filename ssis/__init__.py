@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 DBNAME = "ssis"
+UPLOAD_FOLDER = 'ssis/static/uploads'
+SECRET_KEY = 'this-is-a-secret-key'
 
 
 def create_database(app: Flask):
@@ -14,8 +16,10 @@ def create_database(app: Flask):
 def create_app():
     app = Flask(__name__)
 
+    app.config['SECRET_KEY'] = SECRET_KEY
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@localhost/ssis'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
     db.init_app(app)
 

@@ -18,9 +18,9 @@ build/
 docs/_build/
 .vscode
 
-# Coverage reports
-htmlcov/
-.coverage
-.coverage.*
-*,cover
+# Nodejs files
 node_modules/
+
+# Static files
+ssis/static/uploads/*
+!ssis/static/uploads/default.png
