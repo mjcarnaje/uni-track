@@ -9,6 +9,43 @@ content %}
   <a href="/student/add" class="font-medium"> Add Student </a>
 </div>
 
+<form class="flex space-x-4">
+  <input
+    name="query"
+    type="text"
+    class="w-full p-2 border rounded-lg"
+    value="{{query}}"
+    placeholder="Search..."
+  />
+ <select class="w-full p-2 border rounded" name="college_id">
+      <option value="">
+      None
+    </option>
+    {% for college in colleges %}
+    <option
+      value="{{ college.id }}"
+      {{'selected' if college_id == college.id}}
+    >
+      {{ college.name }}
+    </option>
+    {% endfor %}
+  </select>
+  <select class="w-full p-2 border rounded" name="course_id">
+        <option value="">
+      None
+    </option>
+    {% for course in courses %}
+    <option
+      value="{{ course.id }}"
+      {{'selected' if course_id == course.id}}
+    >
+      {{ course.name }}
+    </option>
+    {% endfor %}
+  </select>
+  <button type="submit">Search</button>
+</form>
+
 {% if students | length == 0 %}
 <h1 class="text-4xl font-bold text-red-800">No data!</h1>
 {% else %}
@@ -34,8 +71,45 @@ content %}
   {% endfor %}
 </div>
 
+<div class="flex justify-center space-x-4">
+  <a
+    href="/student?page={{ page - 1 }}"
+    class="{{'pointer-events-none opacity-50' if not has_previous_page }}"
+    >Previous</a
+  >
+  <a
+    href="/student?page={{ page + 1 }}"
+    class="{{'pointer-events-none opacity-50' if not has_next_page }}"
+    >Next</a
+  >
+</div>
+
 {% endif %} {% block javascript %}
 <script type="text/javascript">
+  const collegeSelect = document.querySelector("select[name=college_id]");
+  const courseSelect = document.querySelector("select[name=course_id]");
+
+  collegeSelect.addEventListener("change", (e) => {
+    getCourses(e.target.value);
+  });
+
+  function getCourses(collegId) {
+    fetch(`/course/college/${collegId}`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          courseSelect.innerHTML = "";
+          courseSelect.innerHTML += `<option value="">None</option>`;
+          data.forEach((course) => {
+            courseSelect.innerHTML += `<option value="${course.id}">${course.name}</option>`;
+          });
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+
   function deleteStudent(id) {
     fetch(`/student/${id}`, {
       method: "DELETE",

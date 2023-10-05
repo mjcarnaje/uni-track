@@ -1,4 +1,6 @@
 from flask import Blueprint, jsonify, render_template, request, redirect
+from sqlalchemy.sql.operators import ilike_op
+
 
 from .. import db
 from ..models.Student import Student
@@ -10,9 +12,29 @@ student_bp = Blueprint('student', __name__)
 
 @student_bp.route('/')
 def students():
-    students = db.session.execute(
-        db.select(Student).order_by(Student.first_name)).scalars().all()
-    return render_template("students.html", students=students)
+    page = request.args.get('page', 1, type=int)
+    query = request.args.get('query', '', type=str)
+    college_id = request.args.get('college_id', '', type=int)
+    course_id = request.args.get('course_id', '', type=int)
+
+    student_query = Student.query
+
+    if query:
+        student_query = student_query.filter(
+            ilike_op(Student.first_name, f"%{query}%"))
+
+    if college_id:
+        student_query = student_query.filter_by(college_id=college_id)
+
+    if course_id:
+        student_query = student_query.filter_by(course_id=course_id)
+
+    student_query = student_query.paginate(page=page, per_page=10)
+
+    colleges = College.query.all()
+    courses = Course.query.filter_by(college_id=college_id).all()
+
+    return render_template("students.html", students=student_query.items, colleges=colleges, courses=courses, page=page, has_previous_page=student_query.has_prev, has_next_page=student_query.has_next, query=query, college_id=college_id, course_id=course_id)
 
 
 @student_bp.route("/add", methods=["GET", "POST"])
