@@ -2,17 +2,17 @@ from flask import Blueprint, render_template, jsonify, request
 from . import db
 from .models import College, Course
 
-college_bp = Blueprint('college', __name__)
+college_blue_print = Blueprint('college', __name__)
 
 
-@college_bp.route('/')
+@college_blue_print.route('/')
 def colleges():
     colleges = db.session.execute(
         db.select(College).order_by(College.name)).scalars().all()
     return render_template("colleges.html", colleges=colleges)
 
 
-@college_bp.route('/<int:id>', methods=['GET', 'POST', 'DELETE'])
+@college_blue_print.route('/<int:id>', methods=['GET', 'POST', 'DELETE'])
 def college(id):
     if request.method == "DELETE":
         college = College.query.get(id)
