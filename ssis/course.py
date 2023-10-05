@@ -2,10 +2,10 @@ from flask import Blueprint, jsonify, request, redirect
 from . import db
 from .models import Course
 
-course_blue_print = Blueprint('course', __name__)
+course_bp = Blueprint('course', __name__)
 
 
-@course_blue_print.route('/', methods=['POST'])
+@course_bp.route('/', methods=['POST'])
 def courses():
     if request.method == "POST":
         course = Course()
@@ -18,7 +18,7 @@ def courses():
         return redirect(f'/college/{course.college_id}')
 
 
-@course_blue_print.route('/<int:id>', methods=['POST', 'GET', 'PUT', 'DELETE'])
+@course_bp.route('/<int:id>', methods=['POST', 'GET', 'PUT', 'DELETE'])
 def course(id):
     if request.method == "POST":
         course = Course.query.get(id)

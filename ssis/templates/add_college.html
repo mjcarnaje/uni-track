@@ -1,0 +1,39 @@
+{% extends "layout.html" %} {% block title %}SSIS - Home{% endblock %} {% block
+content %}
+
+<form id="college-info" method="POST" class="space-y-5">
+  <input class="w-full p-2 border rounded" placeholder="Name" name="name" />
+  <input class="w-full p-2 border rounded" placeholder="Code" name="code" />
+  <input type="hidden" name="photo" value="" />
+</form>
+
+<div>
+  <button
+    data-open-modal
+    class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg"
+  >
+    Add Course
+  </button>
+</div>
+
+<dialog data-modal class="w-full max-w-lg p-8 rounded-lg">
+  <h3 class="mb-4 text-xl font-semibold text-gray-800" data-modal-title>
+    Add Course
+  </h3>
+  <form id="coures-info" class="w-full space-y-4">
+    <input class="w-full p-2 border rounded" placeholder="Name" name="name" />
+    <input class="w-full p-2 border rounded" placeholder="Code" name="code" />
+    <input type="hidden" name="photo" value="" />
+    <input type="hidden" name="college_id" value="{{ college.id }}" />
+    <button
+      type="submit"
+      class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg"
+    >
+      Add course
+    </button>
+  </form>
+</dialog>
+
+{% block javascript %}
+<script type="text/javascript"></script>
+{% endblock %} {% endblock %}

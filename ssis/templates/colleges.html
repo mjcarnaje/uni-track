@@ -1,16 +1,27 @@
 {% extends "layout.html" %} {% block title %}SSIS - Home{% endblock %} {% block
 content %}
-<h2 class="text-3xl font-bold">This is home page!</h2>
+
+<div class="p-4 mb-4 border rounded-lg shadow-sm">
+  <h2 class="text-3xl font-bold">Colleges</h2>
+</div>
+
+<div>
+  <a
+    href="/college/add"
+    class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg"
+    >Add College</a
+  >
+</div>
 
 {% if colleges | length == 0 %}
 <h1 class="text-4xl font-bold text-red-800">No data!</h1>
 {% else %}
-<div class="max-w-lg py-8 space-y-8">
+<div class="max-w-lg py-8 space-y-4">
   {% for college in colleges %}
   <div class="flex justify-between p-4 border rounded-lg">
-    <a class="font-medium"
-    href="/college/{{ college.id }}"
-    >{{ college.name }}</a>
+    <a class="font-medium" href="/college/{{ college.id }}"
+      >{{ college.name }}</a
+    >
     <button
       class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium"
       onClick="deleteCollege({{ college.id }})"
