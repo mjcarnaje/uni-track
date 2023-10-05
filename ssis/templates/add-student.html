@@ -1,0 +1,73 @@
+{% extends "layout.html" %} {% block title %}SSIS - Home{% endblock %} {% block
+content %}
+
+<h2 class="text-3xl font-bold">Add Student</h2>
+
+<form class="w-full py-4 space-y-4" method="POST">
+  <input
+    class="w-full p-2 border rounded"
+    placeholder="Student Id"
+    name="student_id"
+  />
+  <input
+    class="w-full p-2 border rounded"
+    placeholder="First Name"
+    name="first_name"
+  />
+  <input
+    class="w-full p-2 border rounded"
+    placeholder="Last Name"
+    name="last_name"
+  />
+  <select class="w-full p-2 border rounded" name="gender">
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="Other">Other</option>
+  </select>
+  <input class="w-full p-2 border rounded" type="date" name="birthday" />
+  <input type="hidden" name="photo" value="" />
+  <select class="w-full p-2 border rounded" name="college_id">
+    {% for college in colleges %}
+    <option value="{{ college.id }}">{{ college.name }}</option>
+    {% endfor %}
+  </select>
+  <select class="w-full p-2 border rounded" name="course_id">
+    <!-- {% for course in courses %}
+    <option value="{{ course.id }}">{{ course.name }}</option>
+    {% endfor %} -->
+  </select>
+
+  <button
+    type="submit"
+    class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg"
+  >
+    Save
+  </button>
+</form>
+
+{% block javascript %}
+<script type="text/javascript">
+  const collegeSelect = document.querySelector("select[name=college_id]");
+  const courseSelect = document.querySelector("select[name=course_id]");
+
+  collegeSelect.addEventListener("change", (e) => {
+    getCourses(e.target.value);
+  });
+
+  function getCourses(collegId) {
+    fetch(`/course/college/${collegId}`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          courseSelect.innerHTML = "";
+          data.forEach((course) => {
+            courseSelect.innerHTML += `<option value="${course.id}">${course.name}</option>`;
+          });
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+</script>
+{% endblock %} {% endblock %}

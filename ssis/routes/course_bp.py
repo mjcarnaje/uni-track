@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, redirect, request
-
+import json
 from .. import db
 from ..models.Course import Course
 
@@ -34,3 +34,11 @@ def course(id):
         db.session.delete(course)
         db.session.commit()
         return jsonify({'success': True})
+
+
+@course_bp.route('/college/<int:id>', methods=['GET'])
+def courses_by_college(id):
+    courses = Course.query.filter_by(college_id=id).all()
+    result = [c.to_dict(rules=('-college_id', '-college'))
+              for c in courses]
+    return json.dumps(result, default=str)

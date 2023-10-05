@@ -1,6 +1,13 @@
 {% extends "layout.html" %} {% block title %}SSIS - Home{% endblock %} {% block
 content %}
-<h2 class="text-3xl font-bold">This is home page!</h2>
+
+<div class="p-8 border rounded-md">
+  <h2 class="text-3xl font-bold">Students</h2>
+</div>
+
+<div class="py-8">
+  <a href="/student/add" class="font-medium"> Add Student </a>
+</div>
 
 {% if students | length == 0 %}
 <h1 class="text-4xl font-bold text-red-800">No data!</h1>

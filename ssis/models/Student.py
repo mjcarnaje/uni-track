@@ -24,6 +24,8 @@ class Student(db.Model):
     birthday: Mapped[datetime.datetime] = mapped_column(Date)
     photo: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
-        TIMESTAMP(timezone=True))
+        TIMESTAMP(timezone=True),
+        default=datetime.datetime.utcnow
+    )
     college_id: Mapped[int] = mapped_column(Integer, ForeignKey("college.id"))
     course_id: Mapped[int] = mapped_column(Integer, ForeignKey("course.id"))
