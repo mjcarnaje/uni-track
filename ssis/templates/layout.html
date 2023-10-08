@@ -19,23 +19,52 @@
       href="{{url_for('static',filename='css/main.css')}}"
       rel="stylesheet"
     />
+    <script
+      src="https://kit.fontawesome.com/2bb85d79b4.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
-  <body>
-    <nav class="bg-white border-b h-[70px] px-8">
-      <ul class="flex items-center h-full space-x-8">
-        <li>
-          <a class="hover:font-semibold" href="/"> Home </a>
+  <body class="flex min-h-screen">
+    <aside class="w-full max-w-xs border-r shadow-md">
+      <ul class="px-4 space-y-4">
+        <li class="h-[70px]"></li>
+        <li
+          class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'home' else '' }}"
+        >
+          <a
+            href="{{ url_for('main.dashboard')}}"
+            class="flex items-center px-6 py-4 space-x-4 text-lg {{ 'text-blue-500 font-bold' if active_page == 'home' else 'text-gray-700' }}"
+          >
+            <i class="fa-solid fa-house"></i>
+            <p>Home</p>
+          </a>
         </li>
-        <li>
-          <a class="hover:font-semibold" href="/student"> Student </a>
+        <li
+          class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'students' else '' }}"
+        >
+          <a
+            href="{{ url_for('student.students')}}"
+            class="flex items-center px-6 py-4 space-x-4 text-lg {{ 'text-blue-500 font-bold' if active_page == 'students' else 'text-gray-700' }}"
+          >
+            <i class="fa-solid fa-users"></i>
+            <p>Students</p>
+          </a>
         </li>
-        <li>
-          <a class="hover:font-semibold" href="/college"> College </a>
+        <li
+          class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'colleges' else '' }}"
+        >
+          <a
+            href="{{ url_for('college.colleges')}}"
+            class="flex items-center px-6 py-4 space-x-4 text-lg {{ 'text-blue-500 font-bold' if active_page == 'colleges' else 'text-gray-700' }}"
+          >
+            <i class="fa-solid fa-building-columns"></i>
+            <p>Colleges</p>
+          </a>
         </li>
       </ul>
-    </nav>
-    <div class="max-w-2xl px-4 py-8 mx-auto">
+    </aside>
+    <div class="w-full px-4 py-24 bg-blue-50">
       {% block content %} {% endblock %}
     </div>
   </body>

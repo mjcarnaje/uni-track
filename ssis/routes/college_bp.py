@@ -64,7 +64,7 @@ def update_college(id):
 
 @college_bp.route('/<int:id>', methods=['GET', 'DELETE'])
 def college(id):
-    college_query = College(id)
+    college_query = College(id=id)
 
     if request.method == "DELETE":
         college_query.delete()

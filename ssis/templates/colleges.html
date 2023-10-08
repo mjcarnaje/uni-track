@@ -1,5 +1,5 @@
-{% extends "layout.html" %} {% block title %}SSIS - Home{% endblock %} {% block
-content %}
+{% extends "layout.html" %} {% set active_page = "colleges" %} {% block title
+%}SSIS - Home{% endblock %} {% block content %}
 
 <div class="p-8 border rounded-md">
   <h2 class="text-3xl font-bold">Colleges</h2>
@@ -36,8 +36,9 @@ content %}
         Update
       </a>
       <button
+        id="delete-college"
+        data-id="{{college.id}}"
         class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium"
-        onClick="deleteCollege({{ college.id }})"
       >
         Delete
       </button>
@@ -72,5 +73,14 @@ content %}
         }
       });
   }
+
+  const deleteButtons = document.querySelectorAll("#delete-college");
+
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const id = e.target.dataset.id;
+      deleteCollege(id);
+    });
+  });
 </script>
 {% endblock %} {% endblock %}
