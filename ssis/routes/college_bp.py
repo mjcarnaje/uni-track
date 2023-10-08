@@ -62,15 +62,12 @@ def update_college(id):
     return render_template("update-college.html", college=college)
 
 
-@college_bp.route('/<int:id>', methods=['GET', 'POST', 'DELETE'])
+@college_bp.route('/<int:id>', methods=['GET', 'DELETE'])
 def college(id):
     college_query = College(id)
 
     if request.method == "DELETE":
         college_query.delete()
-        return jsonify({'success': True})
-
-    if request.method == "POST":
         return jsonify({'success': True})
 
     college = college_query.find_one()

@@ -1,12 +1,14 @@
 import os
-from flask import Blueprint, render_template, request, redirect, current_app as app, jsonify
+
+from flask import Blueprint
+from flask import current_app as app
+from flask import jsonify, redirect, render_template, request
 
 from ssis.utils.upload_file import save_file
 
-
-from ..models.Student import Student
 from ..models.College import College
 from ..models.Course import Course
+from ..models.Student import Student
 
 student_bp = Blueprint('student', __name__)
 
@@ -70,6 +72,7 @@ def add_student():
 def update_student(id):
     student_query = Student(id=id)
     student = student_query.find_one()
+
     if request.method == "POST":
         student_query.student_id = request.form.get('student_id')
         student_query.first_name = request.form.get('first_name')
@@ -79,8 +82,10 @@ def update_student(id):
         student_query.photo = request.form.get('photo')
         student_query.college_id = request.form.get('college_id')
         student_query.course_id = request.form.get('course_id')
-        student_query.photo = save_file(key='photo') or student_query.photo
+        student_query.photo = save_file(key='photo') or student.photo
+
         student_query.update()
+
         return redirect("/student")
 
     colleges = College().find_all().get("data")
@@ -97,9 +102,10 @@ def student(id):
     if request.method == "DELETE":
         student_query.delete()
 
-        if student.get("photo") and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], student.get("photo"))):
-            os.remove(os.path.join(
-                app.config['UPLOAD_FOLDER'], student.get("photo")))
+        student_photo = student.get("photo")
+
+        if student_photo and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], student_photo)) and student_photo != "default.png":
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], student_photo))
 
         return jsonify({'success': True})
 

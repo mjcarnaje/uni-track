@@ -11,7 +11,6 @@ MYSQL_USER = 'root'
 MYSQL_PASSWORD = 'password'
 MYSQL_DATABASE = 'ssis'
 
-
 mysql = MySQL()
 
 
@@ -30,14 +29,14 @@ def create_app():
 
     create_tables(app, mysql)
 
+    from ssis.routes.main_bp import main_bp
     from ssis.routes.college_bp import college_bp
     from ssis.routes.course_bp import course_bp
-    from ssis.routes.main_bp import main_bp
     from ssis.routes.student_bp import student_bp
 
     app.register_blueprint(main_bp, url_prefix='/')
-    app.register_blueprint(student_bp, url_prefix='/student/')
     app.register_blueprint(college_bp, url_prefix='/college/')
     app.register_blueprint(course_bp, url_prefix='/course/')
+    app.register_blueprint(student_bp, url_prefix='/student/')
 
     return app

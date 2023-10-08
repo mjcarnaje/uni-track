@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, redirect, request
+
 from ..models.Course import Course
 
 course_bp = Blueprint('course', __name__)
@@ -13,12 +14,16 @@ def courses():
             photo=request.form.get('photo'),
             college_id=request.form.get('college_id')
         )
+
         course.insert()
+
         return redirect(f'/college/{course.college_id}')
 
 
 @course_bp.route('/<int:id>', methods=['POST', 'GET', 'DELETE'])
 def course(id):
+    course_query = Course(id=id)
+
     if request.method == "POST":
         updated_course = Course(
             id=id,
@@ -27,16 +32,17 @@ def course(id):
             photo=request.form.get('photo'),
             college_id=request.form.get('college_id')
         )
+
         updated_course.update()
 
         return redirect(f'/college/{updated_course.college_id}')
 
     if request.method == "DELETE":
-        course = Course(id)
-        course.delete()
+        course_query.delete()
+
         return jsonify({'success': True})
 
-    return jsonify(Course().find_one(id))
+    return jsonify(course_query.find_one())
 
 
 @course_bp.route('/college/<int:id>', methods=['GET'])

@@ -18,6 +18,15 @@ class Course():
         self.photo = photo
         self.college_id = college_id
 
+    def find_one(self):
+        if self.id is None:
+            return "Cannot find without an ID"
+
+        SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE id=%s"
+        cur = mysql.new_cursor(dictionary=True)
+        cur.execute(SELECT_SQL, (self.id,))
+        return cur.fetchone()
+
     def find_all(self):
         SELECT_SQL = f"SELECT * FROM {self.__tablename__}"
         cur = mysql.new_cursor(dictionary=True)
