@@ -1,29 +1,26 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask_mysql_connector import MySQL
 
-db = SQLAlchemy()
-DBNAME = "ssis"
+
 UPLOAD_FOLDER = 'ssis/static/uploads'
 SECRET_KEY = 'this-is-a-secret-key'
-
-
-def create_database(app: Flask):
-    with app.app_context():
-        db.create_all()
-    print("Database Created!")
+mysql = MySQL()
 
 
 def create_app():
     app = Flask(__name__)
 
     app.config['SECRET_KEY'] = SECRET_KEY
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@localhost/ssis'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-    db.init_app(app)
+    app.config['MYSQL_HOST'] = 'localhost'
+    app.config['MYSQL_USER'] = 'root'
+    app.config['MYSQL_PASSWORD'] = 'password'
+    app.config['MYSQL_DATABASE'] = 'ssis'
 
-    from ssis.routes.auth_bp import auth_bp
+    mysql.init_app(app)
+
+    # from ssis.routes.auth_bp import auth_bp
     from ssis.routes.college_bp import college_bp
     from ssis.routes.student_bp import student_bp
     from ssis.routes.main_bp import main_bp
@@ -33,12 +30,6 @@ def create_app():
     app.register_blueprint(student_bp, url_prefix='/student/')
     app.register_blueprint(college_bp, url_prefix='/college/')
     app.register_blueprint(course_bp, url_prefix='/course/')
-    app.register_blueprint(auth_bp, url_prefix='/auth/')
-
-    from .models.College import College
-    from .models.Course import Course
-    from .models.Student import Student
-
-    create_database(app)
+    # app.register_blueprint(auth_bp, url_prefix='/auth/')
 
     return app

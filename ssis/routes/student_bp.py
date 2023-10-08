@@ -1,11 +1,9 @@
 import os
-from flask import Blueprint, jsonify, render_template, request, redirect, current_app as app
-from sqlalchemy.sql.operators import ilike_op
+from flask import Blueprint, render_template, request, redirect, current_app as app, jsonify
 
 from ssis.utils.upload_file import save_file
 
 
-from .. import db
 from ..models.Student import Student
 from ..models.College import College
 from ..models.Course import Course
@@ -20,86 +18,89 @@ def students():
     college_id = request.args.get('college_id', '', type=int)
     course_id = request.args.get('course_id', '', type=int)
 
-    student_query = Student.query
+    students_query = Student().find_all(
+        page_number=page,
+        page_size=2,
+        query=query,
+        college_id=college_id,
+        course_id=course_id
+    )
 
-    if query:
-        student_query = student_query.filter(
-            ilike_op(Student.first_name, f"%{query}%"))
+    students = students_query.get("data")
+    has_previous_page = students_query.get("has_previous_page")
+    has_next_page = students_query.get("has_next_page")
 
-    if college_id:
-        student_query = student_query.filter_by(college_id=college_id)
+    colleges = College().find_all(
+        page_number=1,
+        page_size=100,
+        query=""
+    ).get("data")
 
-    if course_id:
-        student_query = student_query.filter_by(course_id=course_id)
+    courses = Course().find_by_college_id(college_id) if college_id else []
 
-    student_query = student_query.paginate(page=page, per_page=10)
-
-    colleges = College.query.all()
-    courses = Course.query.filter_by(college_id=college_id).all()
-
-    return render_template("students.html", students=student_query.items, colleges=colleges, courses=courses, page=page, has_previous_page=student_query.has_prev, has_next_page=student_query.has_next, query=query, college_id=college_id, course_id=course_id)
+    return render_template("students.html", students=students, colleges=colleges, courses=courses, page=page, has_previous_page=has_previous_page, has_next_page=has_next_page, query=query, college_id=college_id, course_id=course_id)
 
 
 @student_bp.route("/add", methods=["GET", "POST"])
 def add_student():
     if request.method == "POST":
-        student = Student()
-        student.student_id = request.form.get('student_id')
-        student.first_name = request.form.get('first_name')
-        student.last_name = request.form.get('last_name')
-        student.gender = request.form.get('gender')
-        student.birthday = request.form.get('birthday')
-        student.college_id = request.form.get('college_id')
-        student.course_id = request.form.get('course_id')
+        student = Student(
+            student_id=request.form.get('student_id'),
+            first_name=request.form.get('first_name'),
+            last_name=request.form.get('last_name'),
+            gender=request.form.get('gender'),
+            birthday=request.form.get('birthday'),
+            college_id=request.form.get('college_id'),
+            course_id=request.form.get('course_id'),
+            photo=save_file(key='photo') or 'default.png'
+        )
 
-        student.photo = save_file(key='photo') or 'default.png'
+        student.insert()
 
-        db.session.add(student)
-        db.session.commit()
         return redirect("/student/")
 
-    colleges = College.query.all()
+    colleges = College().find_all().get("data")
+
+    print(colleges)
 
     return render_template("add-student.html", colleges=colleges)
 
 
 @student_bp.route("/update/<int:id>", methods=["GET", "POST"])
 def update_student(id):
-    student = Student.query.get(id)
-
+    student_query = Student(id=id)
+    student = student_query.find_one()
     if request.method == "POST":
-        student.student_id = request.form.get('student_id')
-        student.first_name = request.form.get('first_name')
-        student.last_name = request.form.get('last_name')
-        student.gender = request.form.get('gender')
-        student.birthday = request.form.get('birthday')
-        student.photo = request.form.get('photo')
-        student.college_id = request.form.get('college_id')
-        student.course_id = request.form.get('course_id')
-        db.session.commit()
+        student_query.student_id = request.form.get('student_id')
+        student_query.first_name = request.form.get('first_name')
+        student_query.last_name = request.form.get('last_name')
+        student_query.gender = request.form.get('gender')
+        student_query.birthday = request.form.get('birthday')
+        student_query.photo = request.form.get('photo')
+        student_query.college_id = request.form.get('college_id')
+        student_query.course_id = request.form.get('course_id')
+        student_query.photo = save_file(key='photo') or student_query.photo
+        student_query.update()
         return redirect("/student")
 
-    colleges = College.query.all()
-    courses = Course.query.filter_by(college_id=student.college_id).all()
+    colleges = College().find_all().get("data")
+    courses = College(id=student.get('college').get('id')).find_courses()
 
     return render_template("update-student.html", student=student, colleges=colleges, courses=courses)
 
 
 @student_bp.route('/<int:id>', methods=['GET', 'DELETE'])
 def student(id):
+    student_query = Student(id=id)
+    student = student_query.find_one()
+
     if request.method == "DELETE":
-        student = Student.query.get(id)
+        student_query.delete()
 
-        # delete photo
-        if student.photo and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], student.photo)):
-            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], student.photo))
-
-        db.session.delete(student)
-        db.session.commit()
+        if student.get("photo") and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], student.get("photo"))):
+            os.remove(os.path.join(
+                app.config['UPLOAD_FOLDER'], student.get("photo")))
 
         return jsonify({'success': True})
-
-    student = Student.query.join(College).join(Course).filter(
-        Student.id == id).one()
 
     return render_template("student.html", student=student)

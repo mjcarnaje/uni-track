@@ -1,5 +1,4 @@
 from flask import Blueprint, jsonify, render_template, request, redirect
-from sqlalchemy.sql.operators import ilike_op
 
 from .. import db
 from ..models.College import College
@@ -13,26 +12,30 @@ def colleges():
     page = request.args.get('page', 1, type=int)
     query = request.args.get('query', '', type=str)
 
-    college_query = College.query
+    college_query = College().find_all(
+        page_number=page,
+        page_size=2,
+        query=query
+    )
 
-    if query:
-        college_query = college_query.filter(
-            ilike_op(College.name, f"%{query}%"))
+    colleges = college_query.get("data")
+    has_previous_page = college_query.get("has_previous_page")
+    has_next_page = college_query.get("has_next_page")
 
-    college_query = college_query.paginate(page=page, per_page=10)
-
-    return render_template("colleges.html", colleges=college_query.items, page=page, has_previous_page=college_query.has_prev, has_next_page=college_query.has_next, query=query)
+    return render_template("colleges.html", colleges=colleges, page=page, has_previous_page=has_previous_page, has_next_page=has_next_page, query=query)
 
 
 @college_bp.route("/add", methods=["GET", "POST"])
 def add_college():
     if request.method == "POST":
-        college = College()
-        college.name = request.form.get('name')
-        college.code = request.form.get('code')
-        college.photo = request.form.get('photo')
-        db.session.add(college)
-        db.session.commit()
+        college = College(
+            name=request.form.get('name'),
+            code=request.form.get('code'),
+            photo=request.form.get('photo')
+        )
+
+        college.insert()
+
         return redirect("/college/")
 
     return render_template("add-college.html")
@@ -40,31 +43,37 @@ def add_college():
 
 @college_bp.route("/update/<int:id>", methods=["GET", "POST"])
 def update_college(id):
-    college = College.query.get(id)
+    college_query = College(id=id)
 
     if request.method == "POST":
-        college.name = request.form.get('name')
-        college.code = request.form.get('code')
-        college.photo = request.form.get('photo')
-        db.session.commit()
+        updated_college = College(
+            id=id,
+            name=request.form.get('name'),
+            code=request.form.get('code'),
+            photo=request.form.get('photo')
+        )
+
+        updated_college.update()
+
         return redirect("/college/")
+
+    college = college_query.find_one()
 
     return render_template("update-college.html", college=college)
 
 
 @college_bp.route('/<int:id>', methods=['GET', 'POST', 'DELETE'])
 def college(id):
+    college_query = College(id)
+
     if request.method == "DELETE":
-        college = College.query.get(id)
-        db.session.delete(college)
-        db.session.commit()
+        college_query.delete()
         return jsonify({'success': True})
 
     if request.method == "POST":
         return jsonify({'success': True})
 
-    college = College.query.get(id)
-    courses = db.session.execute(
-        db.select(Course).filter_by(college_id=id)).scalars().all()
+    college = college_query.find_one()
+    courses = college_query.find_courses()
 
     return render_template("college.html", college=college, courses=courses)

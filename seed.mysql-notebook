@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "SHOW DATABASES;\nDROP DATABASE ssis;\nCREATE DATABASE ssis;\nuse ssis;\n-- Create the college table\nCREATE TABLE college (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(256) UNIQUE NOT NULL,\n    code VARCHAR(16) UNIQUE NOT NULL,\n    photo TEXT\n);\n\n-- Create the course table\nCREATE TABLE course (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(256) UNIQUE NOT NULL,\n    code VARCHAR(16) UNIQUE NOT NULL,\n    photo TEXT,\n    college_id INTEGER REFERENCES college(id)\n);\n\n-- Create the student table\nCREATE TABLE student (\n    id SERIAL PRIMARY KEY,\n    student_id VARCHAR(16) UNIQUE NOT NULL,\n    first_name VARCHAR(256) NOT NULL,\n    last_name VARCHAR(256) NOT NULL,\n    gender VARCHAR(16) NOT NULL,\n    birthday DATE NOT NULL,\n    photo TEXT,\n    created_at TIMESTAMP NOT NULL,\n    college_id INTEGER REFERENCES college(id),\n    course_id INTEGER REFERENCES course(id)\n);\n\n-- Insert dummy data into the college table\nINSERT INTO college (name, code, photo) VALUES\n    ('College A', 'CA001', NULL),\n    ('College B', 'CB002', NULL),\n    ('College C', 'CC003', NULL);\n\n-- Insert dummy data into the course table\nINSERT INTO course (name, code, photo, college_id) VALUES\n    ('Course 1', 'C001', NULL, 1),\n    ('Course 2', 'C002', NULL, 2),\n    ('Course 3', 'C003', NULL, 3);\n\n-- Insert dummy data into the student table\nINSERT INTO student (student_id, first_name, last_name, gender, birthday, photo, created_at, college_id, course_id) VALUES\n    ('S001', 'John', 'Doe', 'Male', '2000-01-01', NULL, '2023-10-03 12:00:00', 1, 1),\n    ('S002', 'Jane', 'Smith', 'Female', '2001-02-15', NULL, '2023-10-03 12:15:00', 2, 2),\n    ('S003', 'Mike', 'Johnson', 'Male', '1999-07-10', NULL, '2023-10-03 12:30:00', 3, 3);\n\n",
+    "content": "SHOW DATABASES;\nDROP DATABASE ssis;\nCREATE DATABASE ssis;\nuse ssis;\n-- Create the college table\nCREATE TABLE college (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(256) UNIQUE NOT NULL,\n    code VARCHAR(16) UNIQUE NOT NULL,\n    photo TEXT\n);\n\n-- Create the course table\nCREATE TABLE course (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(256) UNIQUE NOT NULL,\n    code VARCHAR(16) UNIQUE NOT NULL,\n    photo TEXT,\n    college_id INTEGER REFERENCES college(id)\n);\n\n-- Create the student table\nCREATE TABLE student (\n    id SERIAL PRIMARY KEY,\n    student_id VARCHAR(16) UNIQUE NOT NULL,\n    first_name VARCHAR(256) NOT NULL,\n    last_name VARCHAR(256) NOT NULL,\n    gender VARCHAR(16) NOT NULL,\n    birthday DATE NOT NULL,\n    photo TEXT,\n    created_at TIMESTAMP DEFAULT NOW(),\n    college_id INTEGER REFERENCES college(id),\n    course_id INTEGER REFERENCES course(id)\n);\n\n-- Insert dummy data into the college table\nINSERT INTO college (name, code, photo) VALUES\n    ('College A', 'CA001', NULL),\n    ('College B', 'CB002', NULL),\n    ('College C', 'CC003', NULL);\n\n-- Insert dummy data into the course table\nINSERT INTO course (name, code, photo, college_id) VALUES\n    ('Course 1', 'C001', NULL, 1),\n    ('Course 2', 'C002', NULL, 2),\n    ('Course 3', 'C003', NULL, 3);\n\n-- Insert dummy data into the student table\nINSERT INTO student (student_id, first_name, last_name, gender, birthday, photo, created_at, college_id, course_id) VALUES\n    ('S001', 'John', 'Doe', 'Male', '2000-01-01', NULL, '2023-10-03 12:00:00', 1, 1),\n    ('S002', 'Jane', 'Smith', 'Female', '2001-02-15', NULL, '2023-10-03 12:15:00', 2, 2),\n    ('S003', 'Mike', 'Johnson', 'Male', '1999-07-10', NULL, '2023-10-03 12:30:00', 3, 3);\n\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 54,
-                    "column": 1
+                    "lineNumber": 31,
+                    "column": 25
                 },
                 "position": {
-                    "lineNumber": 54,
-                    "column": 1
+                    "lineNumber": 31,
+                    "column": 25
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 29,
+                "lineNumber": 22,
                 "column": 1
             },
-            "firstPositionDeltaTop": -18
+            "firstPositionDeltaTop": -16
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -46,7 +46,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "63f5c97b-c866-4514-9918-2f331923322b"
+                        "9768a074-bc7f-4a78-b85b-83fff972ec8e"
                     ]
                 },
                 "currentHeight": 36,
@@ -64,8 +64,8 @@
             },
             "data": [
                 {
-                    "tabId": "414ec86d-c6a4-4a5e-a677-7099e0800941",
-                    "resultId": "63f5c97b-c866-4514-9918-2f331923322b",
+                    "tabId": "a09be412-a933-4cf2-bf4d-62fc449defcb",
+                    "resultId": "9768a074-bc7f-4a78-b85b-83fff972ec8e",
                     "rows": [
                         {
                             "0": "information_schema"
@@ -251,7 +251,7 @@
                         "delimiter": ";",
                         "span": {
                             "start": 391,
-                            "length": 404
+                            "length": 409
                         },
                         "contentStart": 421,
                         "state": 0
@@ -259,10 +259,10 @@
                     {
                         "delimiter": ";",
                         "span": {
-                            "start": 795,
+                            "start": 800,
                             "length": 1
                         },
-                        "contentStart": 794,
+                        "contentStart": 799,
                         "state": 3
                     }
                 ]
