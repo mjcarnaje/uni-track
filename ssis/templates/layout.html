@@ -3,18 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="keyword" content="SSIS, Simple Student Information System" />
+    <meta name="keywords" content="SSIS, Simple Student Information System" />
     <meta name="description"
           content="SSIS is a simple student information system that can be used to manage students and colleges." />
     <meta keywords="SSIS, Simple Student Information System" />
     <title>
       {% block title %}
         SSIS - Simple Student Information System
-      {% endblock title %}
+      {% endblock
+      title %}
     </title>
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
             integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
             crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Mochiy+Pop+P+One&display=swap"
+          rel="stylesheet" />
     <script type="text/javascript"
             src="{{ url_for('static', filename='index.jx') }}"></script>
     <link href="{{ url_for('static',filename='css/main.css') }}"
@@ -25,26 +30,28 @@
   <body class="flex min-h-screen">
     <aside class="w-full max-w-xs border-r shadow-md">
       <ul class="px-4 space-y-4">
-        <li class="h-[70px]"></li>
+        <li class="flex items-center justify-center py-6">
+          <h1 class="text-4xl font-extrabold text-blue-500 font-display">SSIS</h1>
+        </li>
         <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'home' else '' }}">
           <a href="{{ url_for('main.dashboard',) }}"
              class="flex items-center px-6 py-4 space-x-4 text-lg {{ 'text-blue-500 font-bold' if active_page == 'home' else 'text-gray-700' }}">
             <i class="fa-solid fa-house"></i>
-            <p>Home</p>
+            <p class="font-display">Home</p>
           </a>
         </li>
         <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'students' else '' }}">
           <a href="{{ url_for('student.students',) }}"
              class="flex items-center px-6 py-4 space-x-4 text-lg {{ 'text-blue-500 font-bold' if active_page == 'students' else 'text-gray-700' }}">
             <i class="fa-solid fa-users"></i>
-            <p>Students</p>
+            <p class="font-display">Students</p>
           </a>
         </li>
         <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'colleges' else '' }}">
           <a href="{{ url_for('college.colleges',) }}"
              class="flex items-center px-6 py-4 space-x-4 text-lg {{ 'text-blue-500 font-bold' if active_page == 'colleges' else 'text-gray-700' }}">
             <i class="fa-solid fa-building-columns"></i>
-            <p>Colleges</p>
+            <p class="font-display">Colleges</p>
           </a>
         </li>
       </ul>
