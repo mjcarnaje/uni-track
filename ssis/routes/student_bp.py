@@ -32,11 +32,7 @@ def students():
     has_previous_page = students_query.get("has_previous_page")
     has_next_page = students_query.get("has_next_page")
 
-    colleges = College().find_all(
-        page_number=1,
-        page_size=100,
-        query=""
-    ).get("data")
+    colleges = College().find_all().get("data")
 
     courses = Course().find_by_college_id(college_id) if college_id else []
 

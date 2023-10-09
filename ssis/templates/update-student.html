@@ -1,91 +1,57 @@
-{% extends "layout.html" %} {% block title %}SSIS - Home{% endblock %} {% block
-content %}
-
-<h2 class="text-3xl font-bold">Udate Student</h2>
-
-<form class="w-full py-4 space-y-4" method="POST">
-   <img
-    class="w-32 h-32 rounded-full"
-    src="{{ url_for('static', filename='uploads/' + student.photo) }}"
-    alt={{student.photo}}
-  />
-  <input type="file" name="photo" accept="image/png, image/jpeg, image/jpg" />
-  <input
-    class="w-full p-2 border rounded"
-    placeholder="Student Id"
-    name="student_id"
-    value="{{student.student_id}}"
-  />
-  <input
-    class="w-full p-2 border rounded"
-    placeholder="First Name"
-    name="first_name"
-    value="{{student.first_name}}"
-  />
-  <input
-    class="w-full p-2 border rounded"
-    placeholder="Last Name"
-    name="last_name"
-    value="{{student.last_name}}"
-  />
-  <select class="w-full p-2 border rounded" name="gender">
-    <option value="Male" 
-      {{'selected' if student.gender == "Male"}}
-
-    >
-      Male
-    </option>
-    <option value="Female" 
-      {{'selected' if student.gender == "Female"}}
-
-    >
-      Female
-    </option>
-    <option value="Other" 
-      {{'selected' if student.gender == "Other"}}
-
-    >
-      Other
-    </option>
-  </select>
-  <input
-    class="w-full p-2 border rounded"
-    type="date"
-    name="birthday"
-    value="{{student.birthday}}"
-  />
-  <input type="hidden" name="photo" value="{{student.photo}}" />
-  <select class="w-full p-2 border rounded" name="college_id">
-    {% for college in colleges %}
-    <option
-      value="{{ college.id }}"
-      {{'selected' if student.college_id == college.id}}
-    >
-      {{ college.name }}
-    </option>
-    {% endfor %}
-  </select>
-  <select class="w-full p-2 border rounded" name="course_id">
-    {% for course in courses %}
-    <option
-      value="{{ course.id }}"
-      {{'selected' if student.course_id == course.id}}
-    >
-      {{ course.name }}
-    </option>
-    {% endfor %}
-  </select>
-
-  <button
-    type="submit"
-    class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg"
-  >
-    Save
-  </button>
-</form>
-
-{% block javascript %}
-<script type="text/javascript">
+{% extends "layout.html" %}
+{% block title %}
+  SSIS - Home
+{% endblock title %}
+{% block content %}
+  <h2 class="text-3xl font-bold">Udate Student</h2>
+  <form class="w-full py-4 space-y-4" method="post">
+    <img class="w-32 h-32 rounded-full"
+         src="{{ url_for('static', filename='uploads/' + student.photo) }}"
+         alt="{{ student.photo }}"
+         height="100"
+         width="100" />
+    <input type="file" name="photo" accept="image/png, image/jpeg, image/jpg" />
+    <input class="w-full p-2 border rounded"
+           placeholder="Student Id"
+           name="student_id"
+           value="{{ student.student_id }}" />
+    <input class="w-full p-2 border rounded"
+           placeholder="First Name"
+           name="first_name"
+           value="{{ student.first_name }}" />
+    <input class="w-full p-2 border rounded"
+           placeholder="Last Name"
+           name="last_name"
+           value="{{ student.last_name }}" />
+    <select class="w-full p-2 border rounded" name="gender">
+      <option value="Male" selected="{{ 'selected' if student.gender == 'Male' }}">Male</option>
+      <option value="Female"
+              selected="{{ 'selected' if student.gender == 'Female' }}">Female</option>
+      <option value="Other"
+              selected="{{ 'selected' if student.gender == 'Other' }}">Other</option>
+    </select>
+    <input class="w-full p-2 border rounded"
+           type="date"
+           name="birthday"
+           value="{{ student.birthday }}" />
+    <input type="hidden" name="photo" value="{{ student.photo }}" />
+    <select class="w-full p-2 border rounded" name="college_id">
+      {% for college in colleges %}
+        <option value="{{ college.id }}"
+                selected="{{ 'selected' if student.college == college.id }}">{{ college.name }}</option>
+      {% endfor %}
+    </select>
+    <select class="w-full p-2 border rounded" name="course_id">
+      {% for course in courses %}
+        <option value="{{ course.id }}"
+                selected="{{ 'selected' if student.course == course.id }}">{{ course.name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit"
+            class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg">Save</button>
+  </form>
+  {% block javascript %}
+    <script type="text/javascript">
   const collegeSelect = document.querySelector("select[name=college_id]");
   const courseSelect = document.querySelector("select[name=course_id]");
 
@@ -120,5 +86,6 @@ content %}
       })
       .catch((error) => console.log(error));
   }
-</script>
-{% endblock %} {% endblock %}
+    </script>
+  {% endblock javascript %}
+{% endblock content %}

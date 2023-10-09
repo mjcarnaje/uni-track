@@ -1,68 +1,54 @@
-{% extends "layout.html" %} {% block title %}SSIS - Home{% endblock %} {% block
-content %}
-
-<div class="p-4 mb-4 border rounded-lg shadow-sm">
-  <h2 class="text-3xl font-bold">{{ college.name }}</h2>
-  <h2 class="font-medium">{{ college.code }}</h2>
-</div>
-
-<dialog data-modal class="w-full max-w-lg p-8 rounded-lg">
-  <h3 class="mb-4 text-xl font-semibold text-gray-800" data-modal-title>
-    Add Course
-  </h3>
-  <form class="w-full space-y-4" action="/course" method="POST">
-    <input class="w-full p-2 border rounded" placeholder="Name" name="name" />
-    <input class="w-full p-2 border rounded" placeholder="Code" name="code" />
-    <input type="hidden" name="photo" value="" />
-    <input type="hidden" name="college_id" value="{{ college.id }}" />
-    <button
-      type="submit"
-      class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg"
-    >
-      Add course
-    </button>
-  </form>
-</dialog>
-
-<div>
-  <button
-    data-open-modal
-    class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg"
-  >
-    Add Course
-  </button>
-</div>
-
-{% if courses | length == 0 %}
-<h1 class="text-4xl font-bold text-red-800">No data!</h1>
-{% else %}
-<div class="py-8 space-y-8">
-  {% for course in courses %}
-  <div class="flex items-center justify-between p-4 border rounded-lg">
-    <div>
-      <a class="font-medium">{{ course.name }}</a>
-      <p>{{ course.code }}</p>
-    </div>
-    <div class="flex space-x-4">
-      <button
-        class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg delete-button hover:bg-red-300 hover:text-red-600 hover:font-medium"
-        onclick="deleteCourse({{ course.id }})"
-      >
-        Delete
-      </button>
-      <button
-        class="px-2 py-1 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
-        onClick="updateCourse({{ course.id }}, '{{ course.name }}', '{{ course.code }}', '{{ course.photo }}', {{ course.college_id }})"
-      >
-        Update
-      </button>
-    </div>
+{% extends "layout.html" %}
+{% block title %}
+  SSIS - Home
+{% endblock title %}
+{% block
+  content %}
+  <div class="p-4 mb-4 border rounded-lg shadow-sm">
+    <h2 class="text-3xl font-bold">{{ college.name }}</h2>
+    <h2 class="font-medium">{{ college.code }}</h2>
   </div>
-  {% endfor %}
-</div>
-
-{% endif %} {% block javascript %}
-<script type="text/javascript">
+  <dialog data-modal class="w-full max-w-lg p-8 rounded-lg">
+    <h3 class="mb-4 text-xl font-semibold text-gray-800" data-modal-title>Add Course</h3>
+    <form class="w-full space-y-4"
+          action="{{ url_for('coure.courses',) }}"
+          method="post">
+      <input class="w-full p-2 border rounded" placeholder="Name" name="name" />
+      <input class="w-full p-2 border rounded" placeholder="Code" name="code" />
+      <input type="hidden" name="photo" value="" />
+      <input type="hidden" name="college_id" value="{{ college.id }}" />
+      <button type="submit"
+              class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg">Add course</button>
+    </form>
+  </dialog>
+  <div>
+    <button data-open-modal
+            class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg">Add Course</button>
+  </div>
+  {% if courses | length == 0 %}
+    <h1 class="text-4xl font-bold text-red-800">No data!</h1>
+  {% else %}
+    <div class="py-8 space-y-8">
+      {% for course in courses %}
+        <div class="flex items-center justify-between p-4 border rounded-lg">
+          <div>
+            <a class="font-medium">{{ course.name }}</a>
+            <p>{{ course.code }}</p>
+          </div>
+          <div class="flex space-x-4">
+            <button class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg delete-button hover:bg-red-300 hover:text-red-600 hover:font-medium"
+                    onclick="deleteCourse({{ course.id }})">Delete</button>
+            <button class="px-2 py-1 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
+                    onClick="updateCourse({{ course.id }}, '{{ course.name }}', '{{ course.code }}', '{{ course.photo }}', {{ course.college_id }})">
+              Update
+            </button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% block javascript %}
+    <script type="text/javascript">
   const openModal = document.querySelector("[data-open-modal]");
   const modal = document.querySelector("[data-modal]");
   const modalTitle = document.querySelector("[data-modal-title]");
@@ -105,5 +91,6 @@ content %}
     photoDiv.value = photo;
     collegeIdDiv.value = college_id;
   }
-</script>
-{% endblock %} {% endblock %}
+    </script>
+  {% endblock javascript %}
+{% endblock content %}

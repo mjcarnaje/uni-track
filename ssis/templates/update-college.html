@@ -1,28 +1,20 @@
-{% extends "layout.html" %} {% block title %}SSIS - Home{% endblock %} {% block
-content %}
-
-<h2 class="text-3xl font-bold">Update College</h2>
-
-<form class="w-full py-4 space-y-4" method="POST">
-  <input
-    class="w-full p-2 border rounded"
-    placeholder="Name"
-    name="name"
-    value="{{college.name}}"
-  />
-  <input
-    class="w-full p-2 border rounded"
-    placeholder="Code"
-    name="code"
-    value="{{college.code}}"
-  />
-  <input type="hidden" name="photo" value="{{college.photo}}" />
-  <button
-    type="submit"
-    class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg"
-  >
-    Save
-  </button>
-</form>
-
-{% endblock %}
+{% extends "layout.html" %}
+{% block title %}
+  SSIS - Home
+{% endblock title %}
+{% block content %}
+  <h2 class="text-3xl font-bold">Update College</h2>
+  <form class="w-full py-4 space-y-4" method="post">
+    <input class="w-full p-2 border rounded"
+           placeholder="Name"
+           name="name"
+           value="{{ college.name }}" />
+    <input class="w-full p-2 border rounded"
+           placeholder="Code"
+           name="code"
+           value="{{ college.code }}" />
+    <input type="hidden" name="photo" value="{{ college.photo }}" />
+    <button type="submit"
+            class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg">Save</button>
+  </form>
+{% endblock content %}

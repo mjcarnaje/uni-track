@@ -1,124 +1,102 @@
-{% extends "layout.html" %} 
-{% set active_page = "students" %}
-{% block title %}SSIS - Home{% endblock %} {% block
-content %}
-
-
-
-<div class="py-8">
-  <a href="/student/add" class="font-medium"> Add Student </a>
-</div>
-
-<form class="flex space-x-4">
-  <input
-    name="query"
-    type="text"
-    class="w-full p-2 border rounded-lg"
-    value="{{query}}"
-    placeholder="Search..."
-  />
- <select class="w-full p-2 border rounded" name="college_id">
-    <option value="">Select College</option>
-    {% for college in colleges %}
-    <option
-      value="{{ college.id }}"
-      {{'selected' if college_id == college.id}}
-    >
-      {{ college.name }}
-    </option>
-    {% endfor %}
-  </select>
-  <select class="w-full p-2 border rounded" name="course_id">
-    <option value="">Select Course</option>
-    {% for course in courses %}
-    <option
-      value="{{ course.id }}"
-      {{'selected' if course_id == course.id}}
-    >
-      {{ course.name }}
-    </option>
-    {% endfor %}
-  </select>
-  <button type="submit">Search</button>
-</form>
-
-{% if students | length == 0 %}
-<h1 class="text-4xl font-bold text-red-800">No data!</h1>
-{% else %}
-<div class="w-full py-8 space-y-8">
-  {% for student in students %}
-  <div class="flex justify-between p-4 border rounded-lg">
-    <a class="font-medium"
-    href="/student/{{ student.id }}"
-    >{{ student.first_name }}</a>
-    <div class="flex space-x-4">
-      <a
-        class="px-2 py-1 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
-        href="/student/update/{{ student.id }}"
-      >
-        Update
-      </a>
-      <button
-        class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium"
-        onClick="deleteStudent({{ student.id }})"
-      >
-        Delete
-      </button>
-    </div>
+{% extends "layout.html" %} {% set active_page = "students" %}
+{% block title %}
+  SSIS - Home
+{% endblock title %}
+{% block content %}
+  <div class="py-8">
+    <a href="{{ url_for('student.add_student',) }}" class="font-medium">Add Student</a>
   </div>
-  {% endfor %}
-</div>
-
-<div class="flex justify-center space-x-4">
-  <a
-    href="/student?page={{ page - 1 }}"
-    class="{{'pointer-events-none opacity-50' if not has_previous_page }}"
-    >Previous</a
-  >
-  <a
-    href="/student?page={{ page + 1 }}"
-    class="{{'pointer-events-none opacity-50' if not has_next_page }}"
-    >Next</a
-  >
-</div>
-
-{% endif %} {% block javascript %}
-<script type="text/javascript">
+  <form class="flex space-x-4">
+    <input name="query"
+           type="text"
+           class="w-full p-2 border rounded-lg"
+           value="{{ query }}"
+           placeholder="Search..." />
+    <select class="w-full p-2 border rounded" name="college_id">
+      <option value="">Select College</option>
+      {% for college in colleges %}
+        <option value="{{ college.id }}"
+                selected="{{ 'selected' if college_id == college.id }}">{{ college.name }}</option>
+      {% endfor %}
+    </select>
+    <select class="w-full p-2 border rounded" name="course_id">
+      <option value="">Select Course</option>
+      {% for course in courses %}
+        <option value="{{ course.id }}"
+                selected="{{ 'selected' if course_id == course.id }}">{{ course.name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Search</button>
+  </form>
+  {% if students | length == 0 %}
+    <h1 class="text-4xl font-bold text-red-800">No data!</h1>
+  {% else %}
+    <div class="w-full py-8 space-y-8">
+      {% for student in students %}
+        <div class="flex justify-between p-4 border rounded-lg">
+          <a class="font-medium"
+             href="{{ url_for('student.student', id=student.id) }}">{{ student.first_name }}</a>
+          <div class="flex space-x-4">
+            <a class="px-2 py-1 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
+               href="{{ url_for('student.update_student', id=student.id) }}">Update</a>
+            <button id="delete-student"
+                    data-id="{{ student.id }}"
+                    class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium">
+              Delete
+            </button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="flex justify-center space-x-4">
+      <a href="{{ url_for('student.students', page=page - 1) }}"
+         class="{{ 'pointer-events-none opacity-50' if not has_previous_page }}">Previous</a>
+      <a href="{{ url_for('student.students', page=page + 1) }}"
+         class="{{ 'pointer-events-none opacity-50' if not has_next_page }}">Next</a>
+    </div>
+  {% endif %}
+  {% block javascript %}
+    <script type="text/javascript">
   const collegeSelect = document.querySelector("select[name=college_id]");
   const courseSelect = document.querySelector("select[name=course_id]");
-
-   collegeSelect.addEventListener("change", (e) => {
+  collegeSelect.addEventListener("change", (e) => {
     getCourses(e.target.value);
   });
-  
-
   function getCourses(collegId) {
-      fetch(`/course/college/${collegId}`, {
-        method: "GET",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data && data.length > 0) {
-            courseSelect.innerHTML = "<option value=''>Select Course</option>";
-            data.forEach((course) => {
-              courseSelect.innerHTML += `<option value="${course.id}">${course.name}</option>`;
-            });
-          }
-        })
-        .catch((error) => console.log(error));
-    }
-
-    function deleteStudent(id) {
-        fetch(`/student/${id}`, {
-          method: "DELETE",
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              window.location.reload();
-            }
+    fetch(`/course/college/${collegId}`, { method: "GET" })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          courseSelect.innerHTML = "<option value=''>Select Course</option>";
+          data.forEach((course) => {
+            courseSelect.innerHTML += `<option value="${course.id}">${course.name}</option>`;
           });
-      }
-        
-</script>
-{% endblock %} {% endblock %}
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+
+  function deleteStudent(id) {
+    fetch(`/student/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          window.location.reload();
+        }
+        Ø;
+      });
+  }
+
+  const deleteButtons = document.querySelectorAll("#delete-student");
+
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const id = e.target.dataset.id;
+      deleteStudent(id);
+    });
+  });
+    </script>
+  {% endblock javascript %}
+{% endblock content %}
