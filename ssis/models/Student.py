@@ -1,5 +1,5 @@
-import enum
 import datetime
+import enum
 
 from .. import mysql
 
@@ -40,7 +40,7 @@ class Student():
         if self.id is None:
             return "Cannot find without an ID"
 
-        SELECT_SQL = f"SELECT student.*, college.id AS college_id, college.name AS name, course.id AS course_id, course.name AS course_name FROM {self.__tablename__} JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id WHERE student.id=%s"
+        SELECT_SQL = f"SELECT student.*, college.id AS college_id, college.name AS college_name, course.id AS course_id, course.name AS course_name FROM {self.__tablename__} JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id WHERE student.id=%s"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL, (self.id,))
         student = cur.fetchone()
@@ -56,7 +56,7 @@ class Student():
             'created_at': student.get('created_at').strftime("%Y-%m-%d %H:%M:%S"),
             'college': {
                 'id': student.get('college_id'),
-                'name': student.get('name'),
+                'name': student.get('college_name'),
             },
             'course': {
                 'id': student.get('course_id'),
@@ -65,27 +65,37 @@ class Student():
 
         }
 
-    def find_all(self, page_number: int, page_size: int, query: str, college_id: str, course_id: str):
+    def find_all(self, page_number: int, page_size: int, query: str, college_id: str, course_id: str, gender: str):
         offset = (page_number - 1) * page_size
 
-        sql_filter = []
         filter_params = []
+        where_clause = ""
 
         if query:
-            sql_filter.append("first_name LIKE %s")
+            where_clause += "student_id LIKE %s OR first_name LIKE %s OR last_name LIKE %s"
+            filter_params.append(f"%{query}%")
+            filter_params.append(f"%{query}%")
             filter_params.append(f"%{query}%")
 
         if college_id:
-            sql_filter.append("college_id = %s")
+            if (where_clause):
+                where_clause += " AND"
+            where_clause += " student.college_id = %s"
             filter_params.append(college_id)
 
         if course_id:
-            sql_filter.append("course_id = %s")
+            if (where_clause):
+                where_clause += " AND"
+            where_clause += " student.course_id = %s"
             filter_params.append(course_id)
 
-        where_clause = " AND ".join(sql_filter) if sql_filter else ""
+        if gender:
+            if (where_clause):
+                where_clause += " AND"
+            where_clause += " gender = %s"
+            filter_params.append(gender)
 
-        SELECT_SQL = f"SELECT * FROM {self.__tablename__}"
+        SELECT_SQL = f"SELECT student.*, college.name AS college_name, course.name AS course_name FROM {self.__tablename__} JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id"
 
         if where_clause:
             SELECT_SQL += f" WHERE {where_clause}"
@@ -94,6 +104,7 @@ class Student():
         params = filter_params + [page_size, offset]
 
         cur = mysql.new_cursor(dictionary=True)
+
         cur.execute(SELECT_SQL, params)
 
         data = cur.fetchall()
@@ -112,7 +123,8 @@ class Student():
         return {
             'data': data,
             'has_previous_page': has_previous_page,
-            'has_next_page': has_next_page
+            'has_next_page': has_next_page,
+            'total_count': total_count
         }
 
     def insert(self) -> str:

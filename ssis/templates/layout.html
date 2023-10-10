@@ -35,28 +35,28 @@
         </li>
         <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'home' else '' }}">
           <a href="{{ url_for('main.dashboard',) }}"
-             class="flex items-center px-6 py-4 space-x-4 text-lg {{ 'text-blue-500 font-bold' if active_page == 'home' else 'text-gray-700' }}">
+             class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'home' else 'text-gray-700' }}">
             <i class="fa-solid fa-house"></i>
             <p class="font-display">Home</p>
           </a>
         </li>
-        <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'students' else '' }}">
+        <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'student' else '' }}">
           <a href="{{ url_for('student.students',) }}"
-             class="flex items-center px-6 py-4 space-x-4 text-lg {{ 'text-blue-500 font-bold' if active_page == 'students' else 'text-gray-700' }}">
+             class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'student' else 'text-gray-700' }}">
             <i class="fa-solid fa-users"></i>
             <p class="font-display">Students</p>
           </a>
         </li>
         <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'colleges' else '' }}">
           <a href="{{ url_for('college.colleges',) }}"
-             class="flex items-center px-6 py-4 space-x-4 text-lg {{ 'text-blue-500 font-bold' if active_page == 'colleges' else 'text-gray-700' }}">
+             class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'colleges' else 'text-gray-700' }}">
             <i class="fa-solid fa-building-columns"></i>
             <p class="font-display">Colleges</p>
           </a>
         </li>
       </ul>
     </aside>
-    <div class="w-full px-4 py-24 bg-blue-50">
+    <div class="w-full px-4 py-24 bg-gray-50">
       {% block content %}
       {% endblock content %}
     </div>

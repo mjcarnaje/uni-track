@@ -1,73 +1,259 @@
-{% extends "layout.html" %} {% set active_page = "students" %}
-{% block title %}
-  SSIS - Home
-{% endblock title %}
-{% block content %}
-  <div class="py-8">
-    <a href="{{ url_for('student.add_student',) }}" class="font-medium">Add Student</a>
-  </div>
-  <form class="flex space-x-4">
-    <input name="query"
-           type="text"
-           class="w-full p-2 border rounded-lg"
-           value="{{ query }}"
-           placeholder="Search..." />
-    <select class="w-full p-2 border rounded" name="college_id">
-      <option value="">Select College</option>
-      {% for college in colleges %}
-        <option value="{{ college.id }}"
-                selected="{{ 'selected' if college_id == college.id }}">{{ college.name }}</option>
-      {% endfor %}
-    </select>
-    <select class="w-full p-2 border rounded" name="course_id">
-      <option value="">Select Course</option>
-      {% for course in courses %}
-        <option value="{{ course.id }}"
-                selected="{{ 'selected' if course_id == course.id }}">{{ course.name }}</option>
-      {% endfor %}
-    </select>
-    <button type="submit">Search</button>
-  </form>
-  {% if students | length == 0 %}
-    <h1 class="text-4xl font-bold text-red-800">No data!</h1>
-  {% else %}
-    <div class="w-full py-8 space-y-8">
-      {% for student in students %}
-        <div class="flex justify-between p-4 border rounded-lg">
-          <a class="font-medium"
-             href="{{ url_for('student.student', id=student.id) }}">{{ student.first_name }}</a>
-          <div class="flex space-x-4">
-            <a class="px-2 py-1 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
-               href="{{ url_for('student.update_student', id=student.id) }}">Update</a>
-            <button id="delete-student"
-                    data-id="{{ student.id }}"
-                    class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium">
-              Delete
-            </button>
-          </div>
+{% extends "layout.html" %} {% set active_page = "student" %} {% block title %}
+SSIS - Home {% endblock title %} {% block content %}
+<dialog data-modal class="w-full max-w-lg p-8 rounded-lg">
+  <form id="filter-form" class="grid w-full space-y-4">
+    <div class="col-span-2">
+      <label
+        class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
+        >Gender</label
+      >
+      <div class="relative">
+        <select
+          class="w-full col-span-2 px-4 py-3 bg-white border-2 rounded-lg appearance-none"
+          name="gender"
+        >
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+        <div
+          class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none"
+        >
+          <svg
+            class="w-4 h-4 fill-current"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+            />
+          </svg>
         </div>
-      {% endfor %}
+      </div>
     </div>
-    <div class="flex justify-center space-x-4">
-      <a href="{{ url_for('student.students', page=page - 1) }}"
-         class="{{ 'pointer-events-none opacity-50' if not has_previous_page }}">Previous</a>
-      <a href="{{ url_for('student.students', page=page + 1) }}"
-         class="{{ 'pointer-events-none opacity-50' if not has_next_page }}">Next</a>
+    <div class="col-span-2">
+      <label
+        class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
+        >College</label
+      >
+      <div class="relative">
+        <select
+          class="w-full col-span-2 px-4 py-3 bg-white border-2 rounded-lg appearance-none"
+          name="college_id"
+        >
+          <option value="">Select College</option>
+          {% for college in colleges %}
+          <option
+            value="{{ college.id }}"
+            selected="{{ 'selected' if college.id == college_id }}"
+          >
+            {{ college.name }}
+          </option>
+          {% endfor %}
+        </select>
+        <div
+          class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none"
+        >
+          <svg
+            class="w-4 h-4 fill-current"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+            />
+          </svg>
+        </div>
+      </div>
     </div>
+    <div class="col-span-2">
+      <label
+        class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
+        >Course</label
+      >
+      <div class="relative">
+        <select
+          class="w-full col-span-2 px-4 py-3 bg-white border-2 rounded-lg appearance-none"
+          name="course_id"
+        >
+          <option value="">Select Course</option>
+          <!-- {% for course in courses %}<option value="{{ course.id }}">{{ course.name }}</option>{% endfor %} -->
+        </select>
+        <div
+          class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none"
+        >
+          <svg
+            class="w-4 h-4 fill-current"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <button
+      type="submit"
+      class="col-span-2 px-4 py-4 font-bold tracking-wide text-white bg-blue-500 rounded-lg hover:bg-blue-600 font-body"
+    >
+      Filter
+    </button>
+  </form>
+</dialog>
+<form class="grid w-full space-x-4">
+  <div class="flex items-center justify-between w-full">
+    <div class="relative flex items-center w-full max-w-lg">
+      <div class="absolute flex items-center justify-center w-12 h-full">
+        <i class="text-gray-700 fa-solid fa-magnifying-glass"></i>
+      </div>
+      <input
+        name="query"
+        type="text"
+        class="w-full py-3 pl-12 border-2 rounded-lg"
+        value="{{ query }}"
+        placeholder="Search by student id, first name, last name,"
+      />
+    </div>
+    <button
+      type="button"
+      data-open-modal
+      class="px-4 py-2 font-semibold tracking-wide text-white bg-blue-500 rounded-lg hover:bg-blue-600 font-body"
+    >
+      <i class="mr-1 fa-solid fa-filter"></i>
+      Filter
+    </button>
+  </div>
+</form>
+<div class="flex gap-3 py-4">
+  {% for filter in filters %}
+  <div class="flex items-center gap-4 px-4 py-2 bg-blue-500 rounded-lg">
+    <p class="text-white">{{ filter.name }}</p>
+    <button type="button" id="delete-filter" data-key="{{ filter.key }}">
+      <i class="text-white pointer-events-none fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="py-4">
+  {% if query %}
+  <p>Search result for '{{query}}' ({{ total_count }})</p>
+  {% else %}
+  <p>Showing {{ students | length }} of {{ total_students }} students</p>
   {% endif %}
-  {% block javascript %}
-    <script type="text/javascript">
+</div>
+
+<div class="w-full py-8 space-y-8">
+  {% if students | length == 0 %}
+  <h1 class="text-4xl font-bold text-red-800">No data!</h1>
+  {% else %}
+  <div class="grid grid-cols-2 gap-4">
+    {% for student in students %}
+    <div
+      class="flex flex-col justify-between grid-cols-1 gap-8 p-4 bg-white border rounded-lg shadow-sm"
+    >
+      <div class="flex gap-4">
+        <img
+          src="{{ url_for('static', filename='uploads/' + student.photo) }}"
+          alt="{{ student.photo }}"
+          class="object-cover rounded w-28 h-28"
+          height="auto"
+          width="auto"
+        />
+        <div>
+          <h3 class="text-lg font-medium text-gray-700">
+            {{ student.first_name }} {{ student.last_name }}
+          </h3>
+          <h3 class="text-gray-700">{{ student.student_id }}</h3>
+          <h3 class="text-gray-700">{{ student.college_name }}</h3>
+          <h3 class="text-gray-700">{{ student.course_name }}</h3>
+        </div>
+      </div>
+      <div class="flex w-full gap-4">
+        <a
+          class="flex items-center justify-center w-full py-3 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
+          href="{{ url_for('student.update_student', id=student.id) }}"
+          >Update</a
+        >
+        <button
+          id="delete-student"
+          data-id="{{ student.id }}"
+          class="w-full py-3 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="flex justify-center space-x-4">
+    <a
+      href="{{ url_for('student.students', page=page - 1) }}"
+      class="{{ 'pointer-events-none opacity-50' if not has_previous_page }}"
+      >Previous</a
+    >
+    <a
+      href="{{ url_for('student.students', page=page + 1) }}"
+      class="{{ 'pointer-events-none opacity-50' if not has_next_page }}"
+      >Next</a
+    >
+  </div>
+  {% endif %}
+</div>
+{% block javascript %}
+<script type="text/javascript">
   const collegeSelect = document.querySelector("select[name=college_id]");
   const courseSelect = document.querySelector("select[name=course_id]");
+  const openModal = document.querySelector("[data-open-modal]");
+  const modal = document.querySelector("[data-modal]");
+  const filterForm = document.querySelector("#filter-form");
+  const deleteFilterButtons = document.querySelectorAll("#delete-filter");
+
+  openModal.addEventListener("click", () => {
+    modal.showModal();
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.close();
+    }
+  });
+
+  filterForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(formData);
+    url.search = params;
+    window.location.href = url;
+  });
+
+  deleteFilterButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const key = e.target.dataset.key;
+      const url = new URL(window.location.href);
+      const params = new URLSearchParams(url.search);
+      params.delete(key);
+      url.search = params;
+      window.location.href = url;
+    });
+  });
+
   collegeSelect.addEventListener("change", (e) => {
     getCourses(e.target.value);
   });
+
   function getCourses(collegId) {
-    fetch(`/course/college/${collegId}`, { method: "GET" })
+    fetch(`/course/college/${collegId}`, {
+      method: "GET",
+    })
       .then((response) => response.json())
       .then((data) => {
         if (data && data.length > 0) {
-          courseSelect.innerHTML = "<option value=''>Select Course</option>";
+          courseSelect.innerHTML = "";
           data.forEach((course) => {
             courseSelect.innerHTML += `<option value="${course.id}">${course.name}</option>`;
           });
@@ -97,6 +283,5 @@
       deleteStudent(id);
     });
   });
-    </script>
-  {% endblock javascript %}
-{% endblock content %}
+</script>
+{% endblock javascript %} {% endblock content %}

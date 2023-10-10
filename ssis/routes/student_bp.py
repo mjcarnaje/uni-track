@@ -16,27 +16,63 @@ student_bp = Blueprint('student', __name__)
 @student_bp.route('/')
 def students():
     page = request.args.get('page', 1, type=int)
+
     query = request.args.get('query', '', type=str)
     college_id = request.args.get('college_id', '', type=int)
     course_id = request.args.get('course_id', '', type=int)
+    gender = request.args.get('gender', '', type=str)
 
     students_query = Student().find_all(
         page_number=page,
         page_size=2,
         query=query,
         college_id=college_id,
-        course_id=course_id
+        course_id=course_id,
+        gender=gender
     )
 
     students = students_query.get("data")
     has_previous_page = students_query.get("has_previous_page")
     has_next_page = students_query.get("has_next_page")
+    total_count = students_query.get("total_count")
 
     colleges = College().find_all().get("data")
 
     courses = Course().find_by_college_id(college_id) if college_id else []
 
-    return render_template("students.html", students=students, colleges=colleges, courses=courses, page=page, has_previous_page=has_previous_page, has_next_page=has_next_page, query=query, college_id=college_id, course_id=course_id)
+    filters = []
+
+    if gender:
+        filters.append({
+            "key": "gender",
+            "value": gender,
+            "name": gender
+        })
+
+    if college_id:
+        filters.append({
+            "key": "college_id",
+            "value": college_id,
+            "name": colleges[colleges.index(next(filter(lambda college: college.get("id") == college_id, colleges)))].get("name")
+        })
+
+    if college_id and course_id:
+        filters.append({
+            "key": "course_id",
+            "value": course_id,
+            "name": courses[courses.index(next(filter(lambda course: course.get("id") == course_id, courses)))].get("name")
+        })
+
+    return render_template("students.html",
+                           students=students,
+                           colleges=colleges,
+                           courses=courses,
+                           page=page,
+                           has_previous_page=has_previous_page,
+                           has_next_page=has_next_page,
+                           query=query,
+                           total_count=total_count,
+                           filters=filters)
 
 
 @student_bp.route("/add", methods=["GET", "POST"])
