@@ -580,10 +580,6 @@ video {
   margin-bottom: 1rem;
 }
 
-.mr-2 {
-  margin-right: 0.5rem;
-}
-
 .mr-1 {
   margin-right: 0.25rem;
 }
@@ -604,8 +600,8 @@ video {
   display: none;
 }
 
-.h-32 {
-  height: 8rem;
+.h-28 {
+  height: 7rem;
 }
 
 .h-4 {
@@ -620,10 +616,6 @@ video {
   height: 100%;
 }
 
-.h-28 {
-  height: 7rem;
-}
-
 .min-h-screen {
   min-height: 100vh;
 }
@@ -632,8 +624,8 @@ video {
   width: 3rem;
 }
 
-.w-32 {
-  width: 8rem;
+.w-28 {
+  width: 7rem;
 }
 
 .w-4 {
@@ -648,12 +640,12 @@ video {
   width: 100%;
 }
 
-.w-28 {
-  width: 7rem;
-}
-
 .max-w-3xl {
   max-width: 48rem;
+}
+
+.max-w-\[120px\] {
+  max-width: 120px;
 }
 
 .max-w-lg {
@@ -674,12 +666,12 @@ video {
           appearance: none;
 }
 
-.grid-cols-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .flex-col {
@@ -702,16 +694,16 @@ video {
   gap: 0.5rem;
 }
 
-.gap-8 {
-  gap: 2rem;
-}
-
 .gap-3 {
   gap: 0.75rem;
 }
 
 .gap-4 {
   gap: 1rem;
+}
+
+.gap-8 {
+  gap: 2rem;
 }
 
 .space-x-4 > :not([hidden]) ~ :not([hidden]) {
@@ -730,10 +722,6 @@ video {
   --tw-space-y-reverse: 0;
   margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(2rem * var(--tw-space-y-reverse));
-}
-
-.overflow-hidden {
-  overflow: hidden;
 }
 
 .rounded {
@@ -797,16 +785,6 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-red-100 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(254 226 226 / var(--tw-bg-opacity));
-}
-
-.bg-blue-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(147 197 253 / var(--tw-bg-opacity));
 }
 
 .fill-current {
@@ -880,11 +858,6 @@ video {
   padding-bottom: 2rem;
 }
 
-.py-5 {
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
-}
-
 .pb-4 {
   padding-bottom: 1rem;
 }
@@ -893,16 +866,12 @@ video {
   padding-left: 3rem;
 }
 
-.text-center {
-  text-align: center;
+.font-body {
+  font-family: Inter;
 }
 
 .font-display {
   font-family: "Mochiy Pop P One";
-}
-
-.font-body {
-  font-family: Inter;
 }
 
 .text-3xl {
@@ -915,6 +884,11 @@ video {
   line-height: 2.5rem;
 }
 
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
@@ -923,11 +897,6 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
 }
 
 .font-bold {
@@ -952,10 +921,6 @@ video {
 
 .tracking-wide {
   letter-spacing: 0.025em;
-}
-
-.tracking-tighter {
-  letter-spacing: -0.05em;
 }
 
 .text-blue-500 {

@@ -1,64 +1,51 @@
-{% extends "layout.html" %} {% set active_page = "colleges" %} {% block title %}
-SSIS - Home {% endblock title %} {% block content %}
-<div class="p-8 border rounded-md">
-  <h2 class="text-3xl font-bold">Colleges</h2>
-</div>
-<div class="py-8">
-  <a href="{{ url_for('college.add_college',) }}" class="font-medium"
-    >Add College</a
-  >
-</div>
-<form>
-  <input
-    name="query"
-    type="text"
-    class="w-full p-2 border rounded-lg"
-    value="{{ query }}"
-    placeholder="Search..."
-  />
-</form>
-{% if colleges | length == 0 %}
-<h1 class="text-4xl font-bold text-red-800">No data!</h1>
-{% else %}
-<div class="w-full py-8 space-y-8">
-  {% for college in colleges %}
-  <div class="flex justify-between p-4 border rounded-lg">
-    <a
-      class="font-medium"
-      href="{{ url_for('college.college', id=college.id) }}"
-      >{{ college.name }}</a
-    >
-    <div class="space-x-4">
-      <a
-        class="px-2 py-1 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
-        href="{{ url_for('college.update_college', id=college.id) }}"
-        >Update</a
-      >
-      <button
-        id="delete-college"
-        data-id="{{ college.id }}"
-        class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium"
-      >
-        Delete
-      </button>
-    </div>
+{% set active_page = "college" %}
+{% extends "layout.html" %}
+{% block title %}
+  SSIS - Home
+{% endblock title %}
+{% block content %}
+  <div class="p-8 border rounded-md">
+    <h2 class="text-3xl font-bold">Colleges</h2>
   </div>
-  {% endfor %}
-</div>
-<div class="flex justify-center space-x-4">
-  <a
-    href="{{ url_for('college.colleges', page=page - 1) }}"
-    class="{{ 'pointer-events-none opacity-50' if not has_previous_page }}"
-    >Previous</a
-  >
-  <a
-    href="{{ url_for('college.colleges', page=page + 1) }}"
-    class="{{ 'pointer-events-none opacity-50' if not has_next_page }}"
-    >Next</a
-  >
-</div>
-{% endif %} {% block javascript %}
-<script type="text/javascript">
+  <div class="py-8">
+    <a href="{{ url_for('college.add_college',) }}" class="font-medium">Add College</a>
+  </div>
+  <form>
+    <input name="query"
+           type="text"
+           class="w-full p-2 border rounded-lg"
+           value="{{ query }}"
+           placeholder="Search..." />
+  </form>
+  {% if colleges | length == 0 %}
+    <h1 class="text-4xl font-bold text-red-800">No data!</h1>
+  {% else %}
+    <div class="w-full py-8 space-y-8">
+      {% for college in colleges %}
+        <div class="flex justify-between p-4 border rounded-lg">
+          <a class="font-medium"
+             href="{{ url_for('college.college', id=college.id) }}">{{ college.name }}</a>
+          <div class="space-x-4">
+            <a class="px-2 py-1 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
+               href="{{ url_for('college.update_college', id=college.id) }}">Update</a>
+            <button id="delete-college"
+                    data-id="{{ college.id }}"
+                    class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium">
+              Delete
+            </button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="flex justify-center space-x-4">
+      <a href="{{ url_for('college.colleges', page=page - 1) }}"
+         class="{{ 'pointer-events-none opacity-50' if not has_previous_page }}">Previous</a>
+      <a href="{{ url_for('college.colleges', page=page + 1) }}"
+         class="{{ 'pointer-events-none opacity-50' if not has_next_page }}">Next</a>
+    </div>
+  {% endif %}
+  {% block javascript %}
+    <script type="text/javascript">
   function deleteCollege(id) {
     fetch(`/college/${id}`, {
       method: "DELETE",
@@ -79,5 +66,6 @@ SSIS - Home {% endblock title %} {% block content %}
       deleteCollege(id);
     });
   });
-</script>
-{% endblock javascript %} {% endblock content %}
+    </script>
+  {% endblock javascript %}
+{% endblock content %}

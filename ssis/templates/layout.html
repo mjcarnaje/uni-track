@@ -10,8 +10,7 @@
     <title>
       {% block title %}
         SSIS - Simple Student Information System
-      {% endblock
-      title %}
+      {% endblock title %}
     </title>
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
             integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
@@ -33,9 +32,9 @@
         <li class="flex items-center justify-center py-6">
           <h1 class="text-4xl font-extrabold text-blue-500 font-display">SSIS</h1>
         </li>
-        <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'home' else '' }}">
+        <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == '' else '' }}">
           <a href="{{ url_for('main.dashboard',) }}"
-             class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'home' else 'text-gray-700' }}">
+             class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == '' else 'text-gray-700' }}">
             <i class="fa-solid fa-house"></i>
             <p class="font-display">Home</p>
           </a>
@@ -47,9 +46,9 @@
             <p class="font-display">Students</p>
           </a>
         </li>
-        <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'colleges' else '' }}">
+        <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'college' else '' }}">
           <a href="{{ url_for('college.colleges',) }}"
-             class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'colleges' else 'text-gray-700' }}">
+             class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'college' else 'text-gray-700' }}">
             <i class="fa-solid fa-building-columns"></i>
             <p class="font-display">Colleges</p>
           </a>
