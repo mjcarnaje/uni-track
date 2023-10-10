@@ -640,6 +640,14 @@ video {
   width: 100%;
 }
 
+.w-\[80\%\] {
+  width: 80%;
+}
+
+.w-\[70\%\] {
+  width: 70%;
+}
+
 .max-w-3xl {
   max-width: 48rem;
 }
@@ -858,12 +866,21 @@ video {
   padding-bottom: 2rem;
 }
 
+.py-12 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
 .pb-4 {
   padding-bottom: 1rem;
 }
 
 .pl-12 {
   padding-left: 3rem;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .font-body {
@@ -899,6 +916,16 @@ video {
   line-height: 1rem;
 }
 
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -917,6 +944,14 @@ video {
 
 .uppercase {
   text-transform: uppercase;
+}
+
+.leading-5 {
+  line-height: 1.25rem;
+}
+
+.leading-loose {
+  line-height: 2;
 }
 
 .tracking-wide {
