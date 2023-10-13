@@ -1,91 +1,68 @@
-{% extends "layout.html" %} {% block title %} Update College {% endblock title
-%} {% block content %}
-<div class="max-w-3xl p-8 mx-auto bg-white rounded-lg shadow-sm">
-  <form
-    class="grid w-full grid-cols-2 gap-8 py-4"
-    method="post"
-    enctype="multipart/form-data"
-  >
-    <div
-      class="flex flex-col items-center justify-center col-span-2 pb-4 space-y-8"
-    >
-      <div
-        id="photo-container"
-        class="flex items-center justify-center w-48 h-48 rounded-full bg-slate-300"
-      >
-        {% if college.photo %}
-        <img
-          src="{{ url_for('static', filename='uploads/' + college.photo) }}"
-          class="w-48 h-48 rounded-full"
-          height="auto"
-          width="auto"
-          alt="College photo"
-        />
-        {% else %}
-        <i class="text-7xl fa-solid fa-building-columns text-slate-600"></i>
-        {% endif %}
-      </div>
-      <div class="flex items-center gap-2">
-        <div class="relative">
-          <button
-            type="button"
-            id="add-photo"
-            class="px-4 py-2 text-white bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600"
-          >
-            Add College Photo
-          </button>
-          <input
-            id="college-photo"
-            type="file"
-            name="photo"
-            accept="image/png, image/jpeg, image/jpg"
-            class="hidden"
-            value="{{ college.photo }}"
-          />
+{% extends "layout.html" %} {% set active_page = "college" %}
+{% block title %}
+  Update College
+{% endblock title %}
+{% block content %}
+  <div class="max-w-3xl p-8 mx-auto bg-white rounded-lg shadow-sm">
+    <form class="grid w-full grid-cols-2 gap-8 py-4"
+          method="post"
+          enctype="multipart/form-data">
+      <div class="flex flex-col items-center justify-center col-span-2 pb-4 space-y-8">
+        <div id="photo-container"
+             class="flex items-center justify-center w-48 h-48 rounded-full bg-slate-300">
+          {% if college.photo %}
+            <img src="{{ url_for('static', filename='uploads/' + college.photo) }}"
+                 class="w-48 h-48 rounded-full"
+                 height="auto"
+                 width="auto"
+                 alt="College photo" />
+          {% else %}
+            <i class="text-7xl fa-solid fa-building-columns text-slate-600"></i>
+          {% endif %}
         </div>
-        <button
-          type="button"
-          id="remove-photo"
-          class="hidden px-4 py-2 text-white bg-red-500 rounded-lg cursor-pointer hover:bg-red-600"
-        >
-          Remove College Photo
-        </button>
+        <div class="flex items-center gap-2">
+          <div class="relative">
+            <button type="button"
+                    id="add-photo"
+                    class="px-4 py-2 text-white bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600">
+              Add College Photo
+            </button>
+            <input id="college-photo"
+                   type="file"
+                   name="photo"
+                   accept="image/png, image/jpeg, image/jpg"
+                   class="hidden"
+                   value="{{ college.photo }}" />
+          </div>
+          <button type="button"
+                  id="remove-photo"
+                  class="hidden px-4 py-2 text-white bg-red-500 rounded-lg cursor-pointer hover:bg-red-600">
+            Remove College Photo
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="col-span-2">
-      <label
-        class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
-        >College Name</label
-      >
-      <input
-        class="w-full col-span-2 px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
-        placeholder="College name"
-        name="name"
-        value="{{ college.name }}"
-      />
-    </div>
-    <div class="col-span-2">
-      <label
-        class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
-        >College Code</label
-      >
-      <input
-        class="w-full col-span-2 px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
-        placeholder="College code"
-        name="code"
-        value="{{ college.code }}"
-      />
-    </div>
-    <button
-      type="submit"
-      class="col-span-2 px-4 py-4 text-white bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600"
-    >
-      Save
-    </button>
-  </form>
-</div>
-{% block javascript %}
-<script>
+      <div class="col-span-2">
+        <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">College Name</label>
+        <input class="w-full col-span-2 px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+               placeholder="College name"
+               name="name"
+               value="{{ college.name }}" />
+      </div>
+      <div class="col-span-2">
+        <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">College Code</label>
+        <input class="w-full col-span-2 px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+               placeholder="College code"
+               name="code"
+               value="{{ college.code }}" />
+      </div>
+      <button type="submit"
+              class="col-span-2 px-4 py-4 text-white bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600">
+        Save
+      </button>
+    </form>
+  </div>
+  {% block javascript %}
+    <script>
   const addPhoto = document.getElementById("add-photo");
   const removePhoto = document.getElementById("remove-photo");
   const photoContainer = document.getElementById("photo-container");
@@ -112,5 +89,6 @@
 
     reader.readAsDataURL(file);
   });
-</script>
-{% endblock javascript %} {% endblock content %}
+    </script>
+  {% endblock javascript %}
+{% endblock content %}
