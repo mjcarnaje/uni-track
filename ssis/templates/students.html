@@ -1,23 +1,23 @@
-{% extends "layout.html" %} {% set active_page = "student" %}
+{% extends "layout.html" %} {% set active_page = "student" %} {% set genders = ["Female", "Male", "Others"] %}
 {% block title %}
   Students
 {% endblock title %}
 {% block content %}
   <dialog data-modal class="w-full max-w-lg p-8 rounded-lg">
-    <form id="filter-form" class="grid w-full space-y-4">
+    <form id="filter-form"  class="grid w-full space-y-4">
       <div class="col-span-2">
         <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Gender</label>
         <div class="relative">
           <select class="w-full col-span-2 px-4 py-3 bg-white border-2 rounded-lg appearance-none"
-                  name="gender"
-                  autocomplete="off">
+                  name="gender">
             <option value="">Select Gender</option>
-            {# <option value="Male"
-                    selected="{{ 'selected' if filters.gender.name == 'Male' }}">Male</option>
-            <option value="Female"
-                    selected="{{ 'selected' if filters.gender.name == 'Female' }}">Female</option>
-            <option value="Other"
-                    selected="{{ 'selected' if filters.gender.name == 'Other' }}">Other</option> #}
+            {% for gender in genders %}
+              {% if gender == filters['gender']['name'] %}
+                <option value="{{ gender }}" selected>{{ gender }}</option>
+              {% else %}
+                <option value="{{ gender }}">{{ gender }}</option>
+              {% endif %}
+            {% endfor %}
           </select>
           <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
             <svg class="w-4 h-4 fill-current"
@@ -35,10 +35,11 @@
                   name="college_id">
             <option value="">Select College</option>
             {% for college in colleges %}
-              {# <option value="{{ college.id }}"
-                      selected="{{ 'selected' if filters['college_id']['id'] == college_id }}">
-                {{ college.name }}
-              </option> #}
+              {% if college['id'] == filters['college']['id'] %}
+                <option value="{{ college.id }}" selected>{{ college.name }}</option>
+              {% else %}
+                <option value="{{ college.id }}">{{ college.name }}</option>
+              {% endif %}
             {% endfor %}
           </select>
           <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
@@ -56,7 +57,13 @@
           <select class="w-full col-span-2 px-4 py-3 bg-white border-2 rounded-lg appearance-none"
                   name="course_id">
             <option value="">Select Course</option>
-            <!-- {% for course in courses %}<option value="{{ course.id }}">{{ course.name }}</option>{% endfor %} -->
+            {% for course in courses %}
+              {% if course['id'] == filters['course']['id'] %}
+                <option value="{{ course.id }}" selected>{{ course.name }}</option>
+              {% else %}
+                <option value="{{ course.id }}">{{ course.name }}</option>
+              {% endif %}
+            {% endfor %}
           </select>
           <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
             <svg class="w-4 h-4 fill-current"
@@ -94,13 +101,15 @@
     </div>
   </form>
   <div class="flex gap-3 py-4">
-    {% for key, value in filters_array %}
-      <div class="flex items-center gap-4 px-4 py-2 bg-blue-500 rounded-lg">
-        <p class="text-white">{{ value.name }}</p>
-        <button type="button" id="delete-filter" data-key="{{ key }}">
-          <i class="text-white pointer-events-none fa-solid fa-xmark"></i>
-        </button>
-      </div>
+    {% for key, value in filters.items() %}
+      {% if value %}
+        <div class="flex items-center gap-4 px-4 py-2 bg-blue-500 rounded-lg">
+          <p class="text-white">{{ value['name'] }}</p>
+          <button type="button" id="delete-filter" data-key="{{ value['key'] }}">
+            <i class="text-white pointer-events-none fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      {% endif %}
     {% endfor %}
   </div>
   <div class="flex items-center justify-between w-full py-4">
@@ -120,7 +129,7 @@
     {% else %}
       <div class="grid grid-cols-2 gap-4">
         {% for student in students %}
-          <div class="flex flex-col justify-between grid-cols-1 gap-8 p-4 bg-white border rounded-lg shadow-sm ">
+          <div class="flex flex-col justify-between grid-cols-1 gap-8 p-4 bg-white border rounded-lg shadow-sm">
             <div class="flex gap-4">
               {% if student['photo'] %}
                 <img src="{{ url_for('static', filename='uploads/' + student.photo) }}"
@@ -202,34 +211,44 @@
       const url = new URL(window.location.href);
       const params = new URLSearchParams(url.search);
       params.delete(key);
+      if (key === "college_id") {
+        params.delete("course_id");
+      }
       url.search = params;
       window.location.href = url;
     });
   });
 
-  collegeSelect.addEventListener("change", (e) => {
-    getCourses(e.target.value);
-  });
 
-  function getCourses(collegId) {
-    fetch(`/course/college/${collegId}`, {
+  function getCourses(collegeId) {
+    fetch(`/course/college/${collegeId}`, {
       method: "GET",
     })
       .then((response) => response.json())
       .then((data) => {
         courseSelect.innerHTML = `<option value="">Select Course</option>`;
         if (data && data.length > 0) {
-          courseSelectContainer.classList.remove("pointer-events-none", "opacity-50");
+          courseSelectContainer.classList.remove(
+            "pointer-events-none",
+            "opacity-50"
+          );
           data.forEach((course) => {
             courseSelect.innerHTML += `<option value="${course.id}">${course.name}</option>`;
           });
         } else {
           courseSelect.innerHTML = `<option value="">No course found</option>`;
-          courseSelectContainer.classList.add("pointer-events-none", "opacity-50");
+          courseSelectContainer.classList.add(
+            "pointer-events-none",
+            "opacity-50"
+          );
         }
       })
       .catch((error) => console.log(error));
   }
+
+  collegeSelect.addEventListener("change", (e) => {
+    getCourses(e.target.value);
+  });
 
   function deleteStudent(id) {
     fetch(`/student/${id}`, {

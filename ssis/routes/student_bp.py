@@ -39,10 +39,15 @@ def students():
     colleges = College().find_all().get("data")
 
     courses = []
-    filters = {}
+    filters = {
+        'gender': None,
+        'college': None,
+        'course': None
+    }
 
     if gender:
         filters["gender"] = {
+            'key': 'gender',
             'name': gender
         }
 
@@ -50,12 +55,12 @@ def students():
         college = colleges[colleges.index(
             next(filter(lambda college: college.get("id") == college_id, colleges)))]
         courses = College(id=college.get("id")).find_courses()
-        filters["college_id"] = college
+        filters["college"] = {'key': 'college_id', **college}
 
         if course_id:
             course = courses[courses.index(
                 next(filter(lambda course: course.get("id") == course_id, courses)))]
-            filters["course_id"] = course
+            filters["course"] = {'key': 'course_id', **course}
 
     return render_template("students.html",
                            students=students,
@@ -66,9 +71,8 @@ def students():
                            has_next_page=has_next_page,
                            query=query,
                            total_count=total_count,
+
                            filters=filters,
-                           filters_array=[(key, value)
-                                          for key, value in filters.items()]
                            )
 
 
