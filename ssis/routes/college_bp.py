@@ -22,8 +22,16 @@ def colleges():
     colleges = college_query.get("data")
     has_previous_page = college_query.get("has_previous_page")
     has_next_page = college_query.get("has_next_page")
+    total_count = college_query.get("total_count")
 
-    return render_template("colleges.html", colleges=colleges, page=page, has_previous_page=has_previous_page, has_next_page=has_next_page, query=query)
+    return render_template("colleges.html",
+                           colleges=colleges,
+                           page=page,
+                           has_previous_page=has_previous_page,
+                           has_next_page=has_next_page,
+                           total_count=total_count,
+                           query=query,
+                           )
 
 
 @college_bp.route("/add", methods=["GET", "POST"])

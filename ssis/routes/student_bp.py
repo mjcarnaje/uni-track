@@ -69,9 +69,8 @@ def students():
                            page=page,
                            has_previous_page=has_previous_page,
                            has_next_page=has_next_page,
-                           query=query,
                            total_count=total_count,
-
+                           query=query,
                            filters=filters,
                            )
 

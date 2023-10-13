@@ -28,28 +28,24 @@ class College():
     def find_all(self, page_number: int = 1, page_size: int = 100, query: str = None):
         offset = (page_number - 1) * page_size
 
-        sql_filter = []
         filter_params = []
+        where_clause = ""
 
         if query:
-            sql_filter.append("name LIKE %s")
+            where_clause += "name LIKE %s OR code LIKE %s"
             filter_params.append(f"%{query}%")
-
-            sql_filter.append("code LIKE %s")
             filter_params.append(f"%{query}%")
 
         SELECT_SQL = f"SELECT * FROM {self.__tablename__}"
 
-        where_clause = ""
-
-        if sql_filter:
-            where_clause = " OR ".join(sql_filter)
+        if where_clause:
             SELECT_SQL += f" WHERE {where_clause}"
 
         SELECT_SQL += " LIMIT %s OFFSET %s"
         params = filter_params + [page_size, offset]
 
         cur = mysql.new_cursor(dictionary=True)
+
         cur.execute(SELECT_SQL, params)
 
         data = cur.fetchall()
@@ -68,7 +64,8 @@ class College():
         return {
             'data': data,
             'has_previous_page': has_previous_page,
-            'has_next_page': has_next_page
+            'has_next_page': has_next_page,
+            'total_count': total_count,
         }
 
     def insert(self):
