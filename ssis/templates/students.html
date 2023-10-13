@@ -120,8 +120,10 @@
         <p class="font-medium">Showing {{ students | length }} of {{ total_students }} students</p>
       {% endif %}
     </div>
-    <a class="px-6 py-3 font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-       href="{{ url_for('student.add_student',) }}">Add Student</a>
+    {% if current_user.is_authenticated %}
+      <a class="px-6 py-3 font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+         href="{{ url_for('student.add_student',) }}">Add Student</a>
+    {% endif %}
   </div>
   <div class="w-full py-8 space-y-8">
     {% if students | length == 0 %}
@@ -150,15 +152,17 @@
                 <h3 class="text-gray-700">{{ student.course_name }}</h3>
               </div>
             </div>
-            <div class="flex w-full gap-4">
-              <a class="flex items-center justify-center w-full py-3 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
-                 href="{{ url_for('student.update_student', id=student.id) }}">Update</a>
-              <button id="delete-student"
-                      data-id="{{ student.id }}"
-                      class="w-full py-3 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium">
-                Delete
-              </button>
-            </div>
+            {% if current_user.is_authenticated %}
+              <div class="flex w-full gap-4">
+                <a class="flex items-center justify-center w-full py-3 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
+                   href="{{ url_for('student.update_student', id=student.id) }}">Update</a>
+                <button id="delete-student"
+                        data-id="{{ student.id }}"
+                        class="w-full py-3 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium">
+                  Delete
+                </button>
+              </div>
+            {% endif %}
           </div>
         {% endfor %}
       </div>

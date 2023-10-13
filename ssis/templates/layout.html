@@ -27,7 +27,7 @@
             crossorigin="anonymous"></script>
   </head>
   <body class="flex min-h-screen">
-    <aside class="w-full max-w-xs border-r shadow-md">
+    <aside class="flex flex-col justify-between w-full max-w-xs border-r shadow-md">
       <ul class="px-4 space-y-4">
         <li class="flex items-center justify-center py-6">
           <h1 class="text-4xl font-extrabold text-blue-500 font-display">SSIS</h1>
@@ -54,6 +54,35 @@
           </a>
         </li>
       </ul>
+      <div class="py-6">
+        <ul class="px-4 space-y-4">
+          {% if not current_user.is_authenticated %}
+            <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'signup' else '' }}">
+              <a href="{{ url_for('auth.signup',) }}"
+                 class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'signup' else 'text-gray-700' }}">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                <p class="font-display">Sign Up</p>
+              </a>
+            </li>
+            <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'login' else '' }}">
+              <a href="{{ url_for('auth.login',) }}"
+                 class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'login' else 'text-gray-700' }}">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                <p class="font-display">Login</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if current_user.is_authenticated %}
+            <li class="rounded-lg cursor-pointer hover:bg-gray-100">
+              <a href="{{ url_for('auth.logout',) }}"
+                 class="flex items-center px-6 py-4 space-x-4 text-md text-gray-700 }}">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                <p class="font-display">Logout</p>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
     </aside>
     <div class="w-full px-4 py-24 bg-gray-50">
       {% block content %}

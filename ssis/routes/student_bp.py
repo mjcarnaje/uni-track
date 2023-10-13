@@ -3,6 +3,7 @@ import os
 from flask import Blueprint
 from flask import current_app as app
 from flask import jsonify, redirect, render_template, request
+from flask_login import login_required
 
 from ssis.utils.upload_file import save_file
 
@@ -76,6 +77,7 @@ def students():
 
 
 @student_bp.route("/add", methods=["GET", "POST"])
+@login_required
 def add_student():
     if request.method == "POST":
         student = Student(
@@ -101,6 +103,7 @@ def add_student():
 
 
 @student_bp.route("/update/<int:id>", methods=["GET", "POST"])
+@login_required
 def update_student(id):
     student_query = Student(id=id)
     student = student_query.find_one()
@@ -131,6 +134,7 @@ def student(id):
     student_query = Student(id=id)
     student = student_query.find_one()
 
+    # TODO: Separate this into a different route
     if request.method == "DELETE":
         student_query.delete()
 

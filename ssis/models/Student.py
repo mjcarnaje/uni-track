@@ -1,7 +1,7 @@
 import datetime
 import enum
 
-from .. import mysql
+from ..db import mysql
 
 
 class Gender(enum.Enum):

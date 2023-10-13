@@ -1,4 +1,4 @@
-from .. import mysql
+from ..db import mysql
 
 
 class Course():

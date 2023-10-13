@@ -23,8 +23,10 @@
         <p class="font-medium">Showing {{ colleges | length }} of {{ total_students }} students</p>
       {% endif %}
     </div>
-    <a class="px-6 py-3 font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-       href="{{ url_for('college.add_college',) }}">Add College</a>
+    {% if current_user.is_authenticated %}
+      <a class="px-6 py-3 font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+         href="{{ url_for('college.add_college',) }}">Add College</a>
+    {% endif %}
   </div>
   <div class="w-full py-8 space-y-8">
     {% if colleges | length == 0 %}
@@ -49,15 +51,17 @@
                 <h3 class="text-lg font-medium text-gray-700">{{ college.code }}</h3>
               </div>
             </div>
-            <div class="flex w-full gap-4">
-              <a class="flex items-center justify-center w-full py-3 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
-                 href="{{ url_for('college.update_college', id=college.id) }}">Update</a>
-              <button id="delete-college"
-                      data-id="{{ college.id }}"
-                      class="w-full py-3 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium">
-                Delete
-              </button>
-            </div>
+            {% if current_user.is_authenticated %}
+              <div class="flex w-full gap-4">
+                <a class="flex items-center justify-center w-full py-3 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
+                   href="{{ url_for('college.update_college', id=college.id) }}">Update</a>
+                <button id="delete-college"
+                        data-id="{{ college.id }}"
+                        class="w-full py-3 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium">
+                  Delete
+                </button>
+              </div>
+            {% endif %}
           </div>
         {% endfor %}
       </div>

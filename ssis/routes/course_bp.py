@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, redirect, request
+from flask_login import login_required
 
 from ..models.Course import Course
 
@@ -6,6 +7,7 @@ course_bp = Blueprint('course', __name__)
 
 
 @course_bp.route('/', methods=['POST'])
+@login_required
 def courses():
     if request.method == "POST":
         course = Course(
@@ -21,6 +23,7 @@ def courses():
 
 
 @course_bp.route('/<int:id>', methods=['POST', 'GET', 'DELETE'])
+@login_required
 def course(id):
     course_query = Course(id=id)
 

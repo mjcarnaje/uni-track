@@ -1,9 +1,12 @@
 import os
-from flask import Blueprint, jsonify, render_template, request, redirect, current_app as app
+
+from flask import Blueprint
+from flask import current_app as app
+from flask import jsonify, redirect, render_template, request
+from flask_login import login_required
 
 from ..models.College import College
 from ..utils.upload_file import save_file
-
 
 college_bp = Blueprint('college', __name__)
 
@@ -35,6 +38,7 @@ def colleges():
 
 
 @college_bp.route("/add", methods=["GET", "POST"])
+@login_required
 def add_college():
     if request.method == "POST":
         college_query = College(
@@ -51,6 +55,7 @@ def add_college():
 
 
 @college_bp.route("/update/<int:id>", methods=["GET", "POST"])
+@login_required
 def update_college(id):
     college_query = College(id=id)
 
@@ -76,6 +81,7 @@ def college(id):
     college_query = College(id=id)
     college = college_query.find_one()
 
+    # TODO: Separate this into a different route
     if request.method == "DELETE":
         res = college_query.delete()
         print(f"result: {res}")
