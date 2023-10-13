@@ -1,12 +1,8 @@
-{% set active_page = "college" %}
-{% extends "layout.html" %}
+{% set active_page = "college" %} {% extends "layout.html" %}
 {% block title %}
   Colleges
 {% endblock title %}
 {% block content %}
-  <div class="p-8 border rounded-md">
-    <h2 class="text-3xl font-bold">Colleges</h2>
-  </div>
   <div class="py-8">
     <a href="{{ url_for('college.add_college',) }}" class="font-medium">Add College</a>
   </div>
@@ -17,33 +13,47 @@
            value="{{ query }}"
            placeholder="Search..." />
   </form>
-  {% if colleges | length == 0 %}
-    <h1 class="text-4xl font-bold text-red-800">No data!</h1>
-  {% else %}
-    <div class="w-full py-8 space-y-8">
-      {% for college in colleges %}
-        <div class="flex justify-between p-4 border rounded-lg">
-          <a class="font-medium"
-             href="{{ url_for('college.college', id=college.id) }}">{{ college.name }}</a>
-          <div class="space-x-4">
-            <a class="px-2 py-1 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
-               href="{{ url_for('college.update_college', id=college.id) }}">Update</a>
-            <button id="delete-college"
-                    data-id="{{ college.id }}"
-                    class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium">
-              Delete
-            </button>
+  <div class="w-full py-8 space-y-8">
+    {% if colleges | length == 0 %}
+      <h1 class="text-4xl font-bold text-red-800">No data!</h1>
+    {% else %}
+      <div class="grid grid-cols-2 gap-4">
+        {% for college in colleges %}
+          <div class="flex flex-col justify-between grid-cols-1 gap-8 p-4 bg-white border rounded-lg shadow-sm">
+            <div class="flex gap-4">
+              {% if college.photo %}
+                <img src="{{ url_for('static', filename='uploads/' + college.photo) }}"
+                     alt="{{ college.photo }}"
+                     class="object-cover rounded w-28 h-28"
+                     height="auto"
+                     width="auto" />
+              {% else %}
+              {% endif %}
+              <div>
+                <h3 class="text-lg font-medium text-gray-700">{{ college.name }}</h3>
+                <h3 class="text-lg font-medium text-gray-700">{{ college.code }}</h3>
+              </div>
+            </div>
+            <div class="flex w-full gap-4">
+              <a class="flex items-center justify-center w-full py-3 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
+                 href="{{ url_for('college.update_college', id=college.id) }}">Update</a>
+              <button id="delete-college"
+                      data-id="{{ college.id }}"
+                      class="w-full py-3 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium">
+                Delete
+              </button>
+            </div>
           </div>
-        </div>
-      {% endfor %}
-    </div>
-    <div class="flex justify-center space-x-4">
-      <a href="{{ url_for('college.colleges', page=page - 1) }}"
-         class="{{ 'pointer-events-none opacity-50' if not has_previous_page }}">Previous</a>
-      <a href="{{ url_for('college.colleges', page=page + 1) }}"
-         class="{{ 'pointer-events-none opacity-50' if not has_next_page }}">Next</a>
-    </div>
-  {% endif %}
+        {% endfor %}
+      </div>
+      <div class="flex justify-center space-x-4">
+        <a href="{{ url_for('college.colleges', page=page - 1) }}"
+           class="{{ 'pointer-events-none opacity-50' if not has_previous_page }} bg-blue-500 text-white w-full flex justify-center items-center max-w-[120px] py-2 rounded-lg">Previous</a>
+        <a href="{{ url_for('college.colleges', page=page + 1) }}"
+           class="{{ 'pointer-events-none opacity-50' if not has_next_page }} bg-blue-500 text-white w-full flex justify-center items-center max-w-[120px] py-2 rounded-lg">Next</a>
+      </div>
+    {% endif %}
+  </div>
   {% block javascript %}
     <script type="text/javascript">
   function deleteCollege(id) {
@@ -55,6 +65,8 @@
         if (data.success) {
           window.location.reload();
         }
+      }).catch((error) => {
+        alert(error);
       });
   }
 

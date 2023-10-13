@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}
-  {{ student.first_name }} {{ student.last_name }}
+  {{ student.first_name }} {{
+  student.last_name }}
 {% endblock title %}
 {% block content %}
-  <div>
+  <div class="max-w-2xl bg-white rounded-lg shadow-sm">
     <img src="{{ url_for('static', filename='uploads/' + student.photo) }}"
          alt="{{ student.photo }}"
          class="rounded"
@@ -13,7 +14,7 @@
     <h1>Name: {{ student.first_name }} {{ student.last_name }}</h1>
     <h1>Birthday: {{ student.birthday }}</h1>
     <h1>Gender: {{ student.gender }}</h1>
-    <h1>College: {{ student.college.name }}</h1>
-    <h1>Course: {{ student.course.name }}</h1>
+    <h1>College: {{ student.college_name }}</h1>
+    <h1>Course: {{ student.course_name }}</h1>
   </div>
 {% endblock content %}

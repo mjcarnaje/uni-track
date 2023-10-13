@@ -24,7 +24,7 @@ def students():
 
     students_query = Student().find_all(
         page_number=page,
-        page_size=12,
+        page_size=2,
         query=query,
         college_id=college_id,
         course_id=course_id,
@@ -38,30 +38,24 @@ def students():
 
     colleges = College().find_all().get("data")
 
-    courses = Course().find_by_college_id(college_id) if college_id else []
-
-    filters = []
+    courses = []
+    filters = {}
 
     if gender:
-        filters.append({
-            "key": "gender",
-            "value": gender,
-            "name": gender
-        })
+        filters["gender"] = {
+            'name': gender
+        }
 
     if college_id:
-        filters.append({
-            "key": "college_id",
-            "value": college_id,
-            "name": colleges[colleges.index(next(filter(lambda college: college.get("id") == college_id, colleges)))].get("name")
-        })
+        college = colleges[colleges.index(
+            next(filter(lambda college: college.get("id") == college_id, colleges)))]
+        courses = College(id=college.get("id")).find_courses()
+        filters["college_id"] = college
 
-    if college_id and course_id:
-        filters.append({
-            "key": "course_id",
-            "value": course_id,
-            "name": courses[courses.index(next(filter(lambda course: course.get("id") == course_id, courses)))].get("name")
-        })
+        if course_id:
+            course = courses[courses.index(
+                next(filter(lambda course: course.get("id") == course_id, courses)))]
+            filters["course_id"] = course
 
     return render_template("students.html",
                            students=students,
@@ -72,7 +66,10 @@ def students():
                            has_next_page=has_next_page,
                            query=query,
                            total_count=total_count,
-                           filters=filters)
+                           filters=filters,
+                           filters_array=[(key, value)
+                                          for key, value in filters.items()]
+                           )
 
 
 @student_bp.route("/add", methods=["GET", "POST"])
@@ -121,7 +118,7 @@ def update_student(id):
         return redirect("/student")
 
     colleges = College().find_all().get("data")
-    courses = College(id=student.get('college').get('id')).find_courses()
+    courses = College(id=student.get('college_id')).find_courses()
 
     return render_template("update-student.html", student=student, colleges=colleges, courses=courses)
 

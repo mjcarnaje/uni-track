@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "SHOW DATABASES;\nDROP DATABASE ssis;\nCREATE DATABASE ssis;\nuse ssis;\n-- Create the college table\nCREATE TABLE college (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(256) UNIQUE NOT NULL,\n    code VARCHAR(16) UNIQUE NOT NULL,\n    photo TEXT\n);\n\n-- Create the course table\nCREATE TABLE course (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(256) UNIQUE NOT NULL,\n    code VARCHAR(16) UNIQUE NOT NULL,\n    photo TEXT,\n    college_id INTEGER REFERENCES college(id)\n);\n\n-- Create the student table\nCREATE TABLE student (\n    id SERIAL PRIMARY KEY,\n    student_id VARCHAR(16) UNIQUE NOT NULL,\n    first_name VARCHAR(256) NOT NULL,\n    last_name VARCHAR(256) NOT NULL,\n    gender VARCHAR(16) NOT NULL,\n    birthday DATE NOT NULL,\n    photo TEXT,\n    created_at TIMESTAMP DEFAULT NOW(),\n    college_id INTEGER REFERENCES college(id),\n    course_id INTEGER REFERENCES course(id)\n);\n\n-- Insert dummy data into the college table\nINSERT INTO college (name, code, photo) VALUES\n    ('College A', 'CA001', NULL),\n    ('College B', 'CB002', NULL),\n    ('College C', 'CC003', NULL);\n\n-- Insert dummy data into the course table\nINSERT INTO course (name, code, photo, college_id) VALUES\n    ('Course 1', 'C001', NULL, 1),\n    ('Course 2', 'C002', NULL, 2),\n    ('Course 3', 'C003', NULL, 3);\n\n-- Insert dummy data into the student table\nINSERT INTO student (student_id, first_name, last_name, gender, birthday, photo, created_at, college_id, course_id) VALUES\n    ('S001', 'John', 'Doe', 'Male', '2000-01-01', NULL, '2023-10-03 12:00:00', 1, 1),\n    ('S002', 'Jane', 'Smith', 'Female', '2001-02-15', NULL, '2023-10-03 12:15:00', 2, 2),\n    ('S003', 'Mike', 'Johnson', 'Male', '1999-07-10', NULL, '2023-10-03 12:30:00', 3, 3);\n\n",
+    "content": "SHOW DATABASES;\nDROP DATABASE ssis;\nCREATE DATABASE ssis;\nuse ssis;\n-- Create the college table\nCREATE TABLE IF NOT EXISTS college (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(256) UNIQUE NOT NULL,\n    code VARCHAR(16) UNIQUE NOT NULL,\n    photo TEXT\n);\nCREATE TABLE IF NOT EXISTS course (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(256) UNIQUE NOT NULL,\n    code VARCHAR(16) UNIQUE NOT NULL,\n    photo TEXT,\n    college_id INTEGER REFERENCES college(id)\n);\nCREATE TABLE IF NOT EXISTS student (\n    id SERIAL PRIMARY KEY,\n    student_id VARCHAR(16) UNIQUE NOT NULL,\n    first_name VARCHAR(256) NOT NULL,\n    last_name VARCHAR(256) NOT NULL,\n    gender VARCHAR(16) NOT NULL,\n    birthday DATE NOT NULL,\n    photo TEXT,\n    created_at TIMESTAMP DEFAULT NOW(),\n    college_id INTEGER REFERENCES college(id),\n    course_id INTEGER REFERENCES course(id)\n);\n\n-- Insert dummy data into the college table\nINSERT INTO college (name, code, photo) VALUES\n    ('College A', 'CA001', 'default.png'),\n    ('College B', 'CB002', 'default.png'),\n    ('College C', 'CC003', 'default.png');\n\n-- Insert dummy data into the course table\nINSERT INTO course (name, code, photo, college_id) VALUES\n    ('Course 1', 'C001', 'default.png', 1),\n    ('Course 2', 'C002', 'default.png', 2),\n    ('Course 3', 'C003', 'default.png', 3);\n\n-- Insert dummy data into the student table\nINSERT INTO student (student_id, first_name, last_name, gender, birthday, photo, created_at, college_id, course_id) VALUES\n    ('S001', 'John', 'Doe', 'Male', '2000-01-01', 'default.png', '2023-10-03 12:00:00', 1, 1),\n    ('S002', 'Jane', 'Smith', 'Female', '2001-02-15', 'default.png', '2023-10-03 12:15:00', 2, 2),\n    ('S003', 'Mike', 'Johnson', 'Male', '1999-07-10', 'default.png', '2023-10-03 12:30:00', 3, 3);\n\n\n\n\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 31,
-                    "column": 25
+                    "lineNumber": 32,
+                    "column": 20
                 },
                 "position": {
-                    "lineNumber": 31,
-                    "column": 25
+                    "lineNumber": 32,
+                    "column": 20
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 22,
+                "lineNumber": 28,
                 "column": 1
             },
-            "firstPositionDeltaTop": -16
+            "firstPositionDeltaTop": -2
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -46,7 +46,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "9768a074-bc7f-4a78-b85b-83fff972ec8e"
+                        "96ca8789-9136-469e-fb46-3fc70a28b37f"
                     ]
                 },
                 "currentHeight": 36,
@@ -64,8 +64,8 @@
             },
             "data": [
                 {
-                    "tabId": "a09be412-a933-4cf2-bf4d-62fc449defcb",
-                    "resultId": "9768a074-bc7f-4a78-b85b-83fff972ec8e",
+                    "tabId": "69a0c52e-513c-4880-f23d-ede8a30829d9",
+                    "resultId": "96ca8789-9136-469e-fb46-3fc70a28b37f",
                     "rows": [
                         {
                             "0": "information_schema"
@@ -93,7 +93,7 @@
                         }
                     ],
                     "executionInfo": {
-                        "text": "OK, 5 records retrieved in 1.814ms"
+                        "text": "OK, 5 records retrieved in 2.201ms"
                     },
                     "totalRowCount": 5,
                     "hasMoreRows": false,
@@ -112,15 +112,12 @@
                     "type": "text",
                     "text": [
                         {
-                            "type": 0,
+                            "type": 4,
                             "index": 0,
-                            "content": "MySQL Error (1008): ClassicSession.run_sql: Can't drop database 'ssis'; database doesn't exist",
-                            "language": "ansi"
+                            "resultId": "4d2c7578-563b-42a1-89c8-f1fe378ccac3",
+                            "content": "OK, 0 records retrieved in 27.312ms"
                         }
-                    ],
-                    "executionInfo": {
-                        "text": ""
-                    }
+                    ]
                 },
                 "currentHeight": 28,
                 "statements": [
@@ -148,8 +145,8 @@
                         {
                             "type": 4,
                             "index": 0,
-                            "resultId": "deaf096f-d0af-4c43-b1a5-d795e69750f2",
-                            "content": "OK, 0 records retrieved in 1.176ms"
+                            "resultId": "af1d3539-30a0-4743-d0aa-c1596a69c56c",
+                            "content": "OK, 0 records retrieved in 1.676ms"
                         }
                     ]
                 },
@@ -179,8 +176,8 @@
                         {
                             "type": 4,
                             "index": 0,
-                            "resultId": "a46c0c20-510f-48ae-d765-64928859c543",
-                            "content": "OK, 0 records retrieved in 1.158ms"
+                            "resultId": "cdf25203-4eb1-4cd4-f03f-94d288fad846",
+                            "content": "OK, 0 records retrieved in 0.613ms"
                         }
                     ]
                 },
@@ -202,7 +199,7 @@
         {
             "state": {
                 "start": 5,
-                "end": 35,
+                "end": 31,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -210,20 +207,20 @@
                         {
                             "type": 4,
                             "index": 0,
-                            "resultId": "e7d69722-bb52-4f8a-a150-5e92964d892f",
-                            "content": "OK, 0 records retrieved in 13.664ms"
+                            "resultId": "f9d99ae2-a314-44d7-b499-03d8ece5a9cf",
+                            "content": "OK, 0 records retrieved in 9.87ms"
                         },
                         {
                             "type": 4,
                             "index": 1,
-                            "resultId": "916f147f-0143-4bcc-9def-405232829832",
-                            "content": "OK, 0 records retrieved in 10.909ms"
+                            "resultId": "aa78657e-02cf-45b5-d6ab-7ecea2515748",
+                            "content": "OK, 0 records retrieved in 10.588ms"
                         },
                         {
                             "type": 4,
                             "index": 2,
-                            "resultId": "48fa5f80-8e18-4040-b0a2-e9e440a79f70",
-                            "content": "OK, 0 records retrieved in 16.707ms"
+                            "resultId": "0cdfc99a-61a6-4be4-815a-88e8c1360d17",
+                            "content": "OK, 0 records retrieved in 12.979ms"
                         }
                     ]
                 },
@@ -233,7 +230,7 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 172
+                            "length": 186
                         },
                         "contentStart": 28,
                         "state": 0
@@ -241,28 +238,28 @@
                     {
                         "delimiter": ";",
                         "span": {
-                            "start": 172,
-                            "length": 219
+                            "start": 186,
+                            "length": 205
                         },
-                        "contentStart": 201,
+                        "contentStart": 187,
                         "state": 0
                     },
                     {
                         "delimiter": ";",
                         "span": {
                             "start": 391,
-                            "length": 409
+                            "length": 394
                         },
-                        "contentStart": 421,
+                        "contentStart": 392,
                         "state": 0
                     },
                     {
                         "delimiter": ";",
                         "span": {
-                            "start": 800,
+                            "start": 785,
                             "length": 1
                         },
-                        "contentStart": 799,
+                        "contentStart": 784,
                         "state": 3
                     }
                 ]
@@ -271,8 +268,8 @@
         },
         {
             "state": {
-                "start": 36,
-                "end": 53,
+                "start": 32,
+                "end": 49,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -280,20 +277,20 @@
                         {
                             "type": 4,
                             "index": 0,
-                            "resultId": "b101a81c-9758-49bb-c310-306c7560caf5",
-                            "content": "OK, 0 records retrieved in 4.894ms"
+                            "resultId": "e255697f-e6a3-4ba4-e133-5a93efe3cff9",
+                            "content": "OK, 0 records retrieved in 3.014ms"
                         },
                         {
                             "type": 4,
                             "index": 1,
-                            "resultId": "df843338-798c-4ce5-ab36-2ff89d28746c",
-                            "content": "OK, 0 records retrieved in 2.852ms"
+                            "resultId": "7bb541fa-2ecd-49aa-83b9-6470dffd05ea",
+                            "content": "OK, 0 records retrieved in 3.168ms"
                         },
                         {
                             "type": 4,
                             "index": 2,
-                            "resultId": "4bdb1151-0bef-41a5-f028-d1a3e24ccd69",
-                            "content": "OK, 0 records retrieved in 2.44ms"
+                            "resultId": "a0eb0a83-b817-4890-c705-e87b3e297e23",
+                            "content": "OK, 0 records retrieved in 3.146ms"
                         }
                     ]
                 },
@@ -303,7 +300,7 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 192
+                            "length": 219
                         },
                         "contentStart": 44,
                         "state": 0
@@ -311,28 +308,28 @@
                     {
                         "delimiter": ";",
                         "span": {
-                            "start": 192,
-                            "length": 207
+                            "start": 219,
+                            "length": 234
                         },
-                        "contentStart": 237,
+                        "contentStart": 264,
                         "state": 0
                     },
                     {
                         "delimiter": ";",
                         "span": {
-                            "start": 399,
-                            "length": 434
+                            "start": 453,
+                            "length": 461
                         },
-                        "contentStart": 445,
+                        "contentStart": 499,
                         "state": 0
                     },
                     {
                         "delimiter": ";",
                         "span": {
-                            "start": 833,
-                            "length": 1
+                            "start": 914,
+                            "length": 5
                         },
-                        "contentStart": 832,
+                        "contentStart": 913,
                         "state": 3
                     }
                 ]
@@ -341,8 +338,38 @@
         },
         {
             "state": {
-                "start": 54,
-                "end": 54,
+                "start": 50,
+                "end": 50,
+                "language": "mysql",
+                "currentHeight": 180,
+                "statements": []
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 51,
+                "end": 51,
+                "language": "mysql",
+                "currentHeight": 180,
+                "statements": []
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 52,
+                "end": 52,
+                "language": "mysql",
+                "currentHeight": 180,
+                "statements": []
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 53,
+                "end": 53,
                 "language": "mysql",
                 "currentHeight": 180,
                 "statements": []

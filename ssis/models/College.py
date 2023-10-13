@@ -99,11 +99,14 @@ class College():
         if self.id is None:
             return "Cannot delete without an ID"
 
-        DELETE_SQL = f"DELETE FROM {self.__tablename__} WHERE id=%s"
-        cur = mysql.new_cursor(dictionary=True)
-        cur.execute(DELETE_SQL, (id,))
-        mysql.connection.commit()
-        return "Delete successful"
+        try:
+            DELETE_SQL = f"DELETE FROM {self.__tablename__} WHERE id=%s"
+            cur = mysql.new_cursor(dictionary=True)
+            cur.execute(DELETE_SQL, (self.id,))
+            mysql.connection.commit()
+            return "Delete successful"
+        except Exception as e:
+            return f"Delete failed: {str(e)}"
 
     def find_courses(self):
         if (self.id is None):

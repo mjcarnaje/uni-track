@@ -1,8 +1,9 @@
-from flask import Blueprint, jsonify, render_template, request, redirect
+import os
+from flask import Blueprint, jsonify, render_template, request, redirect, current_app as app
 
-from .. import db
 from ..models.College import College
-from ..models.Course import Course
+from ..utils.upload_file import save_file
+
 
 college_bp = Blueprint('college', __name__)
 
@@ -28,13 +29,13 @@ def colleges():
 @college_bp.route("/add", methods=["GET", "POST"])
 def add_college():
     if request.method == "POST":
-        college = College(
+        college_query = College(
             name=request.form.get('name'),
             code=request.form.get('code'),
-            photo=request.form.get('photo')
+            photo=save_file(key='photo')
         )
 
-        college.insert()
+        college_query.insert()
 
         return redirect("/college/")
 
@@ -50,7 +51,7 @@ def update_college(id):
             id=id,
             name=request.form.get('name'),
             code=request.form.get('code'),
-            photo=request.form.get('photo')
+            photo=save_file(key='photo')
         )
 
         updated_college.update()
@@ -65,12 +66,18 @@ def update_college(id):
 @college_bp.route('/<int:id>', methods=['GET', 'DELETE'])
 def college(id):
     college_query = College(id=id)
+    college = college_query.find_one()
 
     if request.method == "DELETE":
-        college_query.delete()
+        res = college_query.delete()
+        print(f"result: {res}")
+        college_photo = college.get('photo')
+
+        if college_photo and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], college_photo)):
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], college_photo))
+
         return jsonify({'success': True})
 
-    college = college_query.find_one()
     courses = college_query.find_courses()
 
     return render_template("college.html", college=college, courses=courses)

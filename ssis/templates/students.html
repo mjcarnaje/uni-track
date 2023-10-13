@@ -9,11 +9,15 @@
         <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Gender</label>
         <div class="relative">
           <select class="w-full col-span-2 px-4 py-3 bg-white border-2 rounded-lg appearance-none"
-                  name="gender">
+                  name="gender"
+                  autocomplete="off">
             <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
+            {# <option value="Male"
+                    selected="{{ 'selected' if filters.gender.name == 'Male' }}">Male</option>
+            <option value="Female"
+                    selected="{{ 'selected' if filters.gender.name == 'Female' }}">Female</option>
+            <option value="Other"
+                    selected="{{ 'selected' if filters.gender.name == 'Other' }}">Other</option> #}
           </select>
           <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
             <svg class="w-4 h-4 fill-current"
@@ -31,8 +35,10 @@
                   name="college_id">
             <option value="">Select College</option>
             {% for college in colleges %}
-              <option value="{{ college.id }}"
-                      selected="{{ 'selected' if college.id == college_id }}">{{ college.name }}</option>
+              {# <option value="{{ college.id }}"
+                      selected="{{ 'selected' if filters['college_id']['id'] == college_id }}">
+                {{ college.name }}
+              </option> #}
             {% endfor %}
           </select>
           <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
@@ -46,7 +52,7 @@
       </div>
       <div class="col-span-2">
         <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Course</label>
-        <div class="relative">
+        <div id="course-select" class="relative">
           <select class="w-full col-span-2 px-4 py-3 bg-white border-2 rounded-lg appearance-none"
                   name="course_id">
             <option value="">Select Course</option>
@@ -88,21 +94,21 @@
     </div>
   </form>
   <div class="flex gap-3 py-4">
-    {% for filter in filters %}
+    {% for key, value in filters_array %}
       <div class="flex items-center gap-4 px-4 py-2 bg-blue-500 rounded-lg">
-        <p class="text-white">{{ filter.name }}</p>
-        <button type="button" id="delete-filter" data-key="{{ filter.key }}">
+        <p class="text-white">{{ value.name }}</p>
+        <button type="button" id="delete-filter" data-key="{{ key }}">
           <i class="text-white pointer-events-none fa-solid fa-xmark"></i>
         </button>
       </div>
     {% endfor %}
   </div>
-  <div class="flex justify-between w-full py-4">
+  <div class="flex items-center justify-between w-full py-4">
     <div>
       {% if query %}
-        <p>Search result for '{{ query }}' ({{ total_count }})</p>
+        <p class="font-medium">Search result for '{{ query }}' ({{ total_count }})</p>
       {% else %}
-        <p>Showing {{ students | length }} of {{ total_students }} students</p>
+        <p class="font-medium">Showing {{ students | length }} of {{ total_students }} students</p>
       {% endif %}
     </div>
     <a class="px-6 py-3 font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
@@ -114,15 +120,22 @@
     {% else %}
       <div class="grid grid-cols-2 gap-4">
         {% for student in students %}
-          <div class="flex flex-col justify-between grid-cols-1 gap-8 p-4 bg-white border rounded-lg shadow-sm">
+          <div class="flex flex-col justify-between grid-cols-1 gap-8 p-4 bg-white border rounded-lg shadow-sm ">
             <div class="flex gap-4">
-              <img src="{{ url_for('static', filename='uploads/' + student.photo) }}"
-                   alt="{{ student.photo }}"
-                   class="object-cover rounded w-28 h-28"
-                   height="auto"
-                   width="auto" />
+              {% if student['photo'] %}
+                <img src="{{ url_for('static', filename='uploads/' + student.photo) }}"
+                     alt="{{ student.photo }}"
+                     class="object-cover rounded w-28 h-28"
+                     height="auto"
+                     width="auto" />
+              {% else %}
+                <div>
+                  <i class="text-gray-700 fa-solid fa-user"></i>
+                </div>
+              {% endif %}
               <div>
-                <h3 class="text-lg font-medium text-gray-700">{{ student.first_name }} {{ student.last_name }}</h3>
+                <a href="{{ url_for('student.student', id=student.id) }}"
+                   class="text-lg font-medium text-gray-700">{{ student.first_name }} {{ student.last_name }}</a>
                 <h3 class="text-gray-700">{{ student.student_id }}</h3>
                 <h3 class="text-gray-700">{{ student.college_name }}</h3>
                 <h3 class="text-gray-700">{{ student.course_name }}</h3>
@@ -147,11 +160,13 @@
            class="{{ 'pointer-events-none opacity-50' if not has_next_page }} bg-blue-500 text-white w-full flex justify-center items-center max-w-[120px] py-2 rounded-lg">Next</a>
       </div>
     {% endif %}
+    {{ bob }}
   </div>
   {% block javascript %}
     <script type="text/javascript">
   const collegeSelect = document.querySelector("select[name=college_id]");
   const courseSelect = document.querySelector("select[name=course_id]");
+  const courseSelectContainer = document.querySelector("#course-select");
   const openModal = document.querySelector("[data-open-modal]");
   const modal = document.querySelector("[data-modal]");
   const filterForm = document.querySelector("#filter-form");
@@ -172,6 +187,11 @@
     const formData = new FormData(e.target);
     const url = new URL(window.location.href);
     const params = new URLSearchParams(formData);
+    params.forEach((value, key) => {
+      if (value === "") {
+        params.delete(key);
+      }
+    });
     url.search = params;
     window.location.href = url;
   });
@@ -197,11 +217,15 @@
     })
       .then((response) => response.json())
       .then((data) => {
+        courseSelect.innerHTML = `<option value="">Select Course</option>`;
         if (data && data.length > 0) {
-          courseSelect.innerHTML = "";
+          courseSelectContainer.classList.remove("pointer-events-none", "opacity-50");
           data.forEach((course) => {
             courseSelect.innerHTML += `<option value="${course.id}">${course.name}</option>`;
           });
+        } else {
+          courseSelect.innerHTML = `<option value="">No course found</option>`;
+          courseSelectContainer.classList.add("pointer-events-none", "opacity-50");
         }
       })
       .catch((error) => console.log(error));

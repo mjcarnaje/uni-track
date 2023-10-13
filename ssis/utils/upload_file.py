@@ -25,7 +25,15 @@ def save_file(key: str, file_name: str or None = None) -> str or None:
         filename = secure_filename(file.filename)
         ext = filename.rsplit('.', 1)[1].lower()
         filename = f"{file_name or uuid4()}.{ext}"
+
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+        if (os.path.exists(file_path)):
+            print("File already exists")
+            return filename
+
         file.save(file_path)
+
         print("File saved")
+
         return filename

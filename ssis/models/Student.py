@@ -40,30 +40,11 @@ class Student():
         if self.id is None:
             return "Cannot find without an ID"
 
-        SELECT_SQL = f"SELECT student.*, college.id AS college_id, college.name AS college_name, course.id AS course_id, course.name AS course_name FROM {self.__tablename__} JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id WHERE student.id=%s"
+        SELECT_SQL = f"SELECT student.*, college.name AS college_name, course.name AS course_name FROM {self.__tablename__} JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id WHERE student.id=%s"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL, (self.id,))
         student = cur.fetchone()
-        print(student)
-        return {
-            'id': student.get('id'),
-            'student_id': student.get('student_id'),
-            'first_name': student.get('first_name'),
-            'last_name': student.get('last_name'),
-            'gender': student.get('gender'),
-            'birthday': student.get('birthday').strftime("%Y-%m-%d"),
-            'photo': student.get('photo') or 'default.png',
-            'created_at': student.get('created_at').strftime("%Y-%m-%d %H:%M:%S"),
-            'college': {
-                'id': student.get('college_id'),
-                'name': student.get('college_name'),
-            },
-            'course': {
-                'id': student.get('course_id'),
-                'name': student.get('course_name'),
-            },
-
-        }
+        return student
 
     def find_all(self, page_number: int, page_size: int, query: str, college_id: str, course_id: str, gender: str):
         offset = (page_number - 1) * page_size
