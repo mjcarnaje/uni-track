@@ -25,7 +25,7 @@ def students():
 
     students_query = Student().find_all(
         page_number=page,
-        page_size=2,
+        page_size=12,
         query=query,
         college_id=college_id,
         course_id=course_id,

@@ -3,17 +3,80 @@
   {{ student.first_name }} {{ student.last_name }}
 {% endblock title %}
 {% block content %}
-  <div class="w-full max-w-3xl p-8 bg-white shadow-sm rounded-3xl">
+  <div class="flex flex-col items-center w-full max-w-3xl px-8 pt-24 pb-12 bg-white shadow-sm rounded-3xl">
     <img src="{{ url_for('static', filename='uploads/' + student.photo) }}"
          alt="{{ student.photo }}"
-         class="rounded"
-         height="100px"
-         width="100px" />
-    <h1>Student id: {{ student.student_id }}</h1>
-    <h1>Name: {{ student.first_name }} {{ student.last_name }}</h1>
-    <h1>Birthday: {{ student.birthday }}</h1>
-    <h1>Gender: {{ student.gender }}</h1>
-    <h1>College: {{ student.college_name }}</h1>
-    <h1>Course: {{ student.course_name }}</h1>
+         class="w-56 h-56 border border-gray-300 rounded-full"
+         height="auto"
+         width="auto" />
+    {% if current_user.is_authenticated %}
+      <div class="flex items-center gap-4 py-8">
+        <a href="{{ url_for('student.update_student', id=student.id) }}"
+           class="px-6 py-2 text-sm font-light text-blue-600 transition-all border border-blue-600 rounded-full cursor-pointer hover:font-medium hover:bg-blue-50 duration-5">Update</a>
+        <button onclick="deleteStudent({{ student.id }})"
+                class="px-6 py-2 text-sm font-light text-red-600 transition-all border border-red-600 rounded-full cursor-pointer hover:font-medium hover:bg-red-50 duration-5">
+          Delete
+        </button>
+      </div>
+    {% endif %}
+    <div class="grid w-full grid-cols-2 gap-4 pt-12">
+      <div class="p-4 space-y-1 border rounded-xl">
+        <label class="text-xs font-medium text-gray-500 uppercase">Student ID</label>
+        <h1 class="text-lg font-semibold text-gray-800">{{ student.student_id }}</h1>
+      </div>
+      <div class="p-4 space-y-1 border rounded-xl">
+        <label class="text-xs font-medium text-gray-500 uppercase">Full Name</label>
+        <h1 class="text-lg font-semibold text-gray-800">{{ student.first_name }} {{ student.last_name }}</h1>
+      </div>
+      <div class="p-4 space-y-1 border rounded-xl">
+        <label class="text-xs font-medium text-gray-500 uppercase">Gender</label>
+        <h1 class="text-lg font-semibold text-gray-800">{{ student.gender }}</h1>
+      </div>
+      <div class="p-4 space-y-1 border rounded-xl">
+        <label class="text-xs font-medium text-gray-500 uppercase">Birthday</label>
+        <h1 class="text-lg font-semibold text-gray-800">{{ student.birthday }}</h1>
+      </div>
+      <div class="p-4 space-y-1 border rounded-xl">
+        <label class="text-xs font-medium text-gray-500 uppercase">College</label>
+        <div class="flex gap-2">
+          {% if student.college_photo %}
+            <img src="{{ url_for('static', filename='uploads/' + student.college_photo) }}"
+                 alt="{{ student.college_photo }}"
+                 class="object-cover w-6 h-6 mt-1 border-2 rounded-full"
+                 height="auto"
+                 width="auto" />
+          {% endif %}
+          <h1 class="text-lg font-semibold leading-tight text-gray-800">{{ student.college_name }}</h1>
+        </div>
+      </div>
+      <div class="p-4 space-y-1 border rounded-xl">
+        <label class="text-xs font-medium text-gray-500 uppercase">Course</label>
+        <div class="flex gap-2">
+          {% if student.course_photo %}
+            <img src="{{ url_for('static', filename='uploads/' + student.course_photo) }}"
+                 alt="{{ student.course_photo }}"
+                 class="object-cover w-6 h-6 mt-1 border-2 rounded-full"
+                 height="auto"
+                 width="auto" />
+          {% endif %}
+          <h1 class="text-lg font-semibold leading-tight text-gray-800">{{ student.course_name }}</h1>
+        </div>
+      </div>
+    </div>
   </div>
+  {% block javascript %}
+    <script>
+function deleteStudent(id){
+  fetch(`/student/${id}`, {
+    method: "DELETE",
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        window.location.href = "/student"
+      }
+    });
+}
+    </script>
+  {% endblock javascript %}
 {% endblock content %}
