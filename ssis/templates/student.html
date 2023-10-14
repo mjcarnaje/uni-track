@@ -3,7 +3,7 @@
   {{ student.first_name }} {{ student.last_name }}
 {% endblock title %}
 {% block content %}
-  <div class="max-w-2xl bg-white rounded-lg shadow-sm">
+  <div class="w-full max-w-3xl p-8 bg-white shadow-sm rounded-3xl">
     <img src="{{ url_for('static', filename='uploads/' + student.photo) }}"
          alt="{{ student.photo }}"
          class="rounded"

@@ -3,78 +3,80 @@
   Colleges
 {% endblock title %}
 {% block content %}
-  <form>
-    <div class="relative flex items-center w-full max-w-lg">
-      <div class="absolute flex items-center justify-center w-12 h-full">
-        <i class="text-gray-700 fa-solid fa-magnifying-glass"></i>
+  <div class="w-full max-w-6xl">
+    <form>
+      <div class="relative flex items-center w-full max-w-lg">
+        <div class="absolute flex items-center justify-center w-12 h-full">
+          <i class="text-gray-700 fa-solid fa-magnifying-glass"></i>
+        </div>
+        <input name="query"
+               type="text"
+               class="w-full py-3 pl-12 border-2 rounded-lg"
+               value="{{ query }}"
+               placeholder="Search by college code, name" />
       </div>
-      <input name="query"
-             type="text"
-             class="w-full py-3 pl-12 border-2 rounded-lg"
-             value="{{ query }}"
-             placeholder="Search by college code, name" />
-    </div>
-  </form>
-  <div class="flex items-center justify-between w-full py-4">
-    <div>
-      {% if query %}
-        <p class="font-medium">Search result for '{{ query }}' ({{ total_count }})</p>
-      {% else %}
-        <p class="font-medium">Showing {{ colleges | length }} of {{ total_students }} students</p>
+    </form>
+    <div class="flex items-center justify-between w-full py-4">
+      <div>
+        {% if query %}
+          <p class="font-medium">Search result for '{{ query }}' ({{ total_count }})</p>
+        {% else %}
+          <p class="font-medium">Showing {{ colleges | length }} of {{ total_students }} students</p>
+        {% endif %}
+      </div>
+      {% if current_user.is_authenticated %}
+        <a class="px-6 py-3 font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+           href="{{ url_for('college.add_college',) }}">Add College</a>
       {% endif %}
     </div>
-    {% if current_user.is_authenticated %}
-      <a class="px-6 py-3 font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-         href="{{ url_for('college.add_college',) }}">Add College</a>
-    {% endif %}
-  </div>
-  <div class="w-full py-8 space-y-8">
-    {% if colleges | length == 0 %}
-      <h1 class="text-4xl font-bold text-red-800">No data!</h1>
-    {% else %}
-      <div class="grid grid-cols-3 gap-4">
-        {% for college in colleges %}
-          <div class="flex flex-col justify-between grid-cols-1 gap-8 px-5 transition-all duration-700 bg-white border shadow-sm cursor-pointer py-7 rounded-3xl group hover:bg-gray-50">
-            <div class="flex gap-4">
-              {% if college.photo %}
-                <div class="box-content w-24 h-24 rounded-full aspect-square ring-1 ring-gray-200">
-                  <img src="{{ url_for('static', filename='uploads/' + college.photo) }}"
-                       alt="{{ college.photo }}"
-                       class="object-cover w-24 h-24 bg-gray-100 border rounded-full"
-                       height="auto"
-                       width="auto" />
-                </div>
-              {% else %}
-              {% endif %}
-              <div class="space-y-2">
-                <a href="{{ url_for('college.college', id=college.id) }}">
-                  <h3 class="text-xl font-semibold leading-snug tracking-tight text-gray-700">{{ college.name }}</h3>
-                </a>
-                <h3 class="font-medium text-gray-500 text-md">{{ college.code }}</h3>
-                <div class="flex space-x-2">
-                  <div class="px-3 py-1 bg-green-500 rounded-full">
-                    <p class="text-xs font-thin text-white">{{ college.course_count }} courses</p>
+    <div class="w-full py-8 space-y-8">
+      {% if colleges | length == 0 %}
+        <h1 class="text-4xl font-bold text-red-800">No data!</h1>
+      {% else %}
+        <div class="grid grid-cols-3 gap-4">
+          {% for college in colleges %}
+            <div class="flex flex-col justify-between grid-cols-1 gap-8 px-5 transition-all duration-700 bg-white border shadow-sm cursor-pointer py-7 rounded-3xl group hover:bg-gray-50">
+              <div class="flex gap-4">
+                {% if college.photo %}
+                  <div class="box-content w-24 h-24 rounded-full aspect-square ring-1 ring-gray-200">
+                    <img src="{{ url_for('static', filename='uploads/' + college.photo) }}"
+                         alt="{{ college.photo }}"
+                         class="object-cover w-24 h-24 bg-gray-100 border rounded-full"
+                         height="auto"
+                         width="auto" />
                   </div>
-                  <div class="px-3 py-1 bg-blue-500 rounded-full">
-                    <p class="text-xs font-thin text-white">{{ college.student_count }} students</p>
+                {% else %}
+                {% endif %}
+                <div class="space-y-2">
+                  <a href="{{ url_for('college.college', id=college.id) }}">
+                    <h3 class="text-xl font-semibold leading-snug tracking-tight text-gray-700">{{ college.name }}</h3>
+                  </a>
+                  <h3 class="font-medium text-gray-500 text-md">{{ college.code }}</h3>
+                  <div class="flex space-x-2">
+                    <div class="px-3 py-1 bg-green-500 rounded-full">
+                      <p class="text-xs font-thin text-white">{{ college.course_count }} courses</p>
+                    </div>
+                    <div class="px-3 py-1 bg-blue-500 rounded-full">
+                      <p class="text-xs font-thin text-white">{{ college.student_count }} students</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        {% endfor %}
-      </div>
-      <div class="flex justify-center space-x-6">
-        <a href="{{ url_for('college.colleges', page=page - 1) }}"
-           class="{{ 'pointer-events-none opacity-50' if not has_previous_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
-          <i class="fa-solid fa-arrow-left"></i>
-        </a>
-        <a href="{{ url_for('college.colleges', page=page + 1) }}"
-           class="{{ 'pointer-events-none opacity-50' if not has_next_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
-          <i class="fa-solid fa-arrow-right"></i>
-        </a>
-      </div>
-    {% endif %}
+          {% endfor %}
+        </div>
+        <div class="flex justify-center space-x-6">
+          <a href="{{ url_for('college.colleges', page=page - 1) }}"
+             class="{{ 'pointer-events-none opacity-50' if not has_previous_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <a href="{{ url_for('college.colleges', page=page + 1) }}"
+             class="{{ 'pointer-events-none opacity-50' if not has_next_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      {% endif %}
+    </div>
   </div>
   {% block javascript %}
     <script type="text/javascript">
