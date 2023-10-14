@@ -2,56 +2,89 @@
 {% block title %}
   {{ college.name }}
 {% endblock title %}
-{% block
-  content %}
-  <div class="w-full max-w-6xl">
-    <div class="p-4 mb-4 border rounded-lg shadow-sm">
-      <h2 class="text-3xl font-bold">{{ college.name }}</h2>
-      <h2 class="font-medium">{{ college.code }}</h2>
-    </div>
-    <dialog data-modal class="w-full max-w-lg p-8 rounded-lg">
-      <h3 class="mb-4 text-xl font-semibold text-gray-800" data-modal-title>Add Course</h3>
-      <form class="w-full space-y-4"
-            action="{{ url_for('course.courses',) }}"
-            method="post">
-        <input class="w-full p-2 border rounded" placeholder="Name" name="name" />
-        <input class="w-full p-2 border rounded" placeholder="Code" name="code" />
-        <input type="hidden" name="photo" value="" />
-        <input type="hidden" name="college_id" value="{{ college.id }}" />
-        <button type="submit"
-                class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg">Add course</button>
-      </form>
-    </dialog>
-    {% if current_user.is_authenticated %}
-      <div>
-        <button data-open-modal
-                class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg">Add Course</button>
-      </div>
-    {% endif %}
-    {% if courses | length == 0 %}
-      <h1 class="text-4xl font-bold text-red-800">No data!</h1>
-    {% else %}
-      <div class="py-8 space-y-8">
-        {% for course in courses %}
-          <div class="flex items-center justify-between p-4 border rounded-lg">
-            <div>
-              <a class="font-medium">{{ course.name }}</a>
-              <p>{{ course.code }}</p>
-            </div>
-            {% if current_user.is_authenticated %}
-              <div class="flex space-x-4">
-                <button class="px-2 py-1 text-xs text-red-500 bg-red-200 rounded-lg delete-button hover:bg-red-300 hover:text-red-600 hover:font-medium"
-                        onclick="deleteCourse({{ course.id }})">Delete</button>
-                <button class="px-2 py-1 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
-                        onClick="updateCourse({{ course.id }}, '{{ course.name }}', '{{ course.code }}', '{{ course.photo }}', {{ course.college_id }})">
-                  Update
-                </button>
-              </div>
-            {% endif %}
+{% block content %}
+  <dialog data-modal class="w-full max-w-lg p-8 rounded-lg">
+    <h3 class="mb-4 text-xl font-semibold text-gray-800" data-modal-title>Add Course</h3>
+    <form class="w-full space-y-4"
+          action="{{ url_for('course.courses',) }}"
+          method="post">
+      <input class="w-full p-2 border rounded" placeholder="Name" name="name" />
+      <input class="w-full p-2 border rounded" placeholder="Code" name="code" />
+      <input type="hidden" name="photo" value="" />
+      <input type="hidden" name="college_id" value="{{ college.id }}" />
+      <button type="submit"
+              class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg">Add course</button>
+    </form>
+  </dialog>
+  <div class="flex flex-col items-center w-full max-w-3xl px-8 pt-12 pb-12 bg-white shadow-sm rounded-3xl">
+    <div class="flex w-full gap-6 pb-8 border-b">
+      <img src="{{ url_for('static', filename='uploads/' + college.photo) }}"
+           alt="{{ college.photo }}"
+           class="w-48 h-48 border border-gray-300 rounded-full"
+           height="auto"
+           width="auto" />
+      <div class="py-4 space-y-3">
+        <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-gray-800">{{ college.name }}</h1>
+        <h3 class="text-xl font-bold text-gray-600">{{ college.code }}</h3>
+        <div class="flex items-center gap-4">
+          <div class="px-4 py-1 bg-green-500 rounded-full">
+            <p class="font-thin text-white">{{ college.course_count }} courses</p>
           </div>
-        {% endfor %}
+          <div class="px-4 py-1 bg-blue-500 rounded-full">
+            <p class="font-thin text-white">{{ college.student_count }} students</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="{{ url_for('college.update_college', id=college.id) }}"
+             class="px-4 py-1 text-sm font-light text-blue-600 transition-all duration-500 border border-blue-600 rounded-full cursor-pointer hover:font-medium hover:bg-blue-50">Update</a>
+          <button onclick="deleteCollege({{ college.id }})"
+                  class="px-4 py-1 text-sm font-light text-red-600 transition-all duration-500 border border-red-600 rounded-full cursor-pointer hover:font-medium hover:bg-red-50">
+            Delete
+          </button>
+        </div>
       </div>
-    {% endif %}
+    </div>
+    <div class="w-full">
+      {% if courses | length == 0 %}
+        <div class="py-16 space-y-4 text-center">
+          <i class="text-4xl text-gray-800 fa-solid fa-mountain-sun"></i>
+          <h1 class="text-3xl font-bold text-gray-800">No courses found</h1>
+          <p class="text-gray-600 ">Add a course to get started</p>
+          <button data-open-modal
+                  class="px-4 py-2 font-medium text-white bg-blue-500 rounded-lg">Add Course</button>
+        </div>
+      {% else %}
+        <div class="w-full py-8 space-y-2">
+          <div class="flex items-center justify-between py-4">
+            <h1 class="text-3xl font-bold leading-6 text-gray-800">Courses</h1>
+            <button data-open-modal
+                    class="px-4 py-1 text-sm font-light text-green-600 transition-all duration-500 border border-green-600 rounded-full cursor-pointer hover:font-medium hover:bg-green-50">
+              Add Course
+            </button>
+          </div>
+          {% for course in courses %}
+            <div class="flex items-center justify-between w-full p-4 border rounded-3xl">
+              <div>
+                <a class="text-lg font-bold text-gray-800">{{ course.name }}</a>
+                <p>{{ course.code }}</p>
+              </div>
+              {% if current_user.is_authenticated %}
+                <div class="flex space-x-4">
+                  <button class="w-8 h-8 text-red-500 border border-red-500 rounded-full hover:bg-red-50 hover:text-red-600"
+                          onclick="deleteCourse({{ course.id }})">
+                    <i class="text-xs pointer-events-none fa-solid fa-trash"></i>
+                  </button>
+                  <button class="w-8 h-8 text-blue-500 border border-blue-500 rounded-full hover:bg-blue-50 hover:text-blue-600"
+                          onclick="updateCourse({{ course.id }}, {{ course.name }}, {{ course.code }}, {{ course.photo }}, {{ course.college_id }})">
+                    <i class="text-xs pointer-events-none fa-solid fa-pen"></i>
+                  </button>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
   </div>
   {% block javascript %}
     <script type="text/javascript">
@@ -82,6 +115,18 @@
       .then((data) => {
         if (data.success) {
           window.location.reload();
+        }
+      });
+  }
+
+  function deleteCollege(id) {
+    fetch(`/college/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          window.location.href = "/";
         }
       });
   }

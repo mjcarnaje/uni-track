@@ -12,9 +12,9 @@
     {% if current_user.is_authenticated %}
       <div class="flex items-center gap-4 py-8">
         <a href="{{ url_for('student.update_student', id=student.id) }}"
-           class="px-6 py-2 text-sm font-light text-blue-600 transition-all border border-blue-600 rounded-full cursor-pointer hover:font-medium hover:bg-blue-50 duration-5">Update</a>
+           class="px-4 py-1 text-sm font-light text-blue-600 transition-all border border-blue-600 rounded-full cursor-pointer hover:font-medium hover:bg-blue-50 duration-5">Update</a>
         <button onclick="deleteStudent({{ student.id }})"
-                class="px-6 py-2 text-sm font-light text-red-600 transition-all border border-red-600 rounded-full cursor-pointer hover:font-medium hover:bg-red-50 duration-5">
+                class="px-4 py-1 text-sm font-light text-red-600 transition-all border border-red-600 rounded-full cursor-pointer hover:font-medium hover:bg-red-50 duration-5">
           Delete
         </button>
       </div>
