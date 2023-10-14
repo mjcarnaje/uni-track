@@ -131,46 +131,63 @@
     {% else %}
       <div class="grid grid-cols-2 gap-4">
         {% for student in students %}
-          <div class="flex flex-col justify-between grid-cols-1 gap-8 p-4 bg-white border rounded-lg shadow-sm">
+          <div class="flex flex-col justify-between grid-cols-1 gap-8 p-6 bg-white border shadow-sm rounded-3xl">
             <div class="flex gap-4">
               {% if student['photo'] %}
-                <img src="{{ url_for('static', filename='uploads/' + student.photo) }}"
-                     alt="{{ student.photo }}"
-                     class="object-cover rounded w-28 h-28"
-                     height="auto"
-                     width="auto" />
+                <div class="box-content w-32 h-32 rounded-3xl aspect-square ring-1 ring-gray-200">
+                  <img src="{{ url_for('static', filename='uploads/' + student.photo) }}"
+                       alt="{{ student.photo }}"
+                       class="object-cover w-32 h-32 rounded-3xl"
+                       height="auto"
+                       width="auto" />
+                </div>
               {% else %}
                 <div>
                   <i class="text-gray-700 fa-solid fa-user"></i>
                 </div>
               {% endif %}
-              <div>
+              <div class="w-full space-y-2">
                 <a href="{{ url_for('student.student', id=student.id) }}"
-                   class="text-lg font-medium text-gray-700">{{ student.first_name }} {{ student.last_name }}</a>
-                <h3 class="text-gray-700">{{ student.student_id }}</h3>
-                <h3 class="text-gray-700">{{ student.college_name }}</h3>
-                <h3 class="text-gray-700">{{ student.course_name }}</h3>
+                   class="text-xl font-semibold leading-snug tracking-tight text-gray-700">{{ student.first_name }} {{ student.last_name }}</a>
+                <h3 class="font-medium text-gray-500 text-md">{{ student.student_id }}</h3>
+                <div class="flex">
+                  <div class="flex items-center px-3 py-1 space-x-2 transition duration-500 border rounded-full cursor-pointer hover:bg-gray-100">
+                    {% if student.college_photo %}
+                      <img src="{{ url_for('static', filename='uploads/' + student.college_photo) }}"
+                           alt="{{ student.college_photo }}"
+                           class="object-cover w-5 h-5 border-2 rounded-full"
+                           height="auto"
+                           width="auto" />
+                    {% endif %}
+                    <h3 class="text-sm font-thin text-gray-800 cursor-pointer">{{ student.college_name }}</h3>
+                  </div>
+                </div>
+                <div class="flex">
+                  <div class="flex items-center px-3 py-1 space-x-2 transition duration-500 border rounded-full cursor-pointer hover:bg-gray-100">
+                    {% if student.course_photo %}
+                      <img src="{{ url_for('static', filename='uploads/' + student.course_photo) }}"
+                           alt="{{ student.course_photo }}"
+                           class="object-cover w-5 h-5 border-2 rounded-full"
+                           height="auto"
+                           width="auto" />
+                    {% endif %}
+                    <h3 class="text-sm font-thin text-gray-800 cursor-pointer">{{ student.course_name }}</h3>
+                  </div>
+                </div>
               </div>
             </div>
-            {% if current_user.is_authenticated %}
-              <div class="flex w-full gap-4">
-                <a class="flex items-center justify-center w-full py-3 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
-                   href="{{ url_for('student.update_student', id=student.id) }}">Update</a>
-                <button id="delete-student"
-                        data-id="{{ student.id }}"
-                        class="w-full py-3 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium">
-                  Delete
-                </button>
-              </div>
-            {% endif %}
           </div>
         {% endfor %}
       </div>
-      <div class="flex justify-center space-x-4">
+      <div class="flex justify-center space-x-6">
         <a href="{{ url_for('student.students', page=page - 1) }}"
-           class="{{ 'pointer-events-none opacity-50' if not has_previous_page }} bg-blue-500 text-white w-full flex justify-center items-center max-w-[120px] py-2 rounded-lg">Previous</a>
+           class="{{ 'pointer-events-none opacity-50' if not has_previous_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
+          <i class="text-gray-700 fa-solid fa-arrow-left"></i>
+        </a>
         <a href="{{ url_for('student.students', page=page + 1) }}"
-           class="{{ 'pointer-events-none opacity-50' if not has_next_page }} bg-blue-500 text-white w-full flex justify-center items-center max-w-[120px] py-2 rounded-lg">Next</a>
+           class="{{ 'pointer-events-none opacity-50' if not has_next_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
+          <i class="text-gray-700 fa-solid fa-arrow-right"></i>
+        </a>
       </div>
     {% endif %}
     {{ bob }}
