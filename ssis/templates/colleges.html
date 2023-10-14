@@ -32,44 +32,47 @@
     {% if colleges | length == 0 %}
       <h1 class="text-4xl font-bold text-red-800">No data!</h1>
     {% else %}
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-3 gap-4">
         {% for college in colleges %}
-          <div class="flex flex-col justify-between grid-cols-1 gap-8 p-4 bg-white border rounded-lg shadow-sm">
+          <div class="flex flex-col justify-between grid-cols-1 gap-8 px-5 transition-all duration-700 bg-white border shadow-sm cursor-pointer py-7 rounded-3xl group hover:bg-gray-50">
             <div class="flex gap-4">
               {% if college.photo %}
-                <img src="{{ url_for('static', filename='uploads/' + college.photo) }}"
-                     alt="{{ college.photo }}"
-                     class="object-cover rounded w-28 h-28"
-                     height="auto"
-                     width="auto" />
+                <div class="box-content w-24 h-24 rounded-full aspect-square ring-1 ring-gray-200">
+                  <img src="{{ url_for('static', filename='uploads/' + college.photo) }}"
+                       alt="{{ college.photo }}"
+                       class="object-cover w-24 h-24 bg-gray-100 border rounded-full"
+                       height="auto"
+                       width="auto" />
+                </div>
               {% else %}
               {% endif %}
-              <div>
+              <div class="space-y-2">
                 <a href="{{ url_for('college.college', id=college.id) }}">
-                  <h3 class="text-lg font-medium text-gray-700">{{ college.name }}</h3>
+                  <h3 class="text-xl font-semibold leading-snug tracking-tight text-gray-700">{{ college.name }}</h3>
                 </a>
-                <h3 class="text-lg font-medium text-gray-700">{{ college.code }}</h3>
+                <h3 class="font-medium text-gray-500 text-md">{{ college.code }}</h3>
+                <div class="flex space-x-2">
+                  <div class="px-3 py-1 bg-green-500 rounded-full">
+                    <p class="text-xs font-medium text-white">{{ college.course_count }} courses</p>
+                  </div>
+                  <div class="px-3 py-1 bg-blue-500 rounded-full">
+                    <p class="text-xs font-medium text-white">{{ college.student_count }} students</p>
+                  </div>
+                </div>
               </div>
             </div>
-            {% if current_user.is_authenticated %}
-              <div class="flex w-full gap-4">
-                <a class="flex items-center justify-center w-full py-3 text-xs text-blue-500 bg-blue-200 rounded-lg hover:bg-blue-300 hover:text-blue-600 hover:font-medium"
-                   href="{{ url_for('college.update_college', id=college.id) }}">Update</a>
-                <button id="delete-college"
-                        data-id="{{ college.id }}"
-                        class="w-full py-3 text-xs text-red-500 bg-red-200 rounded-lg hover:bg-red-300 hover:text-red-600 hover:font-medium">
-                  Delete
-                </button>
-              </div>
-            {% endif %}
           </div>
         {% endfor %}
       </div>
-      <div class="flex justify-center space-x-4">
+      <div class="flex justify-center space-x-6">
         <a href="{{ url_for('college.colleges', page=page - 1) }}"
-           class="{{ 'pointer-events-none opacity-50' if not has_previous_page }} bg-blue-500 text-white w-full flex justify-center items-center max-w-[120px] py-2 rounded-lg">Previous</a>
+           class="{{ 'pointer-events-none opacity-50' if not has_previous_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
         <a href="{{ url_for('college.colleges', page=page + 1) }}"
-           class="{{ 'pointer-events-none opacity-50' if not has_next_page }} bg-blue-500 text-white w-full flex justify-center items-center max-w-[120px] py-2 rounded-lg">Next</a>
+           class="{{ 'pointer-events-none opacity-50' if not has_next_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
       </div>
     {% endif %}
   </div>

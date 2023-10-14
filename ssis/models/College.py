@@ -36,7 +36,7 @@ class College():
             filter_params.append(f"%{query}%")
             filter_params.append(f"%{query}%")
 
-        SELECT_SQL = f"SELECT * FROM {self.__tablename__}"
+        SELECT_SQL = f"SELECT college.*, COUNT(course.id) as course_count, COUNT(student.id) as student_count FROM {self.__tablename__} LEFT JOIN course ON course.college_id = college.id LEFT JOIN student ON student.college_id = college.id GROUP BY college.id"
 
         if where_clause:
             SELECT_SQL += f" WHERE {where_clause}"

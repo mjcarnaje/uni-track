@@ -18,7 +18,7 @@ def colleges():
 
     college_query = College().find_all(
         page_number=page,
-        page_size=2,
+        page_size=12,
         query=query
     )
 
