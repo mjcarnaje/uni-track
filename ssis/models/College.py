@@ -21,8 +21,9 @@ class College():
         if self.id is None:
             return "Cannot find without an ID"
 
-        SELECT_SQL = f"SELECT college.*, COUNT(course.id) as course_count, COUNT(student.id) as student_count FROM {self.__tablename__}"
-        SELECT_SQL += " LEFT JOIN course ON course.college_id = college.id LEFT JOIN student ON student.college_id = college.id"
+        SELECT_SQL = f"SELECT college.*, MAX(course_counts.course_count) as course_count, MAX(student_counts.student_count) as student_count FROM {self.__tablename__}"
+        SELECT_SQL += f" LEFT JOIN (SELECT college_id, COUNT(id) AS course_count FROM course GROUP BY college_id) AS course_counts ON course_counts.college_id = college.id"
+        SELECT_SQL += f" LEFT JOIN (SELECT college_id, COUNT(id) AS student_count FROM student GROUP BY college_id) AS student_counts ON student_counts.college_id = college.id"
         SELECT_SQL += " WHERE college.id=%s"
 
         cur = mysql.new_cursor(dictionary=True)
@@ -43,8 +44,9 @@ class College():
             filter_params.append(f"%{query}%")
             filter_params.append(f"%{query}%")
 
-        SELECT_SQL = f"SELECT college.*, COUNT(course.id) as course_count, COUNT(student.id) as student_count FROM {self.__tablename__}"
-        SELECT_SQL += " LEFT JOIN course ON course.college_id = college.id LEFT JOIN student ON student.college_id = college.id"
+        SELECT_SQL = f"SELECT college.*, MAX(course_counts.course_count) as course_count, MAX(student_counts.student_count) as student_count FROM {self.__tablename__}"
+        SELECT_SQL += f" LEFT JOIN (SELECT college_id, COUNT(id) AS course_count FROM course GROUP BY college_id) AS course_counts ON course_counts.college_id = college.id"
+        SELECT_SQL += f" LEFT JOIN (SELECT college_id, COUNT(id) AS student_count FROM student GROUP BY college_id) AS student_counts ON student_counts.college_id = college.id"
         SELECT_SQL += f" WHERE {where_clause}"
         SELECT_SQL += " GROUP BY college.id"
         SELECT_SQL += " LIMIT %s OFFSET %s"
