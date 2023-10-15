@@ -5,10 +5,10 @@
 {% endblock title %}
 {% block content %}
   <div class="flex items-center justify-center py-12">
-    <h2 class="text-4xl font-extrabold leading-loose text-center text-gray-800 font-display">
+    <h2 class="max-w-3xl text-4xl font-extrabold leading-loose text-center text-gray-800 font-display">
       Welcome to
       <br />
-      <span class="text-blue-500">Simple Student Information System</span>
+      <span style="color:{{ current_user.primary_color }}" class="break-words">{{ current_user.name }}</span>
     </h2>
   </div>
 {% endblock content %}

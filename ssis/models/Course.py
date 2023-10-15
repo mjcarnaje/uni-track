@@ -34,7 +34,7 @@ class Course():
         return cur.fetchall()
 
     def find_by_college_id(self, college_id: int):
-        SELECT_SQL = f"SELECT course.*, COUNT(student.id) as student_count FROM {self.__tablename__} JOIN student ON student.course_id = course.id WHERE course.college_id=%s GROUP BY course.id"
+        SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE college_id=%s"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL, (college_id,))
         return cur.fetchall()

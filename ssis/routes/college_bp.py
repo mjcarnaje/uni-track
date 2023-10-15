@@ -83,8 +83,7 @@ def college(id):
 
     # TODO: Separate this into a different route
     if request.method == "DELETE":
-        res = college_query.delete()
-        print(f"result: {res}")
+        college_query.delete()
         college_photo = college.get('photo')
 
         if college_photo and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], college_photo)):

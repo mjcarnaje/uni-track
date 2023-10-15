@@ -23,10 +23,14 @@ CREATE TABLE IF NOT EXISTS student (
     college_id INTEGER REFERENCES college(id),
     course_id INTEGER REFERENCES course(id)
 );
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE IF NOT EXISTS university (
     id SERIAL PRIMARY KEY,
     email VARCHAR(256) UNIQUE NOT NULL,
-    username VARCHAR(256) UNIQUE NOT NULL,
+    logo TEXT,
+    display_name VARCHAR(256) NOT NULL,
+    name VARCHAR(256) NOT NULL,
+    primary_color VARCHAR(16) NOT NULL,
+    secondary_color VARCHAR(16) NOT NULL,
     password VARCHAR(256) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
 );

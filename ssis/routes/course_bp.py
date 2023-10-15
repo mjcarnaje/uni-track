@@ -51,5 +51,5 @@ def course(id):
 
 @course_bp.route('/college/<int:id>', methods=['GET'])
 def courses_by_college(id):
-    courses_by_college = Course().find_by_college_id(id)
+    courses_by_college = Course().find_by_college_id(college_id=id)
     return jsonify(courses_by_college)

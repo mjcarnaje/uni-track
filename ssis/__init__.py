@@ -4,7 +4,7 @@ from flask_mysql_connector import MySQL
 
 from .configs import set_configs
 from .db import create_tables, mysql
-from .models.User import User
+from .models.University import University
 
 app = Flask(__name__)
 
@@ -23,7 +23,7 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        return User(id=user_id).find_by_id()
+        return University(id=user_id).find_by_id()
 
     from ssis.routes.main_bp import main_bp
     from ssis.routes.auth_bp import auth_bp

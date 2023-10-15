@@ -30,48 +30,56 @@
     <aside class="flex flex-col justify-between w-full max-w-xs border-r shadow-md">
       <ul class="px-4 space-y-4">
         <li class="flex items-center justify-center py-6">
-          <h1 class="text-4xl font-extrabold text-blue-500 font-display">SSIS</h1>
+          {% if current_user.is_authenticated %}
+            <div class="flex items-center gap-4">
+              <img src="{{ url_for('static', filename='uploads/' + current_user.logo) }}"
+                   alt="{{ current_user.logo }}"
+                   class="w-16 h-16 rounded-full"
+                   height="auto"
+                   width="auto" />
+              <h1 class="text-3xl font-extrabold"
+                  style="color: {{ current_user.primary_color }}">{{ current_user.display_name }}</h1>
+            </div>
+          {% else %}
+            <h1 class="text-4xl font-extrabold text-blue-500 font-display">SSIS</h1>
+          {% endif %}
         </li>
-        <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'home' else '' }}">
-          <a href="{{ url_for('main.dashboard',) }}"
-             class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'home' else 'text-gray-700' }}">
-            <i class="fa-solid fa-house"></i>
-            <p class="font-display">Home</p>
-          </a>
-        </li>
-        <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'student' else '' }}">
-          <a href="{{ url_for('student.students',) }}"
-             class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'student' else 'text-gray-700' }}">
-            <i class="fa-solid fa-users"></i>
-            <p class="font-display">Students</p>
-          </a>
-        </li>
-        <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'college' else '' }}">
-          <a href="{{ url_for('college.colleges',) }}"
-             class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'college' else 'text-gray-700' }}">
-            <i class="fa-solid fa-building-columns"></i>
-            <p class="font-display">Colleges</p>
-          </a>
-        </li>
+        {% if current_user.is_authenticated %}
+          {% set navigations = [
+                      { 'name': 'Home', 'icon': 'fa-house', 'url': url_for('main.dashboard'), 'page': 'home'},
+                      { 'name': 'Students', 'icon': 'fa-users', 'url': url_for('student.students'), 'page': 'student'},
+                      { 'name': 'Colleges', 'icon': 'fa-building-columns', 'url': url_for('college.colleges'), 'page': 'college'},
+                    ] %}
+          {% for navigation in navigations %}
+            <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == navigation.page else '' }}">
+              <a href="{{ navigation.url }}"
+                 class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-gray-700' if active_page != navigation.page else 'font-semibold' }}"
+                 style="{{ 'color: ' + current_user.primary_color if active_page == navigation.page else '' }}">
+                <i class="fa-solid {{ navigation.icon }}"></i>
+                <p class="font-display">{{ navigation.name }}</p>
+              </a>
+            </li>
+          {% endfor %}
+        {% endif %}
+        {% if not current_user.is_authenticated %}
+          <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'signup' else '' }}">
+            <a href="{{ url_for('auth.signup',) }}"
+               class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'signup' else 'text-gray-700' }}">
+              <i class="fa-solid fa-right-to-bracket"></i>
+              <p class="font-display">Register University</p>
+            </a>
+          </li>
+          <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'login' else '' }}">
+            <a href="{{ url_for('auth.login',) }}"
+               class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'login' else 'text-gray-700' }}">
+              <i class="fa-solid fa-right-to-bracket"></i>
+              <p class="font-display">Login University</p>
+            </a>
+          </li>
+        {% endif %}
       </ul>
       <div class="py-6">
         <ul class="px-4 space-y-4">
-          {% if not current_user.is_authenticated %}
-            <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'signup' else '' }}">
-              <a href="{{ url_for('auth.signup',) }}"
-                 class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'signup' else 'text-gray-700' }}">
-                <i class="fa-solid fa-right-to-bracket"></i>
-                <p class="font-display">Sign Up</p>
-              </a>
-            </li>
-            <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == 'login' else '' }}">
-              <a href="{{ url_for('auth.login',) }}"
-                 class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-blue-500 font-semibold' if active_page == 'login' else 'text-gray-700' }}">
-                <i class="fa-solid fa-right-to-bracket"></i>
-                <p class="font-display">Login</p>
-              </a>
-            </li>
-          {% endif %}
           {% if current_user.is_authenticated %}
             <li class="rounded-lg cursor-pointer hover:bg-gray-100">
               <a href="{{ url_for('auth.logout',) }}"

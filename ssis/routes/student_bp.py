@@ -99,8 +99,6 @@ def add_student():
 
     colleges = College().find_all().get("data")
 
-    print(colleges)
-
     return render_template("add-student.html", colleges=colleges)
 
 

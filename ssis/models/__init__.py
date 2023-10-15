@@ -1,1 +1,1 @@
-from . import College, Course, Student, User
+from . import College, Course, Student, University
