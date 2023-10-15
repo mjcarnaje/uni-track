@@ -17,7 +17,7 @@
           <div class="relative">
             <button type="button"
                     id="add-photo"
-                    class="px-4 py-2 text-white bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600">
+                    class="px-4 py-2 text-white bg-primary-500 rounded-lg cursor-pointer hover:bg-primary-600">
               Change Photo
             </button>
             <input id="student-photo"
@@ -35,21 +35,21 @@
       </div>
       <div class="col-span-2">
         <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Student ID</label>
-        <input class="w-full col-span-2 px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+        <input class="w-full col-span-2 px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
                placeholder="Student Id"
                name="student_id"
                value="{{ student.student_id }}" />
       </div>
       <div class="col-span-1">
         <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">First name</label>
-        <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+        <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
                placeholder="First Name"
                name="first_name"
                value="{{ student.first_name }}" />
       </div>
       <div class="col-span-1">
         <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Last name</label>
-        <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+        <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
                placeholder="Last Name"
                name="last_name"
                value="{{ student.last_name }}" />
@@ -76,7 +76,7 @@
       </div>
       <div class="col-span-1">
         <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Birthday</label>
-        <input class="w-full col-span-2 px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+        <input class="w-full col-span-2 px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
                type="date"
                name="birthday"
                value="{{ student.birthday }}" />
@@ -127,7 +127,7 @@
         </div>
       </div>
       <button type="submit"
-              class="col-span-2 px-4 py-4 text-white bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600">
+              class="col-span-2 px-4 py-4 text-white bg-primary-500 rounded-lg cursor-pointer hover:bg-primary-600">
         Save
       </button>
     </form>

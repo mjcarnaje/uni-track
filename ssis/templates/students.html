@@ -76,7 +76,7 @@
           </div>
         </div>
         <button type="submit"
-                class="col-span-2 px-4 py-4 font-thin text-white transition duration-500 bg-blue-500 rounded-2xl hover:bg-blue-600">
+                class="col-span-2 px-4 py-4 font-thin text-white transition duration-500 bg-primary-500 rounded-2xl hover:bg-primary-600">
           Filter
         </button>
       </form>
@@ -95,7 +95,7 @@
         </div>
         <button type="button"
                 data-open-modal
-                class="px-5 py-2 font-thin tracking-wide text-white bg-blue-500 rounded-2xl hover:bg-blue-600 font-body">
+                class="px-5 py-2 font-thin tracking-wide text-white bg-primary-500 rounded-2xl hover:bg-primary-600 font-body">
           <i class="mr-1 text-sm fa-solid fa-filter"></i>
           Filter
         </button>
@@ -105,7 +105,7 @@
       <div class="flex gap-3 py-4">
         {% for key, value in filters.items() %}
           {% if value %}
-            <div class="flex items-center gap-4 px-4 py-2 bg-blue-500 rounded-2xl">
+            <div class="flex items-center gap-4 px-4 py-2 bg-primary-500 rounded-2xl">
               <p class="text-white">{{ value['name'] }}</p>
               <button type="button" id="delete-filter" data-key="{{ value['key'] }}">
                 <i class="text-white pointer-events-none fa-solid fa-xmark"></i>
@@ -137,7 +137,7 @@
                  height="483.5"
                  viewBox="0 0 485.83373 483.5"
                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                 class="w-full h-full text-blue-500">
+                 class="w-full h-full text-primary-500">
               <path d="M677.54186,336.34717H597.80041a11.47812,11.47812,0,0,1-9.06567-4.39356h0a11.62154,11.62154,0,0,1-2.17652-9.96777,201.63052,201.63052,0,0,0-.00049-93.647,11.62425,11.62425,0,0,1,2.17676-9.96729,11.47753,11.47753,0,0,1,9.06592-4.39355h79.74145a11.6235,11.6235,0,0,1,11.439,9.75537,337.96108,337.96108,0,0,1,0,102.8584A11.6235,11.6235,0,0,1,677.54186,336.34717Z" transform="translate(-357.08314 -208.25)" fill="#e6e6e6" />
               <path d="M597.80041,219.978a5.51264,5.51264,0,0,0-4.35449,2.1084,5.65943,5.65943,0,0,0-1.05371,4.85351,207.656,207.656,0,0,1,.00048,96.44531,5.65638,5.65638,0,0,0,1.053,4.85254l.00049.00049a5.5112,5.5112,0,0,0,4.35425,2.10889h79.74145a5.58248,5.58248,0,0,0,5.50879-4.667,331.9854,331.9854,0,0,0,0-101.03516,5.58248,5.58248,0,0,0-5.50879-4.667Z" transform="translate(-357.08314 -208.25)" fill="#fff" />
               <path d="M660.14054,248.82872h-41.845a6.00633,6.00633,0,0,1-5.99977-5.99977v-2.34463a6.00633,6.00633,0,0,1,5.99977-5.99977h41.845a6.00633,6.00633,0,0,1,5.99976,5.99977V242.829A6.00632,6.00632,0,0,1,660.14054,248.82872Z" transform="translate(-357.08314 -208.25)" fill="#e6e6e6" />

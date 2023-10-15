@@ -1,0 +1,18 @@
+{% block hero %}
+  <div class="flex w-full pt-32 max-w-7xl">
+    <div class="flex flex-col items-center space-y-8">
+      <h1 class="font-extrabold leading-snug tracking-tighter text-center text-gray-800 text-7xl">
+        Elevate University
+        <br />
+        Management with <span class="text-secondary-500">Uni</span><span class="text-primary-500">Track</span>
+      </h1>
+      <p class="w-3/4 text-lg font-light text-center text-gray-500">
+        Discover UniTrack – the ultimate tool for universities to easily manage colleges, courses, and students. Our platform simplifies administrative tasks, making education more efficient and accessible. Join us in transforming higher education with UniTrack's user-friendly technology.
+      </p>
+      <div class="flex">
+        <a href='{{ url_for("auth.signup") }}'
+           class="px-8 py-4 text-lg font-medium text-white transition duration-500 bg-primary-500 rounded-3xl hover:bg-primary-600">Get Started</a>
+      </div>
+    </div>
+  </div>
+{% endblock hero %}

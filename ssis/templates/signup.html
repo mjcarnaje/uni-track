@@ -4,10 +4,10 @@
   Sign Up
 {% endblock title %}
 {% block content %}
-  <div class="flex items-center justify-center w-full max-w-3xl">
+  <div class="flex items-center justify-center w-full max-w-4xl">
     <div class="w-full px-8 py-12 bg-white border rounded-3xl">
-      <div class="flex justify-center pb-8">
-        <h1 class="text-4xl font-extrabold tracking-tight text-gray-700">University Registration</h1>
+      <div class="flex justify-center pb-12">
+        <h1 class="text-5xl font-extrabold tracking-tight text-gray-800">Register University</h1>
       </div>
       <form class="grid grid-cols-2 gap-5"
             method="post"
@@ -24,34 +24,34 @@
                    class="hidden" />
             <button type="button"
                     id="add-logo"
-                    class="px-4 py-2 text-sm font-thin text-white transition duration-500 bg-blue-500 cursor-pointer rounded-xl hover:bg-blue-600">
+                    class="px-4 py-2 text-sm font-thin text-white transition duration-500 bg-primary-500 cursor-pointer rounded-xl hover:bg-primary-600">
               Add Logo
             </button>
           </div>
         </div>
         <div class="col-span-2">
           <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Name</label>
-          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
                  placeholder="Name"
                  name="name" />
         </div>
         <div class="col-span-2">
           <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Email</label>
-          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
                  placeholder="Email"
                  type="email"
                  name="email" />
         </div>
         <div class="col-span-2">
           <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Display Name</label>
-          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
                  placeholder="Display Name"
                  name="display_name" />
         </div>
         <div class="col-span-1">
           <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Primary Color</label>
           <div class="relative">
-            <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+            <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
                    placeholder="Primary Color"
                    name="primary_color" />
             <div id="primary-box" class="absolute inset-y-0 flex items-center right-4">
@@ -62,7 +62,7 @@
         <div class="col-span-1">
           <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Secondary Color</label>
           <div class="relative">
-            <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+            <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
                    placeholder="Secondary Color"
                    name="secondary_color" />
             <div id="secondary-box"
@@ -73,20 +73,20 @@
         </div>
         <div class="col-span-1">
           <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Password</label>
-          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
                  placeholder="Password"
                  type="password"
                  name="password" />
         </div>
         <div class="col-span-1">
           <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Confirm Password</label>
-          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-blue-500"
+          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
                  placeholder="Confirm Password"
                  type="password"
                  name="confirm_password" />
         </div>
         <div class="col-span-2 pt-4">
-          <button class="w-full px-4 py-3 text-lg font-thin text-white bg-blue-500 rounded-lg">Register University</button>
+          <button class="w-full px-4 py-3 text-lg font-thin text-white bg-primary-500 rounded-lg">Register University</button>
         </div>
       </form>
     </div>

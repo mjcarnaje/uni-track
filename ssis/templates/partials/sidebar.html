@@ -1,0 +1,43 @@
+{% block sidebar %}
+  <aside class="flex flex-col justify-between w-full max-w-xs bg-white border-r shadow-md">
+    <ul class="px-4 space-y-4">
+      <li class="flex items-center justify-center py-6">
+        <div class="flex items-center gap-4">
+          <img src="{{ url_for('static', filename='uploads/' + current_user.logo) }}"
+               alt="{{ current_user.logo }}"
+               class="w-16 h-16 rounded-full"
+               height="auto"
+               width="auto" />
+          <h1 class="text-3xl font-extrabold"
+              style="color: {{ current_user.primary_color }}">{{ current_user.display_name }}</h1>
+        </div>
+      </li>
+      {% set navigations = [
+              { 'name': 'Home', 'icon': 'fa-house', 'url': url_for('main.dashboard'), 'page': 'home'},
+              { 'name': 'Students', 'icon': 'fa-users', 'url': url_for('student.students'), 'page': 'student'},
+              { 'name': 'Colleges', 'icon': 'fa-building-columns', 'url': url_for('college.colleges'), 'page': 'college'},
+            ] %}
+      {% for navigation in navigations %}
+        <li class="rounded-lg cursor-pointer hover:bg-gray-100 {{ 'bg-gray-100' if active_page == navigation.page else '' }}">
+          <a href="{{ navigation.url }}"
+             class="flex items-center px-6 py-4 space-x-4 text-md {{ 'text-gray-700' if active_page != navigation.page else 'font-semibold' }}"
+             style="{{ 'color: ' + current_user.primary_color if active_page == navigation.page else '' }}">
+            <i class="fa-solid {{ navigation.icon }}"></i>
+            <p class="font-display">{{ navigation.name }}</p>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <div class="py-6">
+      <ul class="px-4 space-y-4">
+        <li class="rounded-lg cursor-pointer hover:bg-gray-100">
+          <a href="{{ url_for('auth.logout',) }}"
+             class="flex items-center px-6 py-4 space-x-4 text-md text-gray-700 }}">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <p class="font-display">Logout</p>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+{% endblock sidebar %}
