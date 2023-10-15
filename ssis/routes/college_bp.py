@@ -3,7 +3,7 @@ import os
 from flask import Blueprint
 from flask import current_app as app
 from flask import jsonify, redirect, render_template, request
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from ..models.College import College
 from ..utils.upload_file import save_file
@@ -12,11 +12,12 @@ college_bp = Blueprint('college', __name__)
 
 
 @college_bp.route('/')
+@login_required
 def colleges():
     page = request.args.get('page', 1, type=int)
     query = request.args.get('query', '', type=str)
 
-    college_query = College().find_all(
+    college_query = College(university_id=current_user.id).find_all(
         page_number=page,
         page_size=12,
         query=query
@@ -44,7 +45,8 @@ def add_college():
         college_query = College(
             name=request.form.get('name'),
             code=request.form.get('code'),
-            photo=save_file(key='photo')
+            photo=save_file(key='photo'),
+            university_id=current_user.id
         )
 
         college_query.insert()
@@ -64,7 +66,8 @@ def update_college(id):
             id=id,
             name=request.form.get('name'),
             code=request.form.get('code'),
-            photo=save_file(key='photo')
+            photo=save_file(key='photo'),
+            university_id=current_user.id
         )
 
         updated_college.update()
@@ -77,8 +80,9 @@ def update_college(id):
 
 
 @college_bp.route('/<int:id>', methods=['GET', 'DELETE'])
+@login_required
 def college(id):
-    college_query = College(id=id)
+    college_query = College(id=id, university_id=current_user.id)
     college = college_query.find_one()
 
     # TODO: Separate this into a different route

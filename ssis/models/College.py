@@ -8,52 +8,55 @@ class College():
                  name: str = None,
                  code: str = None,
                  photo: str = None,
+                 university_id: int = None,
                  id: int = None
                  ):
         self.id = id
         self.name = name
         self.code = code
         self.photo = photo
+        self.university_id = university_id
 
     def find_one(self) -> str or dict:
         if self.id is None:
             return "Cannot find without an ID"
 
-        SELECT_SQL = f"SELECT college.*, COUNT(course.id) as course_count, COUNT(student.id) as student_count FROM {self.__tablename__} LEFT JOIN course ON course.college_id = college.id LEFT JOIN student ON student.college_id = college.id GROUP BY college.id HAVING college.id=%s"
+        SELECT_SQL = f"SELECT college.*, COUNT(course.id) as course_count, COUNT(student.id) as student_count FROM {self.__tablename__}"
+        SELECT_SQL += " LEFT JOIN course ON course.college_id = college.id LEFT JOIN student ON student.college_id = college.id"
+        SELECT_SQL += " WHERE college.id=%s"
+
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL, (self.id,))
         college = cur.fetchone()
         return college
 
-    def find_all(self, page_number: int = 1, page_size: int = 100, query: str = None):
+    def find_all(self, page_number: int = 1, page_size: int = 100, query: str = None) -> dict:
         offset = (page_number - 1) * page_size
 
         filter_params = []
-        where_clause = ""
+
+        where_clause = "college.university_id = %s"
+        filter_params.extend([self.university_id])
 
         if query:
-            where_clause += "name LIKE %s OR code LIKE %s"
+            where_clause += " AND name LIKE %s OR code LIKE %s"
             filter_params.append(f"%{query}%")
             filter_params.append(f"%{query}%")
 
-        SELECT_SQL = f"SELECT college.*, COUNT(course.id) as course_count, COUNT(student.id) as student_count FROM {self.__tablename__} LEFT JOIN course ON course.college_id = college.id LEFT JOIN student ON student.college_id = college.id GROUP BY college.id"
-
-        if where_clause:
-            SELECT_SQL += f" WHERE {where_clause}"
-
+        SELECT_SQL = f"SELECT college.*, COUNT(course.id) as course_count, COUNT(student.id) as student_count FROM {self.__tablename__}"
+        SELECT_SQL += " LEFT JOIN course ON course.college_id = college.id LEFT JOIN student ON student.college_id = college.id"
+        SELECT_SQL += f" WHERE {where_clause}"
+        SELECT_SQL += " GROUP BY college.id"
         SELECT_SQL += " LIMIT %s OFFSET %s"
-        params = filter_params + [page_size, offset]
 
         cur = mysql.new_cursor(dictionary=True)
 
-        cur.execute(SELECT_SQL, params)
+        cur.execute(SELECT_SQL, filter_params + [page_size, offset])
 
         data = cur.fetchall()
 
         COUNT_SQL = f"SELECT COUNT(*) FROM {self.__tablename__}"
-
-        if where_clause:
-            COUNT_SQL += f" WHERE {where_clause}"
+        COUNT_SQL += f" WHERE {where_clause}"
 
         cur.execute(COUNT_SQL, filter_params)
         total_count = cur.fetchone()['COUNT(*)']
@@ -69,23 +72,23 @@ class College():
         }
 
     def insert(self):
-        INSERT_SQL = f"INSERT INTO {self.__tablename__} (name, code, photo) VALUES (%s, %s, %s)"
+        INSERT_SQL = f"INSERT INTO {self.__tablename__} (name, code, photo, university_id) VALUES (%s, %s, %s, %s)"
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(INSERT_SQL, (self.name, self.code, self.photo))
+        cur.execute(INSERT_SQL, (self.name, self.code,
+                    self.photo, self.university_id))
         mysql.connection.commit()
         return "Insert successful"
 
     def update(self):
-        if self.id is None:
-            return "Cannot update without an ID"
+        if self.id is None or self.university_id is None:
+            return "Cannot update without an ID and university ID"
 
-        UPDATE_SQL = f"UPDATE {self.__tablename__} SET name=%s, code=%s, photo=%s WHERE id=%s"
+        UPDATE_SQL = f"UPDATE {self.__tablename__} SET name=%s, code=%s, photo=%s WHERE id=%s AND university_id=%s"
 
         try:
             cur = mysql.new_cursor(dictionary=True)
             cur.execute(
-                UPDATE_SQL, (self.name, self.code, self.photo, self.id))
-
+                UPDATE_SQL, (self.name, self.code, self.photo, self.id, self.university_id))
             mysql.connection.commit()
 
             return "Update successful"
@@ -93,23 +96,26 @@ class College():
             return f"Update failed: {str(e)}"
 
     def delete(self):
-        if self.id is None:
-            return "Cannot delete without an ID"
+        if self.id is None or self.university_id is None:
+            return "Cannot delete without an ID and university ID"
 
         try:
-            DELETE_SQL = f"DELETE FROM {self.__tablename__} WHERE id=%s"
+            DELETE_SQL = f"DELETE FROM {self.__tablename__} WHERE id=%s AND university_id=%s"
             cur = mysql.new_cursor(dictionary=True)
-            cur.execute(DELETE_SQL, (self.id,))
+            cur.execute(DELETE_SQL, (self.id, self.university_id))
             mysql.connection.commit()
             return "Delete successful"
         except Exception as e:
             return f"Delete failed: {str(e)}"
 
     def find_courses(self):
-        if (self.id is None):
-            return "Cannot find courses without an ID"
+        if (self.id is None or self.university_id is None):
+            return "Cannot find courses without an ID and university ID"
 
-        SELECT_SQL = f"SELECT course.*, COUNT(student.id) as student_count FROM {self.__tablename__} JOIN course ON course.college_id = college.id LEFT JOIN student ON student.course_id = course.id WHERE college.id=%s GROUP BY course.id"
+        SELECT_SQL = f"SELECT course.*, COUNT(student.id) as student_count FROM {self.__tablename__}"
+        SELECT_SQL += " LEFT JOIN course ON course.college_id = college.id LEFT JOIN student ON student.course_id = course.id"
+        SELECT_SQL += " WHERE college.id=%s AND college.university_id=%s"
+        SELECT_SQL += " GROUP BY course.id"
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(SELECT_SQL, (self.id,))
+        cur.execute(SELECT_SQL, (self.id, self.university_id))
         return cur.fetchall()

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, redirect, request
-from flask_login import login_required
+from flask_login import current_user, login_required
 
 from ..models.Course import Course
 from ..utils.upload_file import save_file
@@ -15,7 +15,8 @@ def courses():
             name=request.form.get('name'),
             code=request.form.get('code'),
             photo=save_file(key='photo'),
-            college_id=request.form.get('college_id')
+            college_id=request.form.get('college_id'),
+            university_id=current_user.id
         )
 
         course.insert()
@@ -34,7 +35,8 @@ def course(id):
             name=request.form.get('name'),
             code=request.form.get('code'),
             photo=save_file(key='photo'),
-            college_id=request.form.get('college_id')
+            college_id=request.form.get('college_id'),
+            university_id=current_user.id
         )
 
         updated_course.update()
@@ -50,6 +52,8 @@ def course(id):
 
 
 @course_bp.route('/college/<int:id>', methods=['GET'])
+@login_required
 def courses_by_college(id):
-    courses_by_college = Course().find_by_college_id(college_id=id)
+    courses_by_college = Course(
+        university_id=current_user.id).find_by_college_id(college_id=id)
     return jsonify(courses_by_college)

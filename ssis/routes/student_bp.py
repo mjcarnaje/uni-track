@@ -3,7 +3,7 @@ import os
 from flask import Blueprint
 from flask import current_app as app
 from flask import jsonify, redirect, render_template, request
-from flask_login import login_required
+from flask_login import current_user, login_required
 
 from ssis.utils.upload_file import save_file
 
@@ -15,6 +15,7 @@ student_bp = Blueprint('student', __name__)
 
 
 @student_bp.route('/')
+@login_required
 def students():
     page = request.args.get('page', 1, type=int)
 
@@ -23,13 +24,13 @@ def students():
     course_id = request.args.get('course_id', '', type=int)
     gender = request.args.get('gender', '', type=str)
 
-    students_query = Student().find_all(
+    students_query = Student(university_id=current_user.id).find_all(
         page_number=page,
         page_size=12,
         query=query,
         college_id=college_id,
         course_id=course_id,
-        gender=gender
+        gender=gender,
     )
 
     students = students_query.get("data")
@@ -37,7 +38,7 @@ def students():
     has_next_page = students_query.get("has_next_page")
     total_count = students_query.get("total_count")
 
-    colleges = College().find_all().get("data")
+    colleges = College(university_id=current_user.id).find_all().get("data")
 
     courses = []
     filters = {
@@ -90,14 +91,15 @@ def add_student():
             birthday=request.form.get('birthday'),
             college_id=request.form.get('college_id'),
             course_id=request.form.get('course_id'),
-            photo=save_file(key='photo') or 'default.png'
+            photo=save_file(key='photo') or 'default.png',
+            university_id=current_user.id
         )
 
         student.insert()
 
         return redirect("/student/")
 
-    colleges = College().find_all().get("data")
+    colleges = College(university_id=current_user.id).find_all().get("data")
 
     return render_template("add-student.html", colleges=colleges)
 
@@ -105,7 +107,7 @@ def add_student():
 @student_bp.route("/update/<int:id>", methods=["GET", "POST"])
 @login_required
 def update_student(id):
-    student_query = Student(id=id)
+    student_query = Student(id=id, university_id=current_user.id)
     student = student_query.find_one()
 
     if request.method == "POST":
@@ -123,15 +125,16 @@ def update_student(id):
 
         return redirect("/student")
 
-    colleges = College().find_all().get("data")
-    courses = College(id=student.get('college_id')).find_courses()
+    colleges = College(university_id=current_user.id).find_all().get("data")
+    courses = College(id=student.get('college_id'),
+                      university_id=current_user.id).find_courses()
 
     return render_template("update-student.html", student=student, colleges=colleges, courses=courses)
 
 
 @student_bp.route('/<int:id>', methods=['GET', 'DELETE'])
 def student(id):
-    student_query = Student(id=id)
+    student_query = Student(id=id, university_id=current_user.id)
     student = student_query.find_one()
 
     # TODO: Separate this into a different route

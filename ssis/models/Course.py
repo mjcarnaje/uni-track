@@ -7,47 +7,48 @@ class Course():
     def __init__(self,
                  id: int = None,
                  name: str = None,
-
                  code: str = None,
                  photo: str = None,
-                 college_id: int = None
+                 college_id: int = None,
+                 university_id: int = None
                  ):
         self.id = id
         self.name = name
         self.code = code
         self.photo = photo
         self.college_id = college_id
+        self.university_id = university_id
 
     def find_one(self):
-        if self.id is None:
-            return "Cannot find without an ID"
+        if self.id is None or self.university_id is None:
+            return "Cannot find without an ID and university ID"
 
-        SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE id=%s"
+        SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE id=%s AND university_id=%s"
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(SELECT_SQL, (self.id,))
+        cur.execute(SELECT_SQL, (self.id, self.university_id))
         return cur.fetchone()
 
     def find_all(self):
-        SELECT_SQL = f"SELECT course.*, COUNT(student.id) as student_count FROM {self.__tablename__} JOIN student ON student.course_id = course.id GROUP BY course.id"
+        SELECT_SQL = f"SELECT course.*, COUNT(student.id) as student_count FROM {self.__tablename__}"
+        SELECT_SQL += " LEFT JOIN student ON student.course_id = course.id GROUP BY course.id"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL)
         return cur.fetchall()
 
     def find_by_college_id(self, college_id: int):
-        SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE college_id=%s"
+        if self.university_id is None:
+            return "Cannot find without an university ID"
+
+        SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE college_id=%s AND university_id=%s"
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(SELECT_SQL, (college_id,))
+        cur.execute(SELECT_SQL, (college_id, self.university_id))
         return cur.fetchall()
 
     def insert(self):
-        INSERT_SQL = f"INSERT INTO {self.__tablename__} (name, code, photo, college_id) VALUES (%s, %s, %s, %s)"
+        INSERT_SQL = f"INSERT INTO {self.__tablename__} (name, code, photo, college_id, university_id) VALUES (%s, %s, %s, %s, %s)"
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(INSERT_SQL, (
-            self.name,
-            self.code,
-            self.photo,
-            self.college_id
-        ))
+        cur.execute(INSERT_SQL, (self.name, self.code, self.photo,
+                    self.college_id, self.university_id))
         mysql.connection.commit()
         return "Insert successful"
 
@@ -69,11 +70,11 @@ class Course():
             return f"Update failed: {str(e)}"
 
     def delete(self):
-        if self.id is None:
-            return "Cannot delete without an ID"
+        if self.id is None or self.university_id is None:
+            return "Cannot delete without an ID and university ID"
 
-        DELETE_SQL = f"DELETE FROM {self.__tablename__} WHERE id=%s"
+        DELETE_SQL = f"DELETE FROM {self.__tablename__} WHERE id=%s AND university_id=%s"
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(DELETE_SQL, (self.id,))
+        cur.execute(DELETE_SQL, (self.id, self.university_id))
         mysql.connection.commit()
         return "Delete successful"
