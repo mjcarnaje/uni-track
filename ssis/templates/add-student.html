@@ -78,7 +78,9 @@
           <select class="w-full col-span-2 px-4 py-3 bg-white border-2 appearance-none rounded-2xl"
                   name="college_id">
             <option value="">Select College</option>
-            {% for college in colleges %}<option value="{{ college.id }}">{{ college.name }}</option>{% endfor %}
+            {% for college in colleges %}
+              <option value="{{ college.id }}">{{ college.code }} - {{ college.name }}</option>
+            {% endfor %}
           </select>
           <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
             <svg class="w-4 h-4 fill-current"
@@ -157,7 +159,7 @@
         if (data && data.length > 0) {
           courseSelect.innerHTML = "";
           data.forEach((course) => {
-            courseSelect.innerHTML += `<option value="${course.id}">${course.name}</option>`;
+            courseSelect.innerHTML += `<option value="${course.id}">${course.code} - ${course.name}</option>`;
           });
         }
       })

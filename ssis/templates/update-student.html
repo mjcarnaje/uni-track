@@ -89,7 +89,9 @@
             <option value="">Select College</option>
             {% for college in colleges %}
               <option value="{{ college.id }}"
-                      selected="{{ 'selected' if student.college == college.id }}">{{ college.name }}</option>
+                      selected="{{ 'selected' if student.college == college.id }}">
+                {{ college.code }} - {{ college.name }}
+              </option>
             {% endfor %}
           </select>
           <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
@@ -109,7 +111,9 @@
             <option value="">Select Course</option>
             {% for course in courses %}
               <option value="{{ course.id }}"
-                      selected="{{ 'selected' if student.course == course.id }}">{{ course.name }}</option>
+                      selected="{{ 'selected' if student.course == course.id }}">
+                {{ course.code }} - {{ course.name }}
+              </option>
             {% endfor %}
             <!-- {% for course in courses %}<option value="{{ course.id }}">{{ course.name }}</option>{% endfor %} -->
           </select>
@@ -175,7 +179,7 @@
         if (data && data.length > 0) {
           courseSelect.innerHTML = "";
           data.forEach((course) => {
-            courseSelect.innerHTML += `<option value="${course.id}">${course.name}</option>`;
+            courseSelect.innerHTML += `<option value="${course.id}">${course.code} - ${course.name}</option>`;
           });
         }
       })
