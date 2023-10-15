@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, redirect, request
 from flask_login import login_required
 
 from ..models.Course import Course
+from ..utils.upload_file import save_file
 
 course_bp = Blueprint('course', __name__)
 
@@ -13,7 +14,7 @@ def courses():
         course = Course(
             name=request.form.get('name'),
             code=request.form.get('code'),
-            photo=request.form.get('photo'),
+            photo=save_file(key='photo'),
             college_id=request.form.get('college_id')
         )
 
@@ -32,7 +33,7 @@ def course(id):
             id=id,
             name=request.form.get('name'),
             code=request.form.get('code'),
-            photo=request.form.get('photo'),
+            photo=save_file(key='photo'),
             college_id=request.form.get('college_id')
         )
 

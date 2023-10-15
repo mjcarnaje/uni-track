@@ -109,7 +109,7 @@ class College():
         if (self.id is None):
             return "Cannot find courses without an ID"
 
-        SELECT_SQL = f"SELECT * FROM course WHERE college_id=%s"
+        SELECT_SQL = f"SELECT course.*, COUNT(student.id) as student_count FROM {self.__tablename__} JOIN course ON course.college_id = college.id JOIN student ON student.course_id = course.id WHERE college.id=%s GROUP BY course.id"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL, (self.id,))
         return cur.fetchall()

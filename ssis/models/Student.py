@@ -76,7 +76,7 @@ class Student():
             where_clause += " gender = %s"
             filter_params.append(gender)
 
-        SELECT_SQL = f"SELECT student.*, college.name AS college_name, college.photo AS college_photo, course.name AS course_name FROM {self.__tablename__} JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id"
+        SELECT_SQL = f"SELECT student.*, college.name AS college_name, college.photo AS college_photo, course.name AS course_name, course.photo AS course_photo FROM {self.__tablename__} JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id"
 
         if where_clause:
             SELECT_SQL += f" WHERE {where_clause}"

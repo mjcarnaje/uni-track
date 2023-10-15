@@ -21,23 +21,23 @@
     {% endif %}
     <div class="grid w-full grid-cols-2 gap-4 pt-12">
       <div class="p-4 space-y-1 border rounded-xl">
-        <label class="text-xs font-medium text-gray-500 uppercase">Student ID</label>
+        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Student ID</label>
         <h1 class="text-lg font-semibold text-gray-800">{{ student.student_id }}</h1>
       </div>
       <div class="p-4 space-y-1 border rounded-xl">
-        <label class="text-xs font-medium text-gray-500 uppercase">Full Name</label>
+        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Full Name</label>
         <h1 class="text-lg font-semibold text-gray-800">{{ student.first_name }} {{ student.last_name }}</h1>
       </div>
       <div class="p-4 space-y-1 border rounded-xl">
-        <label class="text-xs font-medium text-gray-500 uppercase">Gender</label>
+        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Gender</label>
         <h1 class="text-lg font-semibold text-gray-800">{{ student.gender }}</h1>
       </div>
       <div class="p-4 space-y-1 border rounded-xl">
-        <label class="text-xs font-medium text-gray-500 uppercase">Birthday</label>
+        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Birthday</label>
         <h1 class="text-lg font-semibold text-gray-800">{{ student.birthday }}</h1>
       </div>
       <div class="p-4 space-y-1 border rounded-xl">
-        <label class="text-xs font-medium text-gray-500 uppercase">College</label>
+        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">College</label>
         <div class="flex gap-2">
           {% if student.college_photo %}
             <img src="{{ url_for('static', filename='uploads/' + student.college_photo) }}"
@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="p-4 space-y-1 border rounded-xl">
-        <label class="text-xs font-medium text-gray-500 uppercase">Course</label>
+        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Course</label>
         <div class="flex gap-2">
           {% if student.course_photo %}
             <img src="{{ url_for('static', filename='uploads/' + student.course_photo) }}"

@@ -73,6 +73,8 @@ def students():
                            total_count=total_count,
                            query=query,
                            filters=filters,
+                           show_filters=len(
+                               list(filter(lambda filter: filter, filters.values()))) > 0
                            )
 
 
