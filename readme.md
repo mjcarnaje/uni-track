@@ -6,8 +6,10 @@ Welcome to the UniTrack repository! UniTrack is a simple web application created
 
 Before you begin working on this project, ensure you have the following prerequisites installed on your system:
 
-- Python 3.x (recommended: Python 3.9+)
-- Node.js 18.x (recommended: Node.js 18.18.0 LTS)
+- Python 3.x
+- Node.js 18.x
+- MySQL 8.x
+- Pipenv
 
 ## Getting Started
 
@@ -20,41 +22,29 @@ Follow these steps to set up and run the project on your local machine:
    cd uni-track
    ```
 
-2. **Create an environment:**
-
-   ```shell
-   python3 -m venv .venv
-   ```
-
-3. **Activate the Virtual Environment:**
-
-   - On macOS and Linux:
-
-     ```shell
-     source .venv/bin/activate
-     ```
-
-   - On Windows:
-
-     ```shell
-     .venv\Scripts\activate
-     ```
-
-4. **Install Dependencies:**
-
-   ```shell
-   pip install -r requirements.txt
-   ```
+2. **Install Dependencies:**
 
    ```shell
    npm install
    ```
 
-5. **Create a Database:**
+   ```shell
+   pipenv install
+   ```
+
+   Note: If you don't have pipenv installed, you can install it using `pip install pipenv`. And every time you want to run the project, you can use `pipenv run python main.py`. If you want to install packages, you can use `pipenv install <package-name>`.
+
+3. **Activate the Virtual Environment:**
+
+   ```shell
+   pipenv shell
+   ```
+
+4. **Create a Database:**
 
    - Create a database named `unitrack` in MySQL.
 
-6. **Run the Flask Application & TailwindCSS Compiler**:
+5. **Run the Flask Application & TailwindCSS Compiler**:
 
    ```shell
    python main.py
