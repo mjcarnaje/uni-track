@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   mode: "jit",
-  content: ["./ssis/templates/**/*.{html,htm}"],
+  content: ["./unitrack/templates/**/*.{html,htm}"],
   theme: {
     fontFamily: {
       display: ['"Mochiy Pop P One"'],

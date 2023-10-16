@@ -1,13 +1,13 @@
 from flask_mysql_connector import Params
 from flask import Flask
 
-UPLOAD_FOLDER = 'ssis/static/uploads'
+UPLOAD_FOLDER = 'unitrack/static/uploads'
 SECRET_KEY = '628c6f1857f275d393e6b9657fd5e640472239f4d30d72fdf323d43ea3437abf'
 
 MYSQL_HOST = 'localhost'
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = 'password'
-MYSQL_DATABASE = 'ssis'
+MYSQL_DATABASE = 'unitrack'
 
 
 def set_configs(app: Flask):

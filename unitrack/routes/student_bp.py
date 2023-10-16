@@ -5,7 +5,7 @@ from flask import current_app as app
 from flask import jsonify, redirect, render_template, request
 from flask_login import current_user, login_required
 
-from ssis.utils.upload_file import save_file
+from unitrack.utils.upload_file import save_file
 
 from ..models.College import College
 from ..models.Course import Course

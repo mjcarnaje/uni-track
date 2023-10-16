@@ -1,10 +1,10 @@
 {
-  "name": "web-ssis",
+  "name": "uni-track",
   "version": "1.0.0",
-  "description": "Welcome to the Web-based Simple Student Information System (SSIS) repository! SSIS is a straightforward web application designed to help you manage student information, colleges, and courses.",
+  "description": "UniTrack - The easy way to manage colleges, courses, and students at your university.",
   "main": "index.js",
   "scripts": {
-    "compile:css": "npx tailwindcss -i ./ssis/static/src/input.css -o ./ssis/static/css/main.css --watch"
+    "compile:css": "npx tailwindcss -i ./unitrack/static/src/input.css -o ./unitrack/static/css/main.css --watch"
   },
   "author": "",
   "license": "ISC",

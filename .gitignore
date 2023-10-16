@@ -22,5 +22,5 @@ docs/_build/
 node_modules/
 
 # Static files
-ssis/static/uploads/*
-!ssis/static/uploads/default.png
+unitrack/static/uploads/*
+!unitrack/static/uploads/default.png

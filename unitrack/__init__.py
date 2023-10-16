@@ -25,11 +25,11 @@ def create_app():
     def load_user(user_id):
         return University(id=user_id).find_by_id()
 
-    from ssis.routes.main_bp import main_bp
-    from ssis.routes.auth_bp import auth_bp
-    from ssis.routes.college_bp import college_bp
-    from ssis.routes.course_bp import course_bp
-    from ssis.routes.student_bp import student_bp
+    from unitrack.routes.main_bp import main_bp
+    from unitrack.routes.auth_bp import auth_bp
+    from unitrack.routes.college_bp import college_bp
+    from unitrack.routes.course_bp import course_bp
+    from unitrack.routes.student_bp import student_bp
 
     app.register_blueprint(main_bp, url_prefix='/')
     app.register_blueprint(auth_bp, url_prefix='/auth')

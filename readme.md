@@ -1,6 +1,6 @@
 ## Project Overview
 
-Welcome to the Web-based Simple Student Information System (SSIS) repository! SSIS is a straightforward web application designed to help you manage student information, colleges, and courses.
+Welcome to the UniTrack repository! UniTrack is a simple web application created to aunitrackt you in managing student information, colleges, and courses.
 
 ## Prerequisites
 
@@ -16,8 +16,8 @@ Follow these steps to set up and run the project on your local machine:
 1. **Clone the Repository:**
 
    ```shell
-   git clone https://github.com/mjcarnaje/web-ssis.git
-   cd web-ssis
+   git clone https://github.com/mjcarnaje/uni-track.git
+   cd uni-track
    ```
 
 2. **Create an environment:**
@@ -65,10 +65,12 @@ Follow these steps to set up and run the project on your local machine:
 ## Folder Structure
 
 - `main.py`: The main Python file of the project.
-- `ssis/`: A Python package containing the Flask application (indicated by the presence of `__init__.py`).
+- `unitrack/`: A Python package containing the Flask application (indicated by the presence of `__init__.py`).
   - `__init__.py`: Initialization file for the Flask application package.
   - `static/`: Directory for static assets like CSS and JavaScript files.
   - `templates/`: Directory for HTML templates used in the project.
-  - `auth.py`: Module for authentication-related functionality.
-  - `models.py`: Module for defining data models.
-  - `views.py`: Module for defining views and routes for the Flask application.
+  - `configs/`: Directory for configuration files.
+  - `db/`: Directory for database files.
+  - `routes/`: Directory for blueprint files.
+  - `utils/`: Directory for utility files.
+  - `models/`: Directory for database model files.
