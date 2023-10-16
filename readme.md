@@ -1,10 +1,10 @@
 ## Project Overview
 
-Welcome to the UniTrack repository! UniTrack is a simple web application created to aunitrackt you in managing student information, colleges, and courses.
+Welcome to the UniTrack repository! UniTrack is a simple web application created to aunitrackt you in managing student information, colleges, and courses. This is a flask application that uses MySQL as its database. It also uses TailwindCSS for styling.
 
 ## Prerequisites
 
-Before you begin working on or using this project, ensure you have the following prerequisites installed on your system:
+Before you begin working on this project, ensure you have the following prerequisites installed on your system:
 
 - Python 3.x (recommended: Python 3.9+)
 - Node.js 18.x (recommended: Node.js 18.18.0 LTS)
@@ -50,7 +50,11 @@ Follow these steps to set up and run the project on your local machine:
    npm install
    ```
 
-5. **Run the Flask Application & TailwindCSS Compiler**:
+5. **Create a Database:**
+
+   - Create a database named `unitrack` in MySQL.
+
+6. **Run the Flask Application & TailwindCSS Compiler**:
 
    ```shell
    python main.py
