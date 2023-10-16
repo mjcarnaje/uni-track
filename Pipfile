@@ -9,7 +9,7 @@ mysqlclient = "*"
 flask-mysql-connector = "*"
 flask-login = "*"
 Werkzeug = "2.3.7"
-
+python-dotenv = "*"
 
 [dev-packages]
 

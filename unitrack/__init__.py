@@ -2,16 +2,16 @@ from flask import Flask
 from flask_login import LoginManager, login_manager
 from flask_mysql_connector import MySQL
 
-from .configs import set_configs
 from .db import create_tables, mysql
 from .models.University import University
+from unitrack.config import Config
 
 app = Flask(__name__)
 
 
 def create_app():
 
-    set_configs(app)
+    app.config.from_object(Config)
 
     mysql.init_app(app)
 
