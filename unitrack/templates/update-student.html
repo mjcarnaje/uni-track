@@ -3,7 +3,7 @@
   Update Student - {{ student.first_name }} {{ student.last_name }}
 {% endblock title %}
 {% block content %}
-  <div class="w-full max-w-3xl p-8 mx-auto bg-white rounded-lg shadow-sm">
+  <div class="w-full max-w-3xl p-8 mx-auto bg-white border shadow-md rounded-2xl">
     <form class="grid w-full grid-cols-2 gap-8 py-4"
           method="post"
           enctype="multipart/form-data">
@@ -17,7 +17,7 @@
           <div class="relative">
             <button type="button"
                     id="add-photo"
-                    class="px-4 py-2 text-white bg-primary-500 rounded-lg cursor-pointer hover:bg-primary-600">
+                    class="px-4 py-2 text-white rounded-lg cursor-pointer bg-primary-500 hover:bg-primary-600">
               Change Photo
             </button>
             <input id="student-photo"
@@ -127,7 +127,7 @@
         </div>
       </div>
       <button type="submit"
-              class="col-span-2 px-4 py-4 text-white bg-primary-500 rounded-lg cursor-pointer hover:bg-primary-600">
+              class="col-span-2 px-4 py-4 text-white rounded-lg cursor-pointer bg-primary-500 hover:bg-primary-600">
         Save
       </button>
     </form>

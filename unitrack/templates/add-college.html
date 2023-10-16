@@ -3,7 +3,7 @@
   Add College
 {% endblock title %}
 {% block content %}
-  <div class="w-full max-w-3xl p-8 mx-auto bg-white shadow-sm rounded-xl">
+  <div class="w-full max-w-3xl p-8 mx-auto bg-white border shadow-md rounded-2xl">
     <form class="grid w-full grid-cols-2 gap-8 py-4"
           method="post"
           enctype="multipart/form-data">
@@ -20,7 +20,7 @@
                  class="hidden" />
           <button type="button"
                   id="add-photo"
-                  class="px-4 py-2 text-sm font-thin text-white transition duration-500 bg-primary-500 cursor-pointer rounded-xl hover:bg-primary-600">
+                  class="px-4 py-2 text-sm font-thin text-white transition duration-500 cursor-pointer bg-primary-500 rounded-xl hover:bg-primary-600">
             Add College Photo
           </button>
           <button type="button"
@@ -43,7 +43,7 @@
                name="code" />
       </div>
       <button type="submit"
-              class="col-span-2 px-4 py-4 font-thin text-white bg-primary-500 cursor-pointer rounded-xl hover:bg-primary-600">
+              class="col-span-2 px-4 py-4 font-thin text-white cursor-pointer bg-primary-500 rounded-xl hover:bg-primary-600">
         Save
       </button>
     </form>

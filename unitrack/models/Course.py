@@ -78,3 +78,9 @@ class Course():
         cur.execute(DELETE_SQL, (self.id, self.university_id))
         mysql.connection.commit()
         return "Delete successful"
+
+    def count(self):
+        SELECT_SQL = f"SELECT COUNT(*) FROM {self.__tablename__} WHERE university_id=%s"
+        cur = mysql.new_cursor(dictionary=True)
+        cur.execute(SELECT_SQL, (self.university_id,))
+        return cur.fetchone()['COUNT(*)']

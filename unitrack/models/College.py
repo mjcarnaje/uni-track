@@ -115,9 +115,16 @@ class College():
             return "Cannot find courses without an ID and university ID"
 
         SELECT_SQL = f"SELECT course.*, COUNT(student.id) as student_count FROM {self.__tablename__}"
-        SELECT_SQL += " LEFT JOIN course ON course.college_id = college.id LEFT JOIN student ON student.course_id = course.id"
+        SELECT_SQL += " LEFT JOIN course ON course.college_id = college.id"
+        SELECT_SQL += " LEFT JOIN student ON student.course_id = course.id"
         SELECT_SQL += " WHERE college.id=%s AND college.university_id=%s"
         SELECT_SQL += " GROUP BY course.id"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL, (self.id, self.university_id))
         return cur.fetchall()
+
+    def count(self):
+        SELECT_SQL = f"SELECT COUNT(*) FROM {self.__tablename__} WHERE university_id=%s"
+        cur = mysql.new_cursor(dictionary=True)
+        cur.execute(SELECT_SQL, (self.university_id,))
+        return cur.fetchone()['COUNT(*)']

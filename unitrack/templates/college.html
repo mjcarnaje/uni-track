@@ -23,7 +23,7 @@
                  class="hidden" />
           <button type="button"
                   id="add-photo"
-                  class="px-4 py-2 text-sm font-thin text-white transition duration-500 bg-primary-500 cursor-pointer rounded-xl hover:bg-primary-600">
+                  class="px-4 py-2 text-sm font-thin text-white transition duration-500 cursor-pointer bg-primary-500 rounded-xl hover:bg-primary-600">
             Add Course Photo
           </button>
           <button type="button"
@@ -60,13 +60,13 @@
           <div class="px-4 py-1 bg-green-500 rounded-full">
             <p class="font-thin text-white">{{ college.course_count }} courses</p>
           </div>
-          <div class="px-4 py-1 bg-primary-500 rounded-full">
+          <div class="px-4 py-1 rounded-full bg-primary-500">
             <p class="font-thin text-white">{{ college.student_count }} students</p>
           </div>
         </div>
         <div class="flex items-center gap-4">
           <a href="{{ url_for('college.update_college', id=college.id) }}"
-             class="px-4 py-1 text-sm font-light text-primary-600 transition-all duration-500 border border-primary-600 rounded-full cursor-pointer hover:font-medium hover:bg-primary-50">Update</a>
+             class="px-4 py-1 text-sm font-light transition-all duration-500 border rounded-full cursor-pointer text-primary-600 border-primary-600 hover:font-medium hover:bg-primary-50">Update</a>
           <button onclick="deleteCollege({{ college.id }})"
                   class="px-4 py-1 text-sm font-light text-red-600 transition-all duration-500 border border-red-600 rounded-full cursor-pointer hover:font-medium hover:bg-red-50">
             Delete
@@ -77,7 +77,7 @@
     <div class="w-full">
       {% if courses | length == 0 %}
         <div class="py-16 space-y-6 text-center">
-          <i class="text-4xl text-gray-800 fa-solid fa-mountain-sun"></i>
+          <i class="text-4xl text-gray-800 fa-solid fa-certificate"></i>
           <h1 class="text-3xl font-bold text-gray-800">No courses found</h1>
           <p class="text-gray-600">Add a course to get started</p>
           <button data-open-modal
@@ -122,7 +122,7 @@
                           class="w-8 h-8 text-red-500 border border-red-500 rounded-full hover:bg-red-50 hover:text-red-600">
                     <i class="text-xs fa-solid fa-trash"></i>
                   </button>
-                  <button class="w-8 h-8 text-primary-500 border border-primary-500 rounded-full hover:bg-primary-50 hover:text-primary-600"
+                  <button class="w-8 h-8 border rounded-full text-primary-500 border-primary-500 hover:bg-primary-50 hover:text-primary-600"
                           data-course-id="{{ course.id }}"
                           data-course-name="{{ course.name }}"
                           data-course-code="{{ course.code }}"
