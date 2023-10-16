@@ -70,3 +70,19 @@ class University(UserMixin):
         mysql.connection.commit()
         self.id = cur.lastrowid
         return self
+
+    def update(self):
+        UPDATE_SQL = f"UPDATE {self.__tablename__} SET email=%s, logo=%s, display_name=%s, name=%s, primary_color=%s, secondary_color=%s WHERE id=%s"
+        cur = mysql.new_cursor(dictionary=True)
+        cur.execute(UPDATE_SQL, (
+            self.email,
+            self.logo,
+            self.display_name,
+            self.name,
+            self.primary_color,
+            self.secondary_color,
+            self.id
+        ))
+        mysql.connection.commit()
+
+        return self

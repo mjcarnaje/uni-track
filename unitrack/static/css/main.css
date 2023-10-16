@@ -542,12 +542,20 @@ video {
   position: static;
 }
 
+.fixed {
+  position: fixed;
+}
+
 .absolute {
   position: absolute;
 }
 
 .relative {
   position: relative;
+}
+
+.sticky {
+  position: sticky;
 }
 
 .inset-0 {
@@ -598,6 +606,10 @@ video {
 
 .mt-1 {
   margin-top: 0.25rem;
+}
+
+.ml-80 {
+  margin-left: 20rem;
 }
 
 .box-content {
@@ -682,6 +694,10 @@ video {
 
 .h-full {
   height: 100%;
+}
+
+.max-h-screen {
+  max-height: 100vh;
 }
 
 .min-h-full {

@@ -46,7 +46,7 @@
       {% include "partials/navbar.html" %}
       <div class="absolute inset-0 w-full h-full hero"></div>
     {% endif %}
-    <div class="flex justify-center flex-1 w-full min-h-full py-24">
+    <div class="flex justify-center flex-1 w-full min-h-full py-24 {{ 'ml-80' if current_user.is_authenticated else '' }}">
       {% block content %}
       {% endblock content %}
     </div>

@@ -1,0 +1,141 @@
+{% extends "layout.html" %} {% set active_page = "settings" %}
+{% block title %}
+  Settings
+{% endblock title %}
+{% block content %}
+  <div class="flex items-center justify-center w-full max-w-4xl">
+    <div class="w-full px-8 pt-24 pb-12 bg-white border shadow-md rounded-2xl">
+      <form class="grid grid-cols-2 gap-5"
+            method="post"
+            enctype="multipart/form-data">
+        <div class="flex flex-col items-center col-span-2 gap-4">
+          <div id="logo-container"
+               class="flex items-center justify-center w-48 h-48 border bg-slate-200 rounded-3xl">
+            {% if university.logo %}
+              <img src="{{ url_for('static', filename='uploads/' + university.logo) }}"
+                   class="object-cover w-full h-full rounded-3xl"
+                   height="auto"
+                   width="auto"
+                   alt="Logo" />
+            {% endif %}
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="file"
+                   name="logo"
+                   accept="image/png, image/jpeg, image/jpg"
+                   class="hidden"
+                   value="{{ university.logo }}" />
+            <button type="button"
+                    id="add-logo"
+                    class="px-4 py-2 text-sm font-thin text-white transition duration-500 cursor-pointer bg-primary-500 rounded-xl hover:bg-primary-600">
+              Chnage University Logo
+            </button>
+          </div>
+        </div>
+        <div class="col-span-2">
+          <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Name</label>
+          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
+                 placeholder="Name"
+                 name="name"
+                 value="{{ university.name }}" />
+        </div>
+        <div class="col-span-2">
+          <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Display Name</label>
+          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
+                 placeholder="Display Name"
+                 name="display_name"
+                 value="{{ university.display_name }}" />
+        </div>
+        <div class="col-span-1">
+          <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Primary Color</label>
+          <div class="relative">
+            <input type="text"
+                   class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
+                   placeholder="Primary Color"
+                   name="primary_color"
+                   value="{{ university.primary_color }}" />
+            <div id="primary-box" class="absolute inset-y-0 flex items-center right-4">
+              <input class="w-6 h-6 overflow-hidden rounded-full"
+                     type="color"
+                     name="primary_color"
+                     value="{{ university.primary_color }}" />
+            </div>
+          </div>
+        </div>
+        <div class="col-span-1">
+          <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Secondary Color</label>
+          <div class="relative">
+            <input type="text"
+                   class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
+                   placeholder="Secondary Color"
+                   name="secondary_color"
+                   value="{{ university.secondary_color }}" />
+            <div id="secondary-box"
+                 class="absolute inset-y-0 flex items-center right-4">
+              <input class="w-6 h-6 overflow-hidden rounded-full"
+                     type="color"
+                     name="secondary_color"
+                     value="{{ university.secondary_color }}" />
+            </div>
+          </div>
+        </div>
+        <div class="col-span-2">
+          <label class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">Email</label>
+          <input class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-primary-500"
+                 placeholder="Email"
+                 type="email"
+                 name="email"
+                 value="{{ university.email }}" />
+        </div>
+        <div class="col-span-2 pt-4">
+          <button class="w-full px-4 py-3 text-lg font-thin text-white rounded-xl bg-primary-500">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% block javascript %}
+    <script>
+  const addLogo = document.getElementById("add-logo");
+  const logoContainer = document.getElementById("logo-container");
+  const logo = document.querySelector('input[name="logo"]');
+
+  const primaryColorTextInput = document.querySelector('input[name="primary_color"][type="text"]');
+  const primaryColorColorInput = document.querySelector('input[name="primary_color"][type="color"]');
+
+  const secondaryColorTextInput = document.querySelector('input[name="secondary_color"][type="text"]');
+  const secondaryColorColorInput = document.querySelector('input[name="secondary_color"][type="color"]');
+
+  primaryColorTextInput.addEventListener("input", () => {
+    primaryColorColorInput.value = primaryColorTextInput.value;
+  });
+
+  primaryColorColorInput.addEventListener("input", () => {
+    primaryColorTextInput.value = primaryColorColorInput.value;
+  });
+
+  secondaryColorTextInput.addEventListener("input", () => {
+    secondaryColorColorInput.value = secondaryColorTextInput.value;
+  });
+
+  secondaryColorColorInput.addEventListener("input", () => {
+    secondaryColorTextInput.value = secondaryColorColorInput.value;
+  });
+
+  addLogo.addEventListener("click", () => {
+    logo.click();
+  });
+
+  logo.addEventListener("change", () => {
+    const file = logo.files[0];
+    const reader = new FileReader();
+
+    reader.addEventListener("load", () => {
+      logoContainer.innerHTML = `<img src="${reader.result}" class="object-cover w-full h-full rounded-3xl" />`;
+      addLogo.innerText = "Change University Logo";
+    });
+
+    reader.readAsDataURL(file);
+  });
+    </script>
+  {% endblock javascript %}
+{% endblock content %}

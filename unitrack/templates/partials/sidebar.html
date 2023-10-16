@@ -1,5 +1,5 @@
 {% block sidebar %}
-  <aside class="flex flex-col justify-between w-full max-w-xs bg-white border-r shadow-md">
+  <aside class="fixed flex flex-col justify-between w-full max-w-xs max-h-screen min-h-screen bg-white border-r shadow-md">
     <ul class="px-4 space-y-4">
       <li class="flex items-center justify-center py-6">
         <div class="flex items-center gap-4">
@@ -30,6 +30,13 @@
     </ul>
     <div class="py-6">
       <ul class="px-4 space-y-4">
+        <li class="rounded-lg cursor-pointer hover:bg-gray-100">
+          <a href="{{ url_for('main.settings',) }}"
+             class="flex items-center px-6 py-4 space-x-4 text-md text-gray-700 }}">
+            <i class="fa-solid fa-gear"></i>
+            <p class="font-display">Settings</p>
+          </a>
+        </li>
         <li class="rounded-lg cursor-pointer hover:bg-gray-100">
           <a href="{{ url_for('auth.logout',) }}"
              class="flex items-center px-6 py-4 space-x-4 text-md text-gray-700 }}">

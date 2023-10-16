@@ -54,14 +54,12 @@ def students():
         }
 
     if college_id:
-        college = colleges[colleges.index(
-            next(filter(lambda college: college.get("id") == college_id, colleges)))]
+        college = College(id=college_id).find_one()
         courses = College(id=college.get("id")).find_courses()
         filters["college"] = {'key': 'college_id', **college}
 
         if course_id:
-            course = courses[courses.index(
-                next(filter(lambda course: course.get("id") == course_id, courses)))]
+            course = Course(id=course_id).find_one()
             filters["course"] = {'key': 'course_id', **course}
 
     return render_template("students.html",
