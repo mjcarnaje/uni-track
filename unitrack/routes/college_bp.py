@@ -44,7 +44,7 @@ def colleges():
 def add_college():
     form = AddCollegeValidation()
 
-    if request.method == "POST" and form.validate_on_submit():
+    if form.validate_on_submit():
         college_query = College(
             name=form.name.data,
             code=form.code.data,
@@ -69,7 +69,7 @@ def update_college(id):
 
     print(form.photo.data)
 
-    if request.method == "POST" and form.validate_on_submit():
+    if form.validate_on_submit():
         college_query.name = form.name.data
         college_query.code = form.code.data
         college_query.photo = save_file_wtf(

@@ -86,3 +86,15 @@ class University(UserMixin):
         mysql.connection.commit()
 
         return self
+
+    @staticmethod
+    def check_if_email_exists(email: str):
+        SELECT_SQL = f"SELECT * FROM {University.__tablename__} WHERE email=%s"
+        cur = mysql.new_cursor(dictionary=True)
+        cur.execute(SELECT_SQL, (email,))
+        university = cur.fetchone()
+
+        if not university:
+            return False
+
+        return True

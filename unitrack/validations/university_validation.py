@@ -1,12 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
 from wtforms import StringField, PasswordField, validators, widgets
-
-
-def should_be_not_equal(form, field):
-    if field.data == form.primary_color.data:
-        raise validators.ValidationError(
-            'Choose a different color than primary color.')
+from ..models.University import University
 
 
 class UniversityValidation(FlaskForm):
@@ -27,7 +22,6 @@ class UniversityValidation(FlaskForm):
     )
     secondary_color = StringField('Secondary Color', [
         validators.Length(min=6, message='Choose color'),
-        should_be_not_equal
     ],
         widget=widgets.ColorInput()
     )
@@ -39,3 +33,14 @@ class UniversityValidation(FlaskForm):
         validators.Length(min=8, max=25),
         validators.EqualTo('password', message='Passwords must match')
     ])
+
+    def validate_secondary_color(self, field):
+        if field.data == self.primary_color.data:
+            raise validators.ValidationError(
+                'Primary and Secondary colors should not be the same')
+
+    def validate_email(self, field):
+        university = University.check_if_email_exists(field.data)
+        if university:
+            raise validators.ValidationError(
+                'Email address already exists')
