@@ -128,3 +128,14 @@ class College():
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL, (self.university_id,))
         return cur.fetchone()['COUNT(*)']
+
+    @staticmethod
+    def check_if_code_exists(code: str, id: int = None) -> bool:
+        SELECT_SQL = f"SELECT * FROM {College.__tablename__} WHERE code=%s"
+
+        if id:
+            SELECT_SQL += " AND id != %s"
+
+        cur = mysql.new_cursor(dictionary=True)
+        cur.execute(SELECT_SQL, (code, id))
+        return cur.fetchone() is not None

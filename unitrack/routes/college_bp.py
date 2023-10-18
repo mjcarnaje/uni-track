@@ -1,13 +1,13 @@
 import os
 
-from flask import Blueprint
+from flask import Blueprint, send_from_directory
 from flask import current_app as app
 from flask import jsonify, redirect, render_template, request
 from flask_login import login_required, current_user
 
 from ..models.College import College
 from ..utils.upload_file import save_file_wtf, save_file
-from ..validations import CollegeValidation
+from ..validations import AddCollegeValidation, UpdateCollegeValidation
 
 college_bp = Blueprint('college', __name__)
 
@@ -42,7 +42,7 @@ def colleges():
 @college_bp.route("/add", methods=["GET", "POST"])
 @login_required
 def add_college():
-    form = CollegeValidation()
+    form = AddCollegeValidation()
 
     if request.method == "POST" and form.validate_on_submit():
         college_query = College(
@@ -62,24 +62,28 @@ def add_college():
 @college_bp.route("/update/<int:id>", methods=["GET", "POST"])
 @login_required
 def update_college(id):
-    college_query = College(id=id)
-
-    if request.method == "POST":
-        updated_college = College(
-            id=id,
-            name=request.form.get('name'),
-            code=request.form.get('code'),
-            photo=save_file(key='photo'),
-            university_id=current_user.id
-        )
-
-        updated_college.update()
-
-        return redirect("/college/")
-
+    college_query = College(id=id, university_id=current_user.id)
     college = college_query.find_one()
 
-    return render_template("update-college.html", college=college)
+    form = UpdateCollegeValidation()
+
+    print(form.photo.data)
+
+    if request.method == "POST" and form.validate_on_submit():
+        college_query.name = form.name.data
+        college_query.code = form.code.data
+        college_query.photo = save_file_wtf(
+            data=form.photo.data,
+            default_filename=college.get("photo"))
+        college_query.update()
+        return redirect("/college/")
+
+    form.id.data = college.get("id")
+    form.name.data = college.get("name")
+    form.code.data = college.get("code")
+    form.photo.data = college.get("photo")
+
+    return render_template("update-college.html", form=form, college=college)
 
 
 @college_bp.route('/<int:id>', methods=['GET', 'DELETE'])

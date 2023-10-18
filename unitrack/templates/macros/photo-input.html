@@ -1,10 +1,18 @@
-{% macro render_photo_field(field, add_text, remove_text, is_circle=false) %}
+{% macro render_photo_field(field, add_text, remove_text, container_class, is_circle=false) %}
   {% set photo = field.data %}
-  <div class="flex flex-col items-center gap-4">
+  <div class="flex flex-col items-center gap-4 {{ container_class }}">
     {{ field(class="hidden") }}
     <div id="photo-preview"
          class="flex items-center justify-center w-48 h-48 border bg-slate-200 {{ 'rounded-full' if is_circle else 'rounded-3xl' }} {{ 'border-red-500' if field.errors }}">
-      <i class="text-7xl fa-regular fa-image text-slate-600"></i>
+      {% if photo %}
+        <img src="{{ url_for('static', filename='uploads/' + photo) }}"
+             class="w-full h-full {{ 'rounded-full' if is_circle else 'rounded-3xl' }}"
+             height="auto"
+             width="auto"
+             alt="" />
+      {% else %}
+        <i class="text-7xl fa-regular fa-image text-slate-600"></i>
+      {% endif %}
     </div>
     {% if field.errors %}
       <ul>

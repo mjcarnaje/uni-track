@@ -39,11 +39,12 @@ def save_file(key: str, file_name: str or None = None) -> str or None:
         return filename
 
 
-def save_file_wtf(data: str or None) -> str or None:
+def save_file_wtf(data: str or None, default_filename: str or None = None) -> str or None:
     print("Saving file")
-    if not data:
-        print("No file part")
-        return None
+
+    if not data or data.filename == '':
+        print("No selected file")
+        return default_filename
 
     data_filename = data.filename
     ext = data_filename.rsplit('.', 1)[1].lower()
@@ -56,5 +57,7 @@ def save_file_wtf(data: str or None) -> str or None:
         return file_name
 
     data.save(file_path)
+
+    print("File saved")
 
     return file_name
