@@ -1,4 +1,7 @@
 {% extends "layout.html" %} {% set active_page = "college" %}
+{% from "./macros/input.html" import render_field %}
+{% from "./macros/photo-input.html" import render_photo_field %}
+{% from './macros/csrf_input.html' import csrf_input %}
 {% block title %}
   Add College
 {% endblock title %}
@@ -6,76 +9,18 @@
   <div class="w-full max-w-3xl p-8 mx-auto bg-white border shadow-md rounded-2xl">
     <form class="grid w-full grid-cols-2 gap-8 py-4"
           method="post"
-          enctype="multipart/form-data">
-      <div class="flex flex-col items-center justify-center col-span-2 pb-4 space-y-8">
-        <div id="photo-container"
-             class="flex items-center justify-center w-48 h-48 border rounded-full bg-slate-200">
-          <i class="text-7xl fa-solid fa-building-columns text-slate-600"></i>
-        </div>
-        <div class="flex items-center gap-2">
-          <input id="student-photo"
-                 type="file"
-                 name="photo"
-                 accept="image/png, image/jpeg, image/jpg"
-                 class="hidden" />
-          <button type="button"
-                  id="add-photo"
-                  class="px-4 py-2 text-sm font-thin text-white transition duration-500 cursor-pointer bg-primary-500 rounded-xl hover:bg-primary-600">
-            Add College Photo
-          </button>
-          <button type="button"
-                  id="remove-photo"
-                  class="hidden px-4 py-2 text-sm font-thin text-white transition duration-500 bg-red-500 cursor-pointer rounded-xl hover:bg-red-600">
-            Remove College Photo
-          </button>
-        </div>
-      </div>
+          enctype="multipart/form-data"
+          novalidate>
+      {{ csrf_input() }}
       <div class="col-span-2">
-        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">College Name</label>
-        <input class="w-full col-span-2 px-4 py-3 border-2 rounded-xl focus:outline-none focus:border-primary-500"
-               placeholder="College name"
-               name="name" />
+        {{ render_photo_field(form.photo, add_text="Add College Logo", remove_text="Remove College Logo", is_circle=true) }}
       </div>
-      <div class="col-span-2">
-        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">College Code</label>
-        <input class="w-full col-span-2 px-4 py-3 border-2 rounded-xl focus:outline-none focus:border-primary-500"
-               placeholder="College code"
-               name="code" />
-      </div>
+      {{ render_field(form.name, container_class="col-span-2") }}
+      {{ render_field(form.code, container_class="col-span-2") }}
       <button type="submit"
               class="col-span-2 px-4 py-4 font-thin text-white cursor-pointer bg-primary-500 rounded-xl hover:bg-primary-600">
         Save
       </button>
     </form>
   </div>
-  {% block javascript %}
-    <script>
-  const addPhoto = document.getElementById("add-photo");
-  const removePhoto = document.getElementById("remove-photo");
-  const photoContainer = document.getElementById("photo-container");
-  const photo = document.getElementById("student-photo");
-
-  addPhoto.addEventListener("click", () => {
-    photo.click();
-  });
-
-  removePhoto.addEventListener("click", () => {
-    photoContainer.innerHTML =
-      '<i class="text-7xl fa-solid fa-building-columns text-slate-600"></i>';
-    removePhoto.classList.add("hidden");
-  });
-
-  photo.addEventListener("change", () => {
-    const file = photo.files[0];
-    const reader = new FileReader();
-
-    reader.addEventListener("load", () => {
-      photoContainer.innerHTML = `<img src="${reader.result}" class="w-48 h-48 rounded-full" />`;
-      removePhoto.classList.remove("hidden");
-    });
-
-    reader.readAsDataURL(file);
-  });
-    </script>
-  {% endblock javascript %}
 {% endblock content %}

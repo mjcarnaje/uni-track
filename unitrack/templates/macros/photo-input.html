@@ -1,8 +1,9 @@
-{% macro render_photo_field(field, add_text, remove_text) %}
+{% macro render_photo_field(field, add_text, remove_text, is_circle=false) %}
+  {% set photo = field.data %}
   <div class="flex flex-col items-center gap-4">
     {{ field(class="hidden") }}
     <div id="photo-preview"
-         class="flex items-center justify-center w-48 h-48 border bg-slate-200 rounded-3xl {{ 'border-red-500' if field.errors }}">
+         class="flex items-center justify-center w-48 h-48 border bg-slate-200 {{ 'rounded-full' if is_circle else 'rounded-3xl' }} {{ 'border-red-500' if field.errors }}">
       <i class="text-7xl fa-regular fa-image text-slate-600"></i>
     </div>
     {% if field.errors %}
@@ -44,7 +45,7 @@
     const reader = new FileReader();
 
     reader.addEventListener("load", () => {
-      photoPreview.innerHTML = `<img src="${reader.result}" class="w-full h-full rounded-3xl" />`;
+      photoPreview.innerHTML = `<img src="${reader.result}" class="w-full h-full {{ 'rounded-full' if is_circle else 'rounded-3xl' }}" />`;
       removePhoto.hidden = false;
     });
 

@@ -2,7 +2,7 @@
   <div class="{{ container_class }}">
     {{ field.label(class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase") }}
     <div>
-      {{ field(class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-primary-500", **kwargs) |safe }}
+      {{ field(class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-primary-500", placeholder=field.label.text, **kwargs) |safe }}
       {% if field.errors %}
         <ul class="mt-2">
           {% for error in field.errors %}<li class="text-xs text-red-500">{{ error }}</li>{% endfor %}

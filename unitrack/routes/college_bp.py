@@ -6,7 +6,8 @@ from flask import jsonify, redirect, render_template, request
 from flask_login import login_required, current_user
 
 from ..models.College import College
-from ..utils.upload_file import save_file
+from ..utils.upload_file import save_file_wtf, save_file
+from ..validations import CollegeValidation
 
 college_bp = Blueprint('college', __name__)
 
@@ -41,11 +42,13 @@ def colleges():
 @college_bp.route("/add", methods=["GET", "POST"])
 @login_required
 def add_college():
-    if request.method == "POST":
+    form = CollegeValidation()
+
+    if request.method == "POST" and form.validate_on_submit():
         college_query = College(
-            name=request.form.get('name'),
-            code=request.form.get('code'),
-            photo=save_file(key='photo'),
+            name=form.name.data,
+            code=form.code.data,
+            photo=save_file_wtf(data=form.photo.data),
             university_id=current_user.id
         )
 
@@ -53,7 +56,7 @@ def add_college():
 
         return redirect("/college/")
 
-    return render_template("add-college.html")
+    return render_template("add-college.html", form=form)
 
 
 @college_bp.route("/update/<int:id>", methods=["GET", "POST"])
