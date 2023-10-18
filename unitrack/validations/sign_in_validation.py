@@ -4,8 +4,8 @@ from wtforms import PasswordField, StringField, validators
 
 class SignInValidation(FlaskForm):
     email = StringField('Email Address', [
-        validators.Length(min=6, max=35)
+        validators.DataRequired("Please enter your email address."),
     ])
     password = PasswordField('Password', [
-        validators.Length(min=8, max=25)
+        validators.DataRequired("Please enter a password."),
     ])
