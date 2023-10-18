@@ -4,14 +4,14 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..models.University import University
 from ..utils.upload_file import save_file_wtf
-from ..validations import UniversityValidations
+from ..validations import SignInValidation, UniversityValidation
 
 auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = UniversityValidations()
+    form = UniversityValidation()
 
     if request.method == 'POST' and form.validate_on_submit():
         university = University(
@@ -35,23 +35,22 @@ def signup():
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+    form = SignInValidation()
 
-        university = University(email=email).find_by_email()
+    if request.method == 'POST' and form.validate_on_submit():
+        university = University(email=form.email.data).find_by_email()
 
         if not university:
             return redirect(url_for('auth.login'))
 
-        if not check_password_hash(university.password, password):
+        if not check_password_hash(university.password, form.password.data):
             return redirect(url_for('auth.login'))
 
         login_user(university, remember=True)
 
         return redirect(url_for('main.dashboard'))
 
-    return render_template('login.html')
+    return render_template('login.html', form=form)
 
 
 @auth_bp.route('/logout')

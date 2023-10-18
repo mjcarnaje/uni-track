@@ -1,1 +1,2 @@
-from .university_validations import UniversityValidations
+from .university_validation import UniversityValidation
+from .sign_in_validation import SignInValidation

@@ -9,7 +9,7 @@ def should_be_not_equal(form, field):
             'Choose a different color than primary color.')
 
 
-class UniversityValidations(FlaskForm):
+class UniversityValidation(FlaskForm):
     logo = FileField('Logo', validators=[FileRequired()])
     email = StringField('Email Address', [
         validators.Length(min=6, max=35)
