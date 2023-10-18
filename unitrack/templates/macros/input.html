@@ -1,0 +1,23 @@
+{% macro render_field(field, container_class, footer_text) %}
+  <div class="{{ container_class }}">
+    {{ field.label(class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase") }}
+    <div>
+      {{ field(class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-primary-500", **kwargs) |safe }}
+      {% if field.errors %}
+        <ul class="mt-2">
+          {% for error in field.errors %}<li class="text-xs text-red-500">{{ error }}</li>{% endfor %}
+        </ul>
+        <style>
+          [name="{{ field.name }}"] {
+            border-color: #e53e3e;
+          }
+        </style>
+      {% endif %}
+      {% if footer_text %}
+        <span>
+          <small class="text-xs text-gray-500">{{ footer_text }}</small>
+        </span>
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}

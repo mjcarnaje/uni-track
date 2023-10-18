@@ -3,42 +3,34 @@ from flask_login import login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..models.University import University
-from ..utils.upload_file import save_file
+from ..utils.upload_file import save_file_wtf
+from ..validations import UniversityValidations
 
 auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        display_name = request.form.get('display_name')
-        name = request.form.get('name')
-        primary_color = request.form.get('primary_color')
-        secondary_color = request.form.get('secondary_color')
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
+    form = UniversityValidations()
 
-        if password != confirm_password:
-            return redirect(url_for('auth.signup'))
-
+    if request.method == 'POST' and form.validate_on_submit():
         university = University(
-            email=email,
-            logo=save_file(key='logo'),
-            display_name=display_name,
-            name=name,
-            primary_color=primary_color,
-            secondary_color=secondary_color,
-            password=generate_password_hash(password=password))
+            email=form.email.data,
+            logo=save_file_wtf(data=form.logo.data),
+            display_name=form.display_name.data,
+            name=form.display_name.data,
+            primary_color=form.primary_color.data,
+            secondary_color=form.secondary_color.data,
+            password=generate_password_hash(password=form.password.data))
 
         if university.find_by_email():
             return redirect(url_for('auth.signup'))
 
-        university.create()
+        university.insert()
 
         return redirect(url_for('auth.login'))
 
-    return render_template('signup.html')
+    return render_template('signup.html', form=form)
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])

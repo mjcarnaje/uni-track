@@ -1,6 +1,6 @@
 from flask import Flask
-from flask_login import LoginManager, login_manager
-from flask_mysql_connector import MySQL
+from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 
 from .db import create_tables, mysql
 from .models.University import University
@@ -14,6 +14,7 @@ def create_app():
     app.config.from_object(Config)
 
     mysql.init_app(app)
+    CSRFProtect(app)
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'

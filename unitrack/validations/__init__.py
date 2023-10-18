@@ -1,0 +1,1 @@
+from .university_validations import UniversityValidations

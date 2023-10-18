@@ -1,0 +1,54 @@
+{% macro render_photo_field(field, add_text, remove_text) %}
+  <div class="flex flex-col items-center gap-4">
+    {{ field(class="hidden") }}
+    <div id="photo-preview"
+         class="flex items-center justify-center w-48 h-48 border bg-slate-200 rounded-3xl {{ 'border-red-500' if field.errors }}">
+      <i class="text-7xl fa-regular fa-image text-slate-600"></i>
+    </div>
+    {% if field.errors %}
+      <ul>
+        {% for error in field.errors %}<li class="text-xs text-red-500">{{ error }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    <div class="flex items-center gap-2">
+      <button type="button"
+              id="add-photo"
+              class="px-4 py-2 text-sm font-thin text-white transition duration-500 cursor-pointer bg-primary-500 rounded-xl hover:bg-primary-600">
+        {{ add_text }}
+      </button>
+      <button type="button"
+              id="remove-photo"
+              class="px-4 py-2 text-sm font-thin text-white transition duration-500 bg-red-500 cursor-pointer rounded-xl hover:bg-red-600"
+              hidden="{{ photo is none }}">{{ remove_text }}</button>
+    </div>
+  </div>
+  <script>
+  const photoPreview = document.getElementById("photo-preview");
+  const addPhoto = document.getElementById("add-photo");
+  const removePhoto = document.getElementById("remove-photo");
+  const photoInput = document.querySelector("input[type=file][name={{ field.name }}]");
+
+  addPhoto.addEventListener("click", () => {
+    photoInput.click();
+  });
+
+  removePhoto.addEventListener("click", () => {
+    photoInput.value = "";
+    photoPreview.innerHTML =
+      '<i class="text-7xl fa-regular fa-image text-slate-600"></i>';
+    removePhoto.hidden = true;
+  });
+
+  photoInput.addEventListener("change", () => {
+    const file = photoInput.files[0]; 
+    const reader = new FileReader();
+
+    reader.addEventListener("load", () => {
+      photoPreview.innerHTML = `<img src="${reader.result}" class="w-full h-full rounded-3xl" />`;
+      removePhoto.hidden = false;
+    });
+
+    reader.readAsDataURL(file);
+  });
+  </script>
+{% endmacro %}

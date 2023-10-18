@@ -55,7 +55,7 @@ class University(UserMixin):
 
         return self
 
-    def create(self):
+    def insert(self):
         INSERT_SQL = f"INSERT INTO {self.__tablename__} (email, logo, display_name, name, primary_color, secondary_color, password) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(INSERT_SQL, (

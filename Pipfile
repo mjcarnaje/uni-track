@@ -5,11 +5,12 @@ name = "pypi"
 
 [packages]
 flask = "2.3.3"
-mysqlclient = "*"
 flask-mysql-connector = "*"
 flask-login = "*"
 Werkzeug = "2.3.7"
 python-dotenv = "*"
+flask-wtf = "*"
+wtforms = "*"
 
 [dev-packages]
 
