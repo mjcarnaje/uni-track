@@ -4,7 +4,7 @@
     {{ field(class="hidden") }}
     <div id="photo-preview"
          class="flex items-center justify-center w-48 h-48 border bg-slate-200 {{ 'rounded-full' if is_circle else 'rounded-3xl' }} {{ 'border-red-500' if field.errors }}">
-      {% if photo %}
+      {% if photo is string %}
         <img src="{{ url_for('static', filename='uploads/' + photo) }}"
              class="w-full h-full {{ 'rounded-full' if is_circle else 'rounded-3xl' }}"
              height="auto"
@@ -37,12 +37,25 @@
   const removePhoto = document.getElementById("remove-photo");
   const photoInput = document.querySelector("input[type=file][name={{ field.name }}]");
 
+  const photo = "{{ photo }}";
+
+  if (typeof photo !== "string") {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", () => {
+        photoPreview.innerHTML = `<img src="${reader.result}" class="w-full h-full {{ 'rounded-full' if is_circle else 'rounded-3xl' }}" />`;
+        removePhoto.hidden = false;
+      });
+
+      reader.readAsDataURL(photo);
+  }
+
   addPhoto.addEventListener("click", () => {
     photoInput.click();
   });
 
   removePhoto.addEventListener("click", () => {
-    photoInput.value = "";
+    photoInput.value = "";  
     photoPreview.innerHTML =
       '<i class="text-7xl fa-regular fa-image text-slate-600"></i>';
     removePhoto.hidden = true;

@@ -1,13 +1,15 @@
 import os
 
-from flask import Blueprint, send_from_directory
+from flask import Blueprint
 from flask import current_app as app
 from flask import jsonify, redirect, render_template, request
-from flask_login import login_required, current_user
+from flask_login import current_user, login_required
 
 from ..models.College import College
-from ..utils.upload_file import save_file_wtf, save_file
-from ..validations import AddCollegeValidation, UpdateCollegeValidation
+from ..models.Course import Course
+from ..utils.upload_file import save_file_wtf
+from ..validations import (AddCollegeValidation, AddCourseValidation,
+                           UpdateCollegeValidation)
 
 college_bp = Blueprint('college', __name__)
 
@@ -67,8 +69,6 @@ def update_college(id):
 
     form = UpdateCollegeValidation()
 
-    print(form.photo.data)
-
     if form.validate_on_submit():
         college_query.name = form.name.data
         college_query.code = form.code.data
@@ -86,22 +86,26 @@ def update_college(id):
     return render_template("update-college.html", form=form, college=college)
 
 
-@college_bp.route('/<int:id>', methods=['GET', 'DELETE'])
+@college_bp.route("/delete/<int:id>", methods=["DELETE"])
 @login_required
-def college(id):
+def delete_college(id):
     college_query = College(id=id, university_id=current_user.id)
     college = college_query.find_one()
+    college_photo = college.get('photo')
 
-    # TODO: Separate this into a different route
-    if request.method == "DELETE":
-        college_query.delete()
-        college_photo = college.get('photo')
+    college_query.delete()
 
-        if college_photo and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], college_photo)):
-            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], college_photo))
+    if college_photo and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], college_photo)):
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], college_photo))
 
-        return jsonify({'success': True})
+    return jsonify({"success": True})
 
+
+@college_bp.route('/<string:id>', methods=['GET', 'DELETE', "POST"])
+@login_required
+def view_college(id):
+    college_query = College(id=id, university_id=current_user.id)
+    college = college_query.find_one()
     courses = college_query.find_courses()
 
     return render_template("college.html", college=college, courses=courses)

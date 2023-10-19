@@ -13,7 +13,7 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def dashboard():
-    if current_user.is_authenticated:
+    if current_user and current_user.is_authenticated:
         student_count = Student(university_id=current_user.id).count()
         college_count = College(university_id=current_user.id).count()
         course_count = Course(university_id=current_user.id).count()

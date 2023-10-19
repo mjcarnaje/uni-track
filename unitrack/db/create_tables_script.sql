@@ -11,24 +11,24 @@ CREATE TABLE IF NOT EXISTS university (
 );
 CREATE TABLE IF NOT EXISTS college (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(256) UNIQUE NOT NULL,
-    code VARCHAR(16) UNIQUE NOT NULL,
+    name VARCHAR(256) NOT NULL,
+    code VARCHAR(16) NOT NULL,
     photo TEXT,
-    university_id INTEGER REFERENCES university(id),
+    university_id INTEGER REFERENCES university(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 CREATE TABLE IF NOT EXISTS course (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(256) UNIQUE NOT NULL,
-    code VARCHAR(16) UNIQUE NOT NULL,
+    name VARCHAR(256) NOT NULL,
+    code VARCHAR(16) NOT NULL,
     photo TEXT,
-    college_id INTEGER REFERENCES college(id),
-    university_id INTEGER REFERENCES university(id),
+    college_id INTEGER REFERENCES college(id) ON DELETE CASCADE,
+    university_id INTEGER REFERENCES university(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 CREATE TABLE IF NOT EXISTS student (
     id SERIAL PRIMARY KEY,
-    student_id VARCHAR(16) UNIQUE NOT NULL,
+    student_id VARCHAR(16) NOT NULL,
     first_name VARCHAR(256) NOT NULL,
     last_name VARCHAR(256) NOT NULL,
     gender VARCHAR(16) NOT NULL,

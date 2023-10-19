@@ -129,13 +129,32 @@ class College():
         cur.execute(SELECT_SQL, (self.university_id,))
         return cur.fetchone()['COUNT(*)']
 
-    @staticmethod
-    def check_if_code_exists(code: str, id: int = None) -> bool:
-        SELECT_SQL = f"SELECT * FROM {College.__tablename__} WHERE code=%s"
+    def check_if_code_exists(self, code: str, id: int = None) -> bool:
+        if self.university_id is None:
+            return "Cannot check without an university ID"
+
+        SELECT_SQL = f"SELECT * FROM {College.__tablename__} WHERE code=%s AND university_id=%s"
+        params = [code, self.university_id]
 
         if id:
             SELECT_SQL += " AND id != %s"
+            params.append(id)
 
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(SELECT_SQL, (code, id))
+        cur.execute(SELECT_SQL, params)
+        return cur.fetchone() is not None
+
+    def check_if_name_exists(self, name: str, id: int = None) -> bool:
+        if self.university_id is None:
+            return "Cannot check without an university ID"
+
+        SELECT_SQL = f"SELECT * FROM {College.__tablename__} WHERE name=%s AND university_id=%s"
+        params = [name, self.university_id]
+
+        if id:
+            SELECT_SQL += " AND id != %s"
+            params.append(id)
+
+        cur = mysql.new_cursor(dictionary=True)
+        cur.execute(SELECT_SQL, params)
         return cur.fetchone() is not None

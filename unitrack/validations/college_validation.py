@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
 from wtforms import StringField, validators, HiddenField
 from ..models.College import College
+from flask_login import current_user
 
 
 class BaseCollegeValidation(FlaskForm):
@@ -19,8 +20,14 @@ class AddCollegeValidation(BaseCollegeValidation):
     ])
 
     def validate_code(self, code):
-        if College.check_if_code_exists(code.data):
-            raise validators.ValidationError('Code already exists')
+        if College(university_id=current_user.id).check_if_code_exists(code=code.data):
+            raise validators.ValidationError(
+                'Code already exists in this university')
+
+    def validate_name(self, name):
+        if College(university_id=current_user.id).check_if_name_exists(name=name.data):
+            raise validators.ValidationError(
+                'Name already exists in this university')
 
 
 class UpdateCollegeValidation(BaseCollegeValidation):
@@ -28,5 +35,11 @@ class UpdateCollegeValidation(BaseCollegeValidation):
     photo = FileField('Photo')
 
     def validate_code(self, code):
-        if College.check_if_code_exists(code.data, self.id.data):
-            raise validators.ValidationError('Code already exists')
+        if College(university_id=current_user.id).check_if_code_exists(code=code.data, id=self.id.data):
+            raise validators.ValidationError(
+                'Code already exists in this university')
+
+    def validate_name(self, name):
+        if College(university_id=current_user.id).check_if_name_exists(name=name.data, id=self.id.data):
+            raise validators.ValidationError(
+                'Name already exists in this university')
