@@ -84,3 +84,36 @@ class Course():
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL, (self.university_id,))
         return cur.fetchone()['COUNT(*)']
+
+    def check_if_code_exists(self, code: str, id: int = None) -> bool:
+        if self.university_id is None:
+            return "Cannot check without an university ID"
+
+        print("=====================================")
+
+        print(f"University ID: {self.university_id}")
+        print(f"Code: {code}")
+        print(f"ID: {id}")
+
+        SELECT_SQL = f"SELECT * FROM {Course.__tablename__} WHERE code=%s AND university_id=%s"
+        params = [code, self.university_id]
+
+        if id:
+            SELECT_SQL += " AND id != %s"
+            params.append(id)
+
+        print(f"SELECT SQL: {SELECT_SQL}")
+        print(f"Params: {params}")
+
+        cur = mysql.new_cursor(dictionary=True)
+        cur.execute(SELECT_SQL, params)
+
+        exists = cur.fetchone() is not None
+
+        print(f"Exists: {exists}")
+
+        select_cur = mysql.new_cursor(dictionary=True)
+        select_cur.execute("SELECT * FROM course")
+        print(f"Select all: {select_cur.fetchall()}")
+
+        return exists

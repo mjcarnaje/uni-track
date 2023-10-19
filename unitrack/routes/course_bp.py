@@ -1,27 +1,34 @@
-from flask import Blueprint, jsonify, redirect, request
+from flask import Blueprint, url_for, redirect, request, jsonify
 from flask_login import current_user, login_required
 
 from ..models.Course import Course
-from ..utils.upload_file import save_file
+from ..utils.upload_file import save_file_wtf, save_file
+from ..validations import AddCourseValidation, UpdateCourseValidation
 
 course_bp = Blueprint('course', __name__)
 
 
-@course_bp.route('/', methods=['POST'])
+@course_bp.route('/add', methods=['POST'])
 @login_required
-def courses():
-    if request.method == "POST":
+def add_course():
+    form = AddCourseValidation()
+
+    print("Add Course Validation", form.validate_on_submit())
+
+    if form.validate_on_submit():
         course = Course(
-            name=request.form.get('name'),
-            code=request.form.get('code'),
-            photo=save_file(key='photo'),
-            college_id=request.form.get('college_id'),
+            name=form.name.data,
+            code=form.code.data,
+            photo=save_file_wtf(data=form.photo.data),
+            college_id=form.college_id.data,
             university_id=current_user.id
         )
 
         course.insert()
 
-        return redirect(f'/college/{course.college_id}')
+        return redirect(url_for('college.college', id=course.college_id))
+
+    return jsonify(form.errors)
 
 
 @course_bp.route('/<int:id>', methods=['POST', 'GET', 'DELETE'])

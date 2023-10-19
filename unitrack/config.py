@@ -1,4 +1,4 @@
-from os import getenv
+import os
 
 from dotenv import load_dotenv
 
@@ -6,10 +6,12 @@ load_dotenv()
 
 
 class Config:
-    UPLOAD_FOLDER = 'unitrack/static/uploads'
-    SECRET_KEY = getenv('SECRET_KEY')
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(
+        os.path.abspath(__file__)), 'static/uploads')
 
-    MYSQL_HOST = getenv('MYSQL_HOST')
-    MYSQL_USER = getenv('MYSQL_USER')
-    MYSQL_PASSWORD = getenv('MYSQL_PASSWORD')
-    MYSQL_DATABASE = getenv('MYSQL_DATABASE')
+    SECRET_KEY = os.getenv('SECRET_KEY')
+
+    MYSQL_HOST = os.getenv('MYSQL_HOST')
+    MYSQL_USER = os.getenv('MYSQL_USER')
+    MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
+    MYSQL_DATABASE = os.getenv('MYSQL_DATABASE')

@@ -1,52 +1,10 @@
-{% extends "layout.html" %} {% set active_page = "college" %}
+{% set active_page = "college" %}
+{% extends "layout.html" %}
 {% block title %}
   {{ college.name }}
 {% endblock title %}
 {% block content %}
-  <dialog data-modal class="w-full max-w-lg p-8 rounded-3xl">
-    <h3 class="mb-4 text-2xl font-semibold tracking-tight text-gray-800"
-        data-modal-title>Add Course</h3>
-    <form class="w-full space-y-4"
-          action="{{ url_for('course.courses',) }}"
-          method="post"
-          enctype="multipart/form-data">
-      <div class="flex flex-col items-center gap-4 pb-4">
-        <div id="photo-container"
-             class="flex items-center justify-center w-32 h-32 overflow-hidden border rounded-full bg-slate-200">
-          <i class="text-7xl fa-solid fa-building-columns text-slate-600"></i>
-        </div>
-        <div class="flex items-center gap-2">
-          <input id="course-photo"
-                 type="file"
-                 name="photo"
-                 accept="image/png, image/jpeg, image/jpg"
-                 class="hidden" />
-          <button type="button"
-                  id="add-photo"
-                  class="px-4 py-2 text-sm font-thin text-white transition duration-500 cursor-pointer bg-primary-500 rounded-xl hover:bg-primary-600">
-            Add Course Photo
-          </button>
-          <button type="button"
-                  id="remove-photo"
-                  class="hidden px-4 py-2 text-sm font-thin text-white transition duration-500 bg-red-500 cursor-pointer rounded-xl hover:bg-red-600">
-            Remove Course Photo
-          </button>
-        </div>
-      </div>
-      <input class="w-full px-4 py-3 border-2 rounded-2xl"
-             placeholder="Name"
-             name="name" />
-      <input class="w-full px-4 py-3 border-2 rounded-2xl"
-             placeholder="Code"
-             name="code" />
-      <input type="hidden" name="photo" value="" />
-      <input type="hidden" name="college_id" value="{{ college.id }}" />
-      <button type="submit"
-              class="w-full py-4 font-thin text-white bg-primary-500 rounded-2xl"
-              id="submit-course-form">Add course</button>
-    </form>
-  </dialog>
-  <div class="flex flex-col items-center w-full max-w-3xl px-8 pt-12 pb-12 bg-white shadow-sm rounded-3xl">
+  <div class="flex flex-col items-center w-full max-w-3xl px-8 pt-12 pb-12 bg-white shadow-md rounded-3xl">
     <div class="flex w-full gap-6 pb-8 border-b">
       <img src="{{ url_for('static', filename='uploads/' + college.photo) }}"
            alt="{{ college.photo }}"
@@ -67,10 +25,10 @@
         <div class="flex items-center gap-4">
           <a href="{{ url_for('college.update_college', id=college.id) }}"
              class="px-4 py-1 text-sm font-light transition-all duration-500 border rounded-full cursor-pointer text-primary-600 border-primary-600 hover:font-medium hover:bg-primary-50">Update</a>
-          <button onclick="deleteCollege({{ college.id }})"
-                  class="px-4 py-1 text-sm font-light text-red-600 transition-all duration-500 border border-red-600 rounded-full cursor-pointer hover:font-medium hover:bg-red-50">
-            Delete
-          </button>
+          <button data-csrf-token="{{ csrf_token() }}"
+                  data-id="{{ college.id }}"
+                  class="px-4 py-1 text-sm font-light text-red-600 transition-all duration-500 border border-red-600 rounded-full cursor-pointer hover:font-medium hover:bg-red-50"
+                  onclick="deleteCollege(this)">Delete</button>
         </div>
       </div>
     </div>
@@ -97,7 +55,7 @@
               <div class="flex gap-4">
                 <div class="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full">
                   {% if course.photo %}
-                    <img src="{{ url_for('static', filename='uploads/' + course.photo) }}"
+                    <img src="{{ url_for('download_file', filename=course.photo) }}"
                          alt="{{ course.photo }}"
                          class="w-12 h-12 border border-gray-300 rounded-full"
                          height="auto"
@@ -117,18 +75,17 @@
               </div>
               {% if current_user.is_authenticated %}
                 <div class="flex space-x-4">
-                  <button id="delete-course"
-                          data-course-id="{{ course.id }}"
+                  <button data-id="{{ course.id }}"
+                          onclick="deleteCourse(this)"
                           class="w-8 h-8 text-red-500 border border-red-500 rounded-full hover:bg-red-50 hover:text-red-600">
                     <i class="text-xs fa-solid fa-trash"></i>
                   </button>
-                  <button class="w-8 h-8 border rounded-full text-primary-500 border-primary-500 hover:bg-primary-50 hover:text-primary-600"
-                          data-course-id="{{ course.id }}"
-                          data-course-name="{{ course.name }}"
-                          data-course-code="{{ course.code }}"
-                          data-course-photo="{{ url_for('static', filename='uploads/' + course.photo) if course.photo else '' }}"
-                          data-course-college-id="{{ course.college_id }}"
-                          id="update-course">
+                  <button data-id="{{ course.id }}"
+                          data-name="{{ course.name }}"
+                          data-code="{{ course.code }}"
+                          data-photo="{{ course.photo }}"
+                          onclick="updateCourse(this)"
+                          class="w-8 h-8 border rounded-full text-primary-500 border-primary-500 hover:bg-primary-50 hover:text-primary-600">
                     <i class="text-xs fa-solid fa-pen"></i>
                   </button>
                 </div>
@@ -139,119 +96,36 @@
       {% endif %}
     </div>
   </div>
-  {% block javascript %}
-    <script type="text/javascript">
-  const openModal = document.querySelector("[data-open-modal]");
-  const modal = document.querySelector("[data-modal]");
-  const modalTitle = document.querySelector("[data-modal-title]");
-  const nameDiv = document.querySelector("[name=name]");
-  const codeDiv = document.querySelector("[name=code]");
-  const photoDiv = document.querySelector("[name=photo]");
-  const collegeIdDiv = document.querySelector("[name=college_id]");
-  const formDiv = document.querySelector("form");
-  const addPhoto = document.getElementById("add-photo");
-  const removePhoto = document.getElementById("remove-photo");
-  const photoContainer = document.getElementById("photo-container");
-  const photo = document.getElementById("course-photo");
-
-  addPhoto.addEventListener("click", () => {
-    photo.click();
-  });
-
-  removePhoto.addEventListener("click", () => {
-    photoContainer.innerHTML =
-      '<i class="text-7xl fa-solid fa-building-columns text-slate-600"></i>';
-    removePhoto.classList.add("hidden");
-    photo.value = "";
-    addPhoto.innerText = "Add Course Photo";
-  });
-
-  photo.addEventListener("change", () => {
-    const file = photo.files[0];
-    const reader = new FileReader();
-
-    reader.addEventListener("load", () => {
-      photoContainer.innerHTML = `<img src="${reader.result}" class="object-cover w-32 h-32 rounded-full" />`;
-      removePhoto.classList.remove("hidden");
-    });
-
-    reader.readAsDataURL(file);
-  });
-
-  openModal.addEventListener("click", () => {
-    modal.showModal();
-    modalTitle.innerHTML = "Add Course";
-    photoContainer.innerHTML =
-      '<i class="text-7xl fa-solid fa-building-columns text-slate-600"></i>';
-    nameDiv.value = "";
-    codeDiv.value = "";
-    collegeIdDiv.value = "{{ college.id }}";
-    formDiv.action = "{{ url_for('course.courses') }}";
-    formDiv.querySelector("#submit-course-form").innerHTML = "Add Course";
-    addPhoto.innerText = "Add Course Photo";
-    removePhoto.classList.add("hidden");
-    
-  });
-
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.close();
+  <script type="text/javascript">
+    function deleteCourse(button) {
+      const id = button.dataset.id;
+      fetch(`/course/${id}`, {
+        method: "DELETE",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            window.location.reload();
+          }
+        });
     }
-  });
 
-  function deleteCourse(id) {
-    fetch(`/course/${id}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          window.location.reload();
-        }
-      });
-  }
-
-  function deleteCollege(id) {
-    fetch(`/college/${id}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          window.location.href = "/";
-        }
-      });
-  }
-
-  const updateCourseButtons = document.querySelectorAll("#update-course");
-  const deleteCourseButtons = document.querySelectorAll("#delete-course");
-
-  updateCourseButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      modal.showModal();
-      modalTitle.innerHTML = "Update Course";
-      photoContainer.innerHTML = button.dataset.coursePhoto
-        ? `<img src="${button.dataset.coursePhoto}" class="object-cover w-32 h-32 rounded-full" />`
-        : '<i class="text-7xl fa-solid fa-building-columns text-slate-600"></i>';
-      nameDiv.value = button.dataset.courseName;
-      codeDiv.value = button.dataset.courseCode;
-      collegeIdDiv.value = button.dataset.courseCollegeId;
-      formDiv.action = `/course/${button.dataset.courseId}`;
-      formDiv.querySelector("#submit-course-form").innerHTML = "Update Course";
-      addPhoto.innerText = "Change Course Photo";
-      removePhoto.classList.remove("hidden");
+    function deleteCollege(button) {
+      const id = button.dataset.id;
+      const csrfToken = button.dataset.csrfToken;
       
-    });
-  });
-
-  deleteCourseButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const id = button.dataset.courseId;
-      deleteCourse(id);
-    });
-  });
-
-  
-    </script>
-  {% endblock javascript %}
+      fetch(`/college/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          "X-CSRFToken": csrfToken,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            window.location.href = "/";
+          }
+        });
+    }
+  </script>
 {% endblock content %}

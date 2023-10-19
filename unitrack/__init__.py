@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 
@@ -25,6 +25,10 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return University(id=user_id).find_by_id()
+
+    @app.route('/uploads/<path:filename>')
+    def download_file(filename):
+        return send_from_directory(Config.UPLOAD_FOLDER, filename, as_attachment=True)
 
     from unitrack.routes.main_bp import main_bp
     from unitrack.routes.auth_bp import auth_bp
