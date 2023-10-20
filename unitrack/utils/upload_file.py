@@ -61,3 +61,17 @@ def save_file_wtf(data: str or None, default_filename: str or None = None) -> st
     print("File saved")
 
     return file_name
+
+
+def delete_file(filename: str or None):
+    if not filename:
+        print("No filename")
+        return
+
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        print("File removed")
+    else:
+        print("File does not exist")

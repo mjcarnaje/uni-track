@@ -6,7 +6,7 @@
 {% block content %}
   <div class="flex flex-col items-center w-full max-w-3xl px-8 pt-12 pb-12 bg-white shadow-md rounded-3xl">
     <div class="flex w-full gap-6 pb-8 border-b">
-      <img src="{{ url_for('static', filename='uploads/' + college.photo) }}"
+      <img src="{{ url_for('media', filename=college.photo or 'default.png') }}"
            alt="{{ college.photo }}"
            class="w-48 h-48 border border-gray-300 rounded-full"
            height="auto"
@@ -57,7 +57,7 @@
               <div class="flex gap-4">
                 <div class="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full">
                   {% if course.photo %}
-                    <img src="{{ url_for('download_file', filename=course.photo) }}"
+                    <img src="{{ url_for('media', filename=course.photo) }}"
                          alt="{{ course.photo }}"
                          class="w-12 h-12 border border-gray-300 rounded-full"
                          height="auto"

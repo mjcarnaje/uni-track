@@ -21,7 +21,7 @@ class Course():
 
     def find_one(self):
         if self.id is None or self.university_id is None:
-            return "Cannot find without an ID and university ID"
+            raise Exception("Cannot find without an ID and university ID")
 
         SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE id=%s AND university_id=%s"
         cur = mysql.new_cursor(dictionary=True)
@@ -37,7 +37,8 @@ class Course():
 
     def find_by_college_id(self, college_id: int):
         if self.university_id is None:
-            return "Cannot find without an university ID"
+            raise Exception(
+                "Cannot find without an university ID")
 
         SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE college_id=%s AND university_id=%s"
         cur = mysql.new_cursor(dictionary=True)
@@ -45,6 +46,9 @@ class Course():
         return cur.fetchall()
 
     def insert(self):
+        if self.university_id is None:
+            raise Exception("Cannot insert without an university ID")
+
         INSERT_SQL = f"INSERT INTO {self.__tablename__} (name, code, photo, college_id, university_id) VALUES (%s, %s, %s, %s, %s)"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(INSERT_SQL, (self.name, self.code, self.photo,
@@ -54,7 +58,7 @@ class Course():
 
     def update(self):
         if self.id is None:
-            return "Cannot update without an ID"
+            raise Exception("Cannot update without an ID")
 
         UPDATE_SQL = f"UPDATE {self.__tablename__} SET name=%s, code=%s, photo=%s, college_id=%s WHERE id=%s"
 
@@ -71,7 +75,8 @@ class Course():
 
     def delete(self):
         if self.id is None or self.university_id is None:
-            return "Cannot delete without an ID and university ID"
+            raise Exception(
+                "Cannot delete without an ID and university ID")
 
         DELETE_SQL = f"DELETE FROM {self.__tablename__} WHERE id=%s AND university_id=%s"
         cur = mysql.new_cursor(dictionary=True)
@@ -80,6 +85,10 @@ class Course():
         return "Delete successful"
 
     def count(self):
+        if self.university_id is None:
+            raise Exception(
+                "Cannot count without an university ID")
+
         SELECT_SQL = f"SELECT COUNT(*) FROM {self.__tablename__} WHERE university_id=%s"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL, (self.university_id,))
@@ -87,7 +96,8 @@ class Course():
 
     def check_if_code_exists(self, code: str, id: int = None) -> bool:
         if self.university_id is None:
-            return "Cannot check without an university ID"
+            raise Exception(
+                "Cannot check without an university ID")
 
         SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE code=%s AND university_id=%s"
         params = [code, self.university_id]
@@ -102,7 +112,8 @@ class Course():
 
     def check_if_name_exists(self, name: str, id: int = None) -> bool:
         if self.university_id is None:
-            return "Cannot check without an university ID"
+            raise Exception(
+                "Cannot check without an university ID")
 
         SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE name=%s AND university_id=%s"
         params = [name, self.university_id]

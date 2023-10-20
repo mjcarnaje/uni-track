@@ -142,44 +142,34 @@
           {% for student in students %}
             <div class="flex flex-col justify-between grid-cols-1 gap-8 p-6 bg-white border shadow-md rounded-3xl">
               <div class="flex gap-4">
-                {% if student['photo'] %}
-                  <div class="box-content w-20 h-20 rounded-3xl aspect-square ring-1 ring-gray-200">
-                    <img src="{{ url_for('static', filename='uploads/' + student.photo) }}"
-                         alt="{{ student.photo }}"
-                         class="object-cover w-20 h-20 rounded-3xl"
-                         height="auto"
-                         width="auto" />
-                  </div>
-                {% else %}
-                  <div>
-                    <i class="text-gray-700 fa-solid fa-user"></i>
-                  </div>
-                {% endif %}
+                <div class="box-content w-20 h-20 rounded-3xl aspect-square ring-1 ring-gray-200">
+                  <img src="{{ url_for('media', filename=student.photo or 'default.png') }}"
+                       alt="{{ student.photo }}"
+                       class="object-cover w-20 h-20 rounded-3xl"
+                       height="auto"
+                       width="auto" />
+                </div>
                 <div class="w-full space-y-2">
-                  <a href="{{ url_for('student.student', id=student.id) }}"
+                  <a href="{{ url_for('student.view_student', id=student.id) }}"
                      class="text-xl font-semibold leading-snug tracking-tight text-gray-700">{{ student.first_name }} {{ student.last_name }}</a>
                   <h3 class="font-medium leading-snug text-gray-500 text-md">{{ student.student_id }}</h3>
                   <div class="flex">
                     <div class="flex items-center px-3 py-1 space-x-2 transition duration-500 border rounded-full cursor-pointer hover:bg-gray-100">
-                      {% if student.college_photo %}
-                        <img src="{{ url_for('static', filename='uploads/' + student.college_photo) }}"
-                             alt="{{ student.college_photo }}"
-                             class="object-cover w-5 h-5 border-2 rounded-full"
-                             height="auto"
-                             width="auto" />
-                      {% endif %}
+                      <img src="{{ url_for('media', filename=student.college_photo or 'default.png') }}"
+                           alt="{{ student.college_photo }}"
+                           class="object-cover w-5 h-5 border-2 rounded-full"
+                           height="auto"
+                           width="auto" />
                       <h3 class="text-sm font-thin text-gray-800 cursor-pointer">{{ student.college_name }}</h3>
                     </div>
                   </div>
                   <div class="flex">
                     <div class="flex items-center px-3 py-1 space-x-2 transition duration-500 border rounded-full cursor-pointer hover:bg-gray-100">
-                      {% if student.course_photo %}
-                        <img src="{{ url_for('static', filename='uploads/' + student.course_photo) }}"
-                             alt="{{ student.course_photo }}"
-                             class="object-cover w-5 h-5 border-2 rounded-full"
-                             height="auto"
-                             width="auto" />
-                      {% endif %}
+                      <img src="{{ url_for('media', filename=student.course_photo or 'default.png') }}"
+                           alt="{{ student.course_photo }}"
+                           class="object-cover w-5 h-5 border-2 rounded-full"
+                           height="auto"
+                           width="auto" />
                       <h3 class="text-sm font-thin text-gray-800 cursor-pointer">{{ student.course_name }}</h3>
                     </div>
                   </div>

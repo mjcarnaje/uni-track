@@ -3,7 +3,7 @@
     <ul class="px-4 space-y-4">
       <li class="flex items-center justify-center py-6">
         <div class="flex items-center gap-4">
-          <img src="{{ url_for('static', filename='uploads/' + current_user.logo) }}"
+          <img src="{{ url_for('media', filename=current_user.logo) }}"
                alt="{{ current_user.logo }}"
                class="w-16 h-16 rounded-full"
                height="auto"

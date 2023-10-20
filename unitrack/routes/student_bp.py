@@ -5,12 +5,11 @@ from flask import current_app as app
 from flask import jsonify, redirect, render_template, request
 from flask_login import current_user, login_required
 
-from unitrack.utils.upload_file import save_file, save_file_wtf
+from unitrack.utils.upload_file import delete_file, save_file_wtf
 
 from ..models.College import College
 from ..models.Course import Course
 from ..models.Student import Student
-
 from ..validations import AddStudentValidation, UpdateStudentValidation
 
 student_bp = Blueprint('student', __name__)
@@ -82,15 +81,19 @@ def students():
 @student_bp.route("/add", methods=["GET", "POST"])
 @login_required
 def add_student():
-    colleges = College(university_id=current_user.id).find_all().get("data")
+
     form = AddStudentValidation()
+
+    colleges = College(university_id=current_user.id).find_all().get("data")
     college_choices = [(college.get("id"), college.get("name"))
                        for college in colleges]
+
     form.college_id.choices = college_choices
     form.course_id.choices = []
+
     if (form.college_id.data):
-        courses = College(id=form.college_id.data,
-                          university_id=current_user.id).find_courses()
+        courses = Course(university_id=current_user.id).find_by_college_id(
+            form.college_id.data)
         course_choices = [(course.get("id"), course.get("name"))
                           for course in courses]
         form.course_id.choices = course_choices
@@ -102,8 +105,8 @@ def add_student():
             last_name=form.last_name.data,
             gender=form.gender.data,
             birthday=form.birthday.data,
-            college_id=request.form.get('college_id'),
-            course_id=request.form.get('course_id'),
+            college_id=form.college_id.data,
+            course_id=form.course_id.data,
             photo=save_file_wtf(data=form.photo.data),
             university_id=current_user.id
         )
@@ -121,42 +124,66 @@ def update_student(id):
     student_query = Student(id=id, university_id=current_user.id)
     student = student_query.find_one()
 
-    if request.method == "POST":
-        student_query.student_id = request.form.get('student_id')
-        student_query.first_name = request.form.get('first_name')
-        student_query.last_name = request.form.get('last_name')
-        student_query.gender = request.form.get('gender')
-        student_query.birthday = request.form.get('birthday')
-        student_query.photo = request.form.get('photo')
-        student_query.college_id = request.form.get('college_id')
-        student_query.course_id = request.form.get('course_id')
-        student_query.photo = save_file(key='photo') or student.photo
-
-        student_query.update()
-
-        return redirect("/student")
+    form = UpdateStudentValidation()
 
     colleges = College(university_id=current_user.id).find_all().get("data")
-    courses = College(id=student.get('college_id'),
-                      university_id=current_user.id).find_courses()
+    college_choices = [(college.get("id"), college.get("name"))
+                       for college in colleges]
 
-    return render_template("update-student.html", student=student, colleges=colleges, courses=courses)
+    form.college_id.choices = college_choices
+    form.course_id.choices = []
+
+    if form.validate_on_submit():
+        student_query.student_id = form.student_id.data
+        student_query.first_name = form.first_name.data
+        student_query.last_name = form.last_name.data
+        student_query.gender = form.gender.data
+        student_query.birthday = form.birthday.data
+        student_query.college_id = form.college_id.data
+        student_query.course_id = form.course_id.data
+        student_query.photo = save_file_wtf(
+            data=form.photo.data,
+            default_filename=student.get("photo"))
+        student_query.update()
+        return redirect("/student")
+
+    form.id.data = student.get("id")
+    form.student_id.data = student.get("student_id")
+    form.first_name.data = student.get("first_name")
+    form.last_name.data = student.get("last_name")
+    form.gender.data = student.get("gender")
+    form.birthday.data = student.get("birthday")
+    form.college_id.data = student.get("college_id")
+    form.course_id.data = student.get("course_id")
+    form.photo.data = student.get("photo")
+
+    if (form.college_id.data):
+        courses = Course(university_id=current_user.id).find_by_college_id(
+            form.college_id.data)
+        course_choices = [(course.get("id"), course.get("name"))
+                          for course in courses]
+        form.course_id.choices = course_choices
+
+    return render_template("update-student.html", form=form, student=student)
 
 
-@student_bp.route('/<int:id>', methods=['GET', 'DELETE'])
-def student(id):
+@student_bp.route('/<int:id>')
+def view_student(id):
     student_query = Student(id=id, university_id=current_user.id)
     student = student_query.find_one()
 
-    # TODO: Separate this into a different route
-    if request.method == "DELETE":
-        student_query.delete()
-
-        student_photo = student.get("photo")
-
-        if student_photo and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], student_photo)) and student_photo != "default.png":
-            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], student_photo))
-
-        return jsonify({'success': True})
-
     return render_template("student.html", student=student)
+
+
+@student_bp.route('/delete/<int:id>', methods=['DELETE'])
+@login_required
+def delete_student(id):
+    student_query = Student(id=id, university_id=current_user.id)
+    student = student_query.find_one()
+    student_photo = student.get('photo')
+
+    student_query.delete()
+
+    delete_file(student_photo)
+
+    return jsonify({"success": True})

@@ -11,13 +11,11 @@
         <div class="flex flex-col items-center col-span-2 gap-4">
           <div id="logo-container"
                class="flex items-center justify-center w-48 h-48 border bg-slate-200 rounded-3xl">
-            {% if university.logo %}
-              <img src="{{ url_for('static', filename='uploads/' + university.logo) }}"
-                   class="object-cover w-full h-full rounded-3xl"
-                   height="auto"
-                   width="auto"
-                   alt="Logo" />
-            {% endif %}
+            <img src="{{ url_for('media', filename=university.logo or 'default.png') }}"
+                 class="object-cover w-full h-full rounded-3xl"
+                 height="auto"
+                 width="auto"
+                 alt="Logo" />
           </div>
           <div class="flex items-center gap-2">
             <input type="file"
