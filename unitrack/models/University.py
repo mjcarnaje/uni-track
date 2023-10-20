@@ -87,14 +87,15 @@ class University(UserMixin):
 
         return self
 
-    @staticmethod
-    def check_if_email_exists(email: str):
+    def check_if_email_exists(email: str, id: int = None):
         SELECT_SQL = f"SELECT * FROM {University.__tablename__} WHERE email=%s"
+        params = [email]
+
+        if id:
+            SELECT_SQL += " AND id != %s"
+            params.append(id)
+
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(SELECT_SQL, (email,))
-        university = cur.fetchone()
+        cur.execute(SELECT_SQL, params)
 
-        if not university:
-            return False
-
-        return True
+        return cur.fetchone() is not None

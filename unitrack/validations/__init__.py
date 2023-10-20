@@ -1,5 +1,5 @@
-from .university_validation import UniversityValidation
+from .university_validation import AddUniversityValidation, UpdateUniversityValidation
 from .sign_in_validation import SignInValidation
-from .college_validation import BaseCollegeValidation, AddCollegeValidation, UpdateCollegeValidation
-from .course_validation import BaseCourseValidation, AddCourseValidation, UpdateCourseValidation
-from .student_validation import BaseStudentValidation, AddStudentValidation, UpdateStudentValidation
+from .college_validation import AddCollegeValidation, UpdateCollegeValidation
+from .course_validation import AddCourseValidation, UpdateCourseValidation
+from .student_validation import AddStudentValidation, UpdateStudentValidation

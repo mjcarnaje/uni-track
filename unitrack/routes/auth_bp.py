@@ -4,14 +4,14 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..models.University import University
 from ..utils.upload_file import save_file_wtf
-from ..validations import SignInValidation, UniversityValidation
+from ..validations import SignInValidation, AddUniversityValidation
 
 auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = UniversityValidation()
+    form = AddUniversityValidation()
 
     if form.validate_on_submit():
         university = University(

@@ -6,7 +6,8 @@ from ..models.Course import Course
 from ..models.Student import Student
 from ..models.University import University
 
-from ..utils.upload_file import save_file
+from ..utils.upload_file import save_file_wtf
+from ..validations import UpdateUniversityValidation
 
 main_bp = Blueprint('main', __name__)
 
@@ -27,18 +28,28 @@ def dashboard():
 @main_bp.route('/settings', methods=["GET", "POST"])
 @login_required
 def settings():
+    form = UpdateUniversityValidation()
     university = University(id=current_user.id).find_by_id()
 
-    if (request.method == "POST"):
-        university.email = request.form.get("email")
-        university.name = request.form.get("name")
-        university.display_name = request.form.get("display_name")
-        university.primary_color = request.form.get("primary_color")
-        university.secondary_color = request.form.get("secondary_color")
-        university.logo = save_file(key='logo') or university.logo
+    if form.validate_on_submit():
+        university.email = form.email.data
+        university.name = form.name.data
+        university.display_name = form.display_name.data
+        university.primary_color = form.primary_color.data
+        university.secondary_color = form.secondary_color.data
+        university.logo = save_file_wtf(
+            data=form.logo.data, default_filename=university.logo)
 
         university.update()
 
         return redirect("/settings")
 
-    return render_template("settings.html", university=university)
+    form.id.data = university.id
+    form.email.data = university.email
+    form.name.data = university.name
+    form.display_name.data = university.display_name
+    form.primary_color.data = university.primary_color
+    form.secondary_color.data = university.secondary_color
+    form.logo.data = university.logo
+
+    return render_template("settings.html", form=form, university=university)
