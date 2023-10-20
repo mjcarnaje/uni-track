@@ -10,7 +10,7 @@ course_bp = Blueprint('course', __name__)
 @login_required
 def course(id):
     Course.delete(university_id=current_user.id, id=id)
-    return jsonify({'success': True})
+    return jsonify({'success': True, 'message': 'Course successfuly deleted.'})
 
 
 @course_bp.route('/college/<int:college_id>')

@@ -76,7 +76,7 @@ def update_college(id):
 @login_required
 def delete_college(id):
     College.delete(id=id, university_id=current_user.id)
-    return redirect("/college/")
+    return jsonify({'success': True, 'message': "College successfuly deleted."})
 
 
 @college_bp.route('/<string:id>', methods=['GET', 'DELETE', "POST"])
