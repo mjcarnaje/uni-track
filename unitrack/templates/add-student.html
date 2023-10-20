@@ -1,3 +1,6 @@
+{% from "./macros/input.html" import render_field %}
+{% from "./macros/photo-input.html" import render_photo_field %}
+{% from './macros/csrf_input.html' import csrf_input %}
 {% set active_page = "student" %} {% extends "layout.html" %}
 {% block title %}
   Add Student
@@ -6,108 +9,19 @@
   <div class="w-full max-w-3xl p-8 mx-auto bg-white border shadow-md rounded-2xl">
     <form class="grid w-full grid-cols-2 gap-8 py-4"
           method="post"
-          enctype="multipart/form-data">
-      <div class="flex flex-col items-center justify-center col-span-2 pb-4 space-y-8">
-        <div id="photo-container"
-             class="flex items-center justify-center w-48 h-48 overflow-hidden border rounded-full bg-slate-200">
-          <i class="text-7xl fa-solid fa-user text-slate-600"></i>
-        </div>
-        <div class="flex items-center gap-2">
-          <input id="student-photo"
-                 type="file"
-                 name="photo"
-                 accept="image/png, image/jpeg, image/jpg"
-                 class="hidden" />
-          <button type="button"
-                  id="add-photo"
-                  class="px-4 py-2 text-sm font-thin text-white transition duration-500 cursor-pointer bg-primary-500 rounded-xl hover:bg-primary-600">
-            Add Student Photo
-          </button>
-          <button type="button"
-                  id="remove-photo"
-                  class="hidden px-4 py-2 text-sm font-thin text-white transition duration-500 bg-red-500 cursor-pointer rounded-xl hover:bg-red-600">
-            Remove Remove
-          </button>
-        </div>
-      </div>
+          enctype="multipart/form-data"
+          novalidate>
+      {{ csrf_input() }}
       <div class="col-span-2">
-        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Student ID</label>
-        <input class="w-full col-span-2 px-4 py-3 border-2 rounded-2xl focus:outline-none focus:border-primary-500"
-               placeholder="Student Id"
-               name="student_id" />
+        {{ render_photo_field(form.photo, add_text="Add College Logo", remove_text="Remove College Logo", is_circle=true) }}
       </div>
-      <div class="col-span-1">
-        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">First name</label>
-        <input class="w-full px-4 py-3 border-2 rounded-2xl focus:outline-none focus:border-primary-500"
-               placeholder="First Name"
-               name="first_name" />
-      </div>
-      <div class="col-span-1">
-        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Last name</label>
-        <input class="w-full px-4 py-3 border-2 rounded-2xl focus:outline-none focus:border-primary-500"
-               placeholder="Last Name"
-               name="last_name" />
-      </div>
-      <div class="col-span-1">
-        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Gender</label>
-        <div class="relative">
-          <select class="w-full col-span-2 px-4 py-3 bg-white border-2 appearance-none rounded-2xl"
-                  name="gender">
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-          <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
-            <svg class="w-4 h-4 fill-current"
-                 xmlns="http://www.w3.org/2000/svg"
-                 viewBox="0 0 20 20">
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="col-span-1">
-        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Birthday</label>
-        <input class="w-full col-span-2 px-4 py-3 border-2 rounded-2xl focus:outline-none focus:border-primary-500"
-               type="date"
-               name="birthday" />
-      </div>
-      <div class="col-span-2">
-        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">College</label>
-        <div class="relative">
-          <select class="w-full col-span-2 px-4 py-3 bg-white border-2 appearance-none rounded-2xl"
-                  name="college_id">
-            <option value="">Select College</option>
-            {% for college in colleges %}
-              <option value="{{ college.id }}">{{ college.code }} - {{ college.name }}</option>
-            {% endfor %}
-          </select>
-          <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
-            <svg class="w-4 h-4 fill-current"
-                 xmlns="http://www.w3.org/2000/svg"
-                 viewBox="0 0 20 20">
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="col-span-2">
-        <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Course</label>
-        <div class="relative">
-          <select class="w-full col-span-2 px-4 py-3 bg-white border-2 appearance-none rounded-2xl"
-                  name="course_id">
-            <option value="">Select Course</option>
-            <!-- {% for course in courses %}<option value="{{ course.id }}">{{ course.name }}</option>{% endfor %} -->
-          </select>
-          <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
-            <svg class="w-4 h-4 fill-current"
-                 xmlns="http://www.w3.org/2000/svg"
-                 viewBox="0 0 20 20">
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-            </svg>
-          </div>
-        </div>
-      </div>
+      {{ render_field(form.student_id, container_class="col-span-2") }}
+      {{ render_field(form.first_name, container_class="col-span-2") }}
+      {{ render_field(form.last_name, container_class="col-span-2") }}
+      {{ render_field(form.gender, container_class="col-span-1") }}
+      {{ render_field(form.birthday, container_class="col-span-1") }}
+      {{ render_field(form.college_id, container_class="col-span-2") }}
+      {{ render_field(form.course_id, container_class="col-span-2") }}
       <button type="submit"
               class="col-span-2 px-4 py-4 font-thin text-white cursor-pointer bg-primary-500 rounded-2xl hover:bg-primary-600">
         Save
@@ -119,33 +33,6 @@
   const collegeSelect = document.querySelector("select[name=college_id]");
   const courseSelect = document.querySelector("select[name=course_id]");
 
-  const addPhoto = document.getElementById("add-photo");
-  const removePhoto = document.getElementById("remove-photo");
-  const photoContainer = document.getElementById("photo-container");
-  const photo = document.getElementById("student-photo");
-
-  addPhoto.addEventListener("click", () => {
-    photo.click();
-  });
-
-  removePhoto.addEventListener("click", () => {
-    photoContainer.innerHTML =
-      '<i class="text-7xl fa-solid fa-building-columns text-slate-600"></i>';
-    removePhoto.classList.add("hidden");
-  });
-
-  photo.addEventListener("change", () => {
-    const file = photo.files[0];
-    const reader = new FileReader();
-
-    reader.addEventListener("load", () => {
-      photoContainer.innerHTML = `<img src="${reader.result}" class="object-cover w-48 h-48 rounded-full" />`;
-      removePhoto.classList.remove("hidden");
-    });
-
-    reader.readAsDataURL(file);
-  });
-
   collegeSelect.addEventListener("change", (e) => {
     getCourses(e.target.value);
   });
@@ -156,10 +43,13 @@
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data && data.length > 0) {
+        if (data?.length > 0) {
           courseSelect.innerHTML = "";
           data.forEach((course) => {
-            courseSelect.innerHTML += `<option value="${course.id}">${course.code} - ${course.name}</option>`;
+            const option = document.createElement("option");
+            option.value = course.id;
+            option.text = `${course.code} - ${course.name}`;
+            courseSelect.appendChild(option);
           });
         }
       })

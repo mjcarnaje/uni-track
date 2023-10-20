@@ -13,8 +13,6 @@ course_bp = Blueprint('course', __name__)
 def add_course():
     form = AddCourseValidation()
 
-    print("Add Course Validation", form.validate_on_submit())
-
     if form.validate_on_submit():
         course = Course(
             name=form.name.data,

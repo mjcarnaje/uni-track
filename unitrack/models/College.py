@@ -19,7 +19,7 @@ class College():
 
     def find_one(self) -> str or dict:
         if self.id is None:
-            return "Cannot find without an ID"
+            raise Exception("Cannot find without an ID")
 
         SELECT_SQL = f"SELECT college.*, MAX(course_counts.course_count) as course_count, MAX(student_counts.student_count) as student_count FROM {self.__tablename__}"
         SELECT_SQL += f" LEFT JOIN (SELECT college_id, COUNT(id) AS course_count FROM course GROUP BY college_id) AS course_counts ON course_counts.college_id = college.id"
@@ -32,6 +32,10 @@ class College():
         return college
 
     def find_all(self, page_number: int = 1, page_size: int = 100, query: str = None) -> dict:
+        if self.university_id is None:
+            raise Exception(
+                "Cannot find colleges without university ID")
+
         offset = (page_number - 1) * page_size
 
         filter_params = []
@@ -83,7 +87,8 @@ class College():
 
     def update(self):
         if self.id is None or self.university_id is None:
-            return "Cannot update without an ID and university ID"
+            raise Exception(
+                "Cannot update without an ID and university ID")
 
         UPDATE_SQL = f"UPDATE {self.__tablename__} SET name=%s, code=%s, photo=%s WHERE id=%s AND university_id=%s"
 
@@ -99,7 +104,8 @@ class College():
 
     def delete(self):
         if self.id is None or self.university_id is None:
-            return "Cannot delete without an ID and university ID"
+            raise Exception(
+                "Cannot delete without an ID and university ID")
 
         try:
             DELETE_SQL = f"DELETE FROM {self.__tablename__} WHERE id=%s AND university_id=%s"
@@ -112,7 +118,8 @@ class College():
 
     def find_courses(self):
         if (self.id is None or self.university_id is None):
-            return "Cannot find courses without an ID and university ID"
+            raise Exception(
+                "Cannot find courses without an ID and university ID")
 
         SELECT_SQL = f"SELECT course.*, COUNT(student.id) as student_count FROM {self.__tablename__}"
         SELECT_SQL += " LEFT JOIN course ON course.college_id = college.id"
@@ -124,6 +131,10 @@ class College():
         return cur.fetchall()
 
     def count(self):
+        if self.university_id is None:
+            raise Exception(
+                "Cannot count colleges without university ID")
+
         SELECT_SQL = f"SELECT COUNT(*) FROM {self.__tablename__} WHERE university_id=%s"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL, (self.university_id,))
@@ -131,7 +142,8 @@ class College():
 
     def check_if_code_exists(self, code: str, id: int = None) -> bool:
         if self.university_id is None:
-            return "Cannot check without an university ID"
+            raise Exception(
+                "Cannot check if student ID exists without university ID")
 
         SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE code=%s AND university_id=%s"
         params = [code, self.university_id]
@@ -146,7 +158,8 @@ class College():
 
     def check_if_name_exists(self, name: str, id: int = None) -> bool:
         if self.university_id is None:
-            return "Cannot check without an university ID"
+            raise Exception(
+                "Cannot check if student ID exists without university ID")
 
         SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE name=%s AND university_id=%s"
         params = [name, self.university_id]

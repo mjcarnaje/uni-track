@@ -2,7 +2,26 @@
   <div class="{{ container_class }}">
     {{ field.label(class="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase") }}
     <div>
-      {{ field(class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-primary-500", placeholder=field.label.text, **kwargs) |safe }}
+      {% if field.type == "SelectField" %}
+        <div class="relative">
+          <select class="w-full col-span-2 px-4 py-3 bg-white border-2 appearance-none rounded-2xl"
+                  name="{{ field.name }}">
+            <option value="">Select {{ field.label.text }}</option>
+            {% for key, value in field.choices %}
+              <option value="{{ key }}" {% if field.data == key %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+          </select>
+          <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
+            <svg class="w-4 h-4 fill-current"
+                 xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 20 20">
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+            </svg>
+          </div>
+        </div>
+      {% else %}
+        {{ field(class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-primary-500", placeholder=field.label.text, **kwargs) }}
+      {% endif %}
       {% if field.errors %}
         <ul class="mt-2">
           {% for error in field.errors %}<li class="text-xs text-red-500">{{ error }}</li>{% endfor %}

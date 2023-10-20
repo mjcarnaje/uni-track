@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS college (
     name VARCHAR(256) NOT NULL,
     code VARCHAR(16) NOT NULL,
     photo TEXT,
-    university_id INTEGER REFERENCES university(id) ON DELETE CASCADE,
+    university_id INTEGER NOT NULL REFERENCES university(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 CREATE TABLE IF NOT EXISTS course (
@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS course (
     name VARCHAR(256) NOT NULL,
     code VARCHAR(16) NOT NULL,
     photo TEXT,
-    college_id INTEGER REFERENCES college(id) ON DELETE CASCADE,
-    university_id INTEGER REFERENCES university(id) ON DELETE CASCADE,
+    college_id INTEGER NOT NULL REFERENCES college(id) ON DELETE CASCADE,
+    university_id INTEGER NOT NULL REFERENCES university(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 CREATE TABLE IF NOT EXISTS student (
@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS student (
     gender VARCHAR(16) NOT NULL,
     birthday DATE NOT NULL,
     photo TEXT,
-    college_id INTEGER REFERENCES college(id),
-    course_id INTEGER REFERENCES course(id),
-    university_id INTEGER REFERENCES university(id),
+    college_id INTEGER NOT NULL REFERENCES college(id),
+    course_id INTEGER NOT NULL REFERENCES course(id),
+    university_id INTEGER NOT NULL REFERENCES university(id),
     created_at TIMESTAMP DEFAULT NOW()
 );

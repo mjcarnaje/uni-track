@@ -5,11 +5,13 @@ from flask import current_app as app
 from flask import jsonify, redirect, render_template, request
 from flask_login import current_user, login_required
 
-from unitrack.utils.upload_file import save_file
+from unitrack.utils.upload_file import save_file, save_file_wtf
 
 from ..models.College import College
 from ..models.Course import Course
 from ..models.Student import Student
+
+from ..validations import AddStudentValidation, UpdateStudentValidation
 
 student_bp = Blueprint('student', __name__)
 
@@ -80,16 +82,29 @@ def students():
 @student_bp.route("/add", methods=["GET", "POST"])
 @login_required
 def add_student():
-    if request.method == "POST":
+    colleges = College(university_id=current_user.id).find_all().get("data")
+    form = AddStudentValidation()
+    college_choices = [(college.get("id"), college.get("name"))
+                       for college in colleges]
+    form.college_id.choices = college_choices
+    form.course_id.choices = []
+    if (form.college_id.data):
+        courses = College(id=form.college_id.data,
+                          university_id=current_user.id).find_courses()
+        course_choices = [(course.get("id"), course.get("name"))
+                          for course in courses]
+        form.course_id.choices = course_choices
+
+    if form.validate_on_submit():
         student = Student(
-            student_id=request.form.get('student_id'),
-            first_name=request.form.get('first_name'),
-            last_name=request.form.get('last_name'),
-            gender=request.form.get('gender'),
-            birthday=request.form.get('birthday'),
+            student_id=form.student_id.data,
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            gender=form.gender.data,
+            birthday=form.birthday.data,
             college_id=request.form.get('college_id'),
             course_id=request.form.get('course_id'),
-            photo=save_file(key='photo') or 'default.png',
+            photo=save_file_wtf(data=form.photo.data),
             university_id=current_user.id
         )
 
@@ -97,9 +112,7 @@ def add_student():
 
         return redirect("/student/")
 
-    colleges = College(university_id=current_user.id).find_all().get("data")
-
-    return render_template("add-student.html", colleges=colleges)
+    return render_template("add-student.html", form=form, colleges=colleges)
 
 
 @student_bp.route("/update/<int:id>", methods=["GET", "POST"])

@@ -7,13 +7,13 @@ from ..models.University import University
 class UniversityValidation(FlaskForm):
     logo = FileField('Logo', validators=[FileRequired()])
     email = StringField('Email Address', [
-        validators.Length(min=6, max=35)
+        validators.Length(min=6, max=64)
     ])
     display_name = StringField('Display Name', [
         validators.Length(min=4, max=25)
     ])
     name = StringField('Name', [
-        validators.Length(min=4, max=25)
+        validators.Length(min=4, max=128)
     ])
     primary_color = StringField('Primary Color', [
         validators.Length(min=6, message='Choose color'),

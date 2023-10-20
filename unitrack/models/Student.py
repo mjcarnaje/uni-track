@@ -78,11 +78,6 @@ class Student():
         SELECT_SQL += f" WHERE {where_clause}"
         SELECT_SQL += " LIMIT %s OFFSET %s"
 
-        print(f"SELECT SQL: {SELECT_SQL}")
-
-        for i in filter_params + [page_size, offset]:
-            print(i)
-
         cur = mysql.new_cursor(dictionary=True)
 
         cur.execute(SELECT_SQL, filter_params + [page_size, offset])
@@ -147,3 +142,19 @@ class Student():
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(SELECT_SQL, (self.university_id,))
         return cur.fetchone()['COUNT(*)']
+
+    def check_if_student_id_exists(self, id: str = None):
+        if self.university_id is None or self.student_id is None:
+            raise Exception(
+                "Cannot check if student ID exists without university ID and student ID")
+
+        SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE university_id=%s AND student_id=%s"
+        params = [self.university_id, self.student_id]
+
+        if id is not None:
+            SELECT_SQL += " AND id != %s"
+            params.append(id)
+
+        cur = mysql.new_cursor(dictionary=True)
+        cur.execute(SELECT_SQL, params)
+        return cur.fetchone() is not None
