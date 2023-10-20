@@ -1,11 +1,11 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired
 from wtforms import StringField, validators, HiddenField, SelectField, DateField
 from ..models.Student import Student
 from flask_login import current_user
 
 
-class BaseStudentValidation(FlaskForm):
+class StudentValidationMixin:
+    photo = StringField('Photo', validators=[validators.DataRequired()])
     student_id = StringField('Student ID', [
         validators.Length(min=4, max=16)
     ])
@@ -24,22 +24,17 @@ class BaseStudentValidation(FlaskForm):
                             validators.DataRequired()], coerce=int, validate_choice=False)
 
 
-class AddStudentValidation(BaseStudentValidation):
-    photo = FileField('Photo', validators=[
-        FileRequired()
-    ])
-
+class AddStudentValidation(FlaskForm, StudentValidationMixin):
     def validate_student_id(self, student_id):
-        if Student(university_id=current_user.id, student_id=student_id.data).check_if_student_id_exists():
+        if Student.check_if_student_id_exists(student_id=student_id.data, university_id=current_user.id):
             raise validators.ValidationError(
                 'Student ID already exists in this university')
 
 
-class UpdateStudentValidation(BaseStudentValidation):
+class UpdateStudentValidation(FlaskForm, StudentValidationMixin):
     id = HiddenField('Id')
-    photo = FileField('Photo')
 
     def validate_student_id(self, student_id):
-        if Student(university_id=current_user.id, student_id=student_id.data).check_if_student_id_exists(id=self.id.data):
+        if Student.check_if_student_id_exists(student_id=student_id.data, university_id=current_user.id, id=self.id.data):
             raise validators.ValidationError(
                 'Student ID already exists in this university')

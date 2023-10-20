@@ -1,11 +1,6 @@
-import os
-
 from flask import Blueprint
-from flask import current_app as app
 from flask import jsonify, redirect, render_template, request
 from flask_login import current_user, login_required
-
-from unitrack.utils.upload_file import delete_file, save_file_wtf
 
 from ..models.College import College
 from ..models.Course import Course
@@ -25,7 +20,8 @@ def students():
     course_id = request.args.get('course_id', '', type=int)
     gender = request.args.get('gender', '', type=str)
 
-    students_query = Student(university_id=current_user.id).find_all(
+    students_query = Student.find_all(
+        university_id=current_user.id,
         page_number=page,
         page_size=12,
         query=query,
@@ -39,7 +35,7 @@ def students():
     has_next_page = students_query.get("has_next_page")
     total_count = students_query.get("total_count")
 
-    colleges = College(university_id=current_user.id).find_all().get("data")
+    colleges = College.find_all(university_id=current_user.id).get("data")
 
     courses = []
     filters = {
@@ -55,12 +51,15 @@ def students():
         }
 
     if college_id:
-        college = College(id=college_id).find_one()
-        courses = College(id=college.get("id")).find_courses()
+        college = College.find_by_id(
+            university_id=current_user.id, id=college_id)
+        courses = Course.find_by_college_id(
+            university_id=current_user.id, college_id=college_id)
+
         filters["college"] = {'key': 'college_id', **college}
 
         if course_id:
-            course = Course(id=course_id).find_one()
+            course = Course.find_by_id(course_id)
             filters["course"] = {'key': 'course_id', **course}
 
     return render_template("students.html",
@@ -84,7 +83,7 @@ def add_student():
 
     form = AddStudentValidation()
 
-    colleges = College(university_id=current_user.id).find_all().get("data")
+    colleges = College.find_all(university_id=current_user.id).get("data")
     college_choices = [(college.get("id"), college.get("name"))
                        for college in colleges]
 
@@ -92,26 +91,15 @@ def add_student():
     form.course_id.choices = []
 
     if (form.college_id.data):
-        courses = Course(university_id=current_user.id).find_by_college_id(
-            form.college_id.data)
+        courses = Course.find_by_college_id(
+            university_id=current_user.id, college_id=form.college_id.data)
         course_choices = [(course.get("id"), course.get("name"))
                           for course in courses]
         form.course_id.choices = course_choices
 
     if form.validate_on_submit():
-        student = Student(
-            student_id=form.student_id.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            gender=form.gender.data,
-            birthday=form.birthday.data,
-            college_id=form.college_id.data,
-            course_id=form.course_id.data,
-            photo=save_file_wtf(data=form.photo.data),
-            university_id=current_user.id
-        )
-
-        student.insert()
+        Student.insert(student_id=form.student_id.data, first_name=form.first_name.data, last_name=form.last_name.data, gender=form.gender.data,
+                       birthday=form.birthday.data, college_id=form.college_id.data, course_id=form.course_id.data, photo=form.photo.data, university_id=current_user.id)
 
         return redirect("/student/")
 
@@ -121,12 +109,11 @@ def add_student():
 @student_bp.route("/update/<int:id>", methods=["GET", "POST"])
 @login_required
 def update_student(id):
-    student_query = Student(id=id, university_id=current_user.id)
-    student = student_query.find_one()
+    student = Student.find_by_id(id=id, university_id=current_user.id)
 
     form = UpdateStudentValidation()
 
-    colleges = College(university_id=current_user.id).find_all().get("data")
+    colleges = College.find_all(university_id=current_user.id).get("data")
     college_choices = [(college.get("id"), college.get("name"))
                        for college in colleges]
 
@@ -134,32 +121,23 @@ def update_student(id):
     form.course_id.choices = []
 
     if form.validate_on_submit():
-        student_query.student_id = form.student_id.data
-        student_query.first_name = form.first_name.data
-        student_query.last_name = form.last_name.data
-        student_query.gender = form.gender.data
-        student_query.birthday = form.birthday.data
-        student_query.college_id = form.college_id.data
-        student_query.course_id = form.course_id.data
-        student_query.photo = save_file_wtf(
-            data=form.photo.data,
-            default_filename=student.get("photo"))
-        student_query.update()
+        Student.update(id=id, student_id=form.student_id.data, first_name=form.first_name.data, last_name=form.last_name.data, gender=form.gender.data,
+                       birthday=form.birthday.data, photo=form.photo.data, college_id=form.college_id.data, course_id=form.course_id.data, university_id=current_user.id)
         return redirect("/student")
 
-    form.id.data = student.get("id")
-    form.student_id.data = student.get("student_id")
-    form.first_name.data = student.get("first_name")
-    form.last_name.data = student.get("last_name")
-    form.gender.data = student.get("gender")
-    form.birthday.data = student.get("birthday")
-    form.college_id.data = student.get("college_id")
-    form.course_id.data = student.get("course_id")
-    form.photo.data = student.get("photo")
+    form.id.data = student.id
+    form.student_id.data = student.student_id
+    form.first_name.data = student.first_name
+    form.last_name.data = student.last_name
+    form.gender.data = student.gender
+    form.birthday.data = student.birthday
+    form.college_id.data = student.college_id
+    form.course_id.data = student.course_id
+    form.photo.data = student.photo
 
     if (form.college_id.data):
-        courses = Course(university_id=current_user.id).find_by_college_id(
-            form.college_id.data)
+        courses = Course.find_by_college_id(
+            university_id=current_user.id, college_id=form.college_id.data)
         course_choices = [(course.get("id"), course.get("name"))
                           for course in courses]
         form.course_id.choices = course_choices
@@ -169,21 +147,12 @@ def update_student(id):
 
 @student_bp.route('/<int:id>')
 def view_student(id):
-    student_query = Student(id=id, university_id=current_user.id)
-    student = student_query.find_one()
-
+    student = Student.find_by_id(id=id, university_id=current_user.id)
     return render_template("student.html", student=student)
 
 
 @student_bp.route('/delete/<int:id>', methods=['DELETE'])
 @login_required
 def delete_student(id):
-    student_query = Student(id=id, university_id=current_user.id)
-    student = student_query.find_one()
-    student_photo = student.get('photo')
-
-    student_query.delete()
-
-    delete_file(student_photo)
-
+    Student.delete(id=id, university_id=current_user.id)
     return jsonify({"success": True})

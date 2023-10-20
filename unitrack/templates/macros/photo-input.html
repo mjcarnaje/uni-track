@@ -3,16 +3,17 @@
   <div class="flex flex-col items-center gap-4 {{ container_class }}">
     {{ field(class="hidden") }}
     <div id="photo-preview"
-         class="flex items-center justify-center w-48 h-48 border bg-slate-200 {{ 'rounded-full' if is_circle else 'rounded-3xl' }} {{ 'border-red-500' if field.errors }}">
-      {% if photo is string %}
+         class="flex items-center justify-center overflow-hidden w-48 h-48 border bg-slate-200 {{ 'rounded-full' if is_circle else 'rounded-3xl' }} {{ 'border-red-500' if field.errors }}">
+      {% if photo %}
         <img src="{{ url_for('media', filename=photo) }}"
-             class="w-full h-full {{ 'rounded-full' if is_circle else 'rounded-3xl' }}"
+             class="object-cover w-full h-full"
              height="auto"
              width="auto"
              alt="" />
       {% else %}
         <i class="text-7xl fa-regular fa-image text-slate-600"></i>
       {% endif %}
+      <input type="file" name="upload" accept="image/*" class="hidden" />
     </div>
     {% if field.errors %}
       <ul>
@@ -28,49 +29,47 @@
       <button type="button"
               id="remove-photo"
               class="px-4 py-2 text-sm font-thin text-white transition duration-500 bg-red-500 cursor-pointer rounded-xl hover:bg-red-600"
-              hidden="{{ photo is none }}">{{ remove_text }}</button>
+              {% if not photo %}hidden{% endif %}>{{ remove_text }}</button>
     </div>
   </div>
   <script>
   const photoPreview = document.getElementById("photo-preview");
   const addPhoto = document.getElementById("add-photo");
   const removePhoto = document.getElementById("remove-photo");
-  const photoInput = document.querySelector("input[type=file][name={{ field.name }}]");
 
-  const photo = "{{ photo }}";
+  const uploadPhotoInput = document.querySelector("input[type=file]");
+  const photo = document.querySelector("input[name={{ field.name }}]")
+  const csrfToken = document.querySelector("meta[name=csrf_token]").content;
 
-  if (typeof photo !== "string") {
-      const reader = new FileReader();
+  uploadPhotoInput.addEventListener("change", async () => {
+    const file = uploadPhotoInput.files[0];
+    const formData = new FormData();
+    formData.append("upload", file);
+    formData.append("csrf_token", csrfToken);
 
-      reader.addEventListener("load", () => {
-        photoPreview.innerHTML = `<img src="${reader.result}" class="w-full h-full {{ 'rounded-full' if is_circle else 'rounded-3xl' }}" />`;
-        removePhoto.hidden = false;
-      });
+    const response = await fetch("{{ url_for('upload') }}", {
+      method: "POST",
+      body: formData,
+    });
 
-      reader.readAsDataURL(photo);
-  }
+    const data = await response.json();
+    
+    if (data && data.url) {
+      photoPreview.innerHTML = `<img src="/upload/${data.url}" class="w-full h-full" height="auto" width="auto" alt="" />`;
+      photo.value = data.url;
+    }
+    
+    removePhoto.hidden = false;
+  });
 
   addPhoto.addEventListener("click", () => {
-    photoInput.click();
+    uploadPhotoInput.click();
   });
 
   removePhoto.addEventListener("click", () => {
-    photoInput.value = "";  
-    photoPreview.innerHTML =
-      '<i class="text-7xl fa-regular fa-image text-slate-600"></i>';
+    photoPreview.innerHTML = `<i class="text-7xl fa-regular fa-image text-slate-600"></i>`;
+    photo.value = "";
     removePhoto.hidden = true;
-  });
-
-  photoInput.addEventListener("change", () => {
-    const file = photoInput.files[0]; 
-    const reader = new FileReader();
-
-    reader.addEventListener("load", () => {
-      photoPreview.innerHTML = `<img src="${reader.result}" class="w-full h-full {{ 'rounded-full' if is_circle else 'rounded-3xl' }}" />`;
-      removePhoto.hidden = false;
-    });
-
-    reader.readAsDataURL(file);
   });
   </script>
 {% endmacro %}

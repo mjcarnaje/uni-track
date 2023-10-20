@@ -62,9 +62,14 @@
   </div>
   {% block javascript %}
     <script>
+    const csrf_token = document.querySelector("meta[name=csrf_token]").content;
 function deleteStudent(id){
-  fetch(`/student/${id}`, {
+  fetch(`/student/delete/${id}`, {
     method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrf_token
+    }
   })
     .then(response => response.json())
     .then(data => {

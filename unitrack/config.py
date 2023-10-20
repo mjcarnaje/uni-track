@@ -1,13 +1,8 @@
 import os
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
 
 class Config:
-    UPLOAD_FOLDER = os.path.join(os.path.dirname(
-        os.path.abspath(__file__)), 'static/uploads')
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'static/uploads')
 
     SECRET_KEY = os.getenv('SECRET_KEY')
 

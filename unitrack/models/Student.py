@@ -14,16 +14,21 @@ class Student():
     __tablename__ = 'student'
 
     def __init__(self,
+                 id: int | None = None,
                  student_id: str = None,
                  first_name: str = None,
                  last_name: str = None,
                  gender: Gender = None,
                  birthday: datetime.datetime = None,
-                 photo: str = None,
+                 photo: str | None = None,
                  college_id: int = None,
                  course_id: int = None,
                  university_id: int = None,
-                 id: int = None
+                 created_at: datetime.datetime | None = None,
+                 college_name: str = None,
+                 college_photo: str = None,
+                 course_name: str = None,
+                 course_photo: str = None
                  ):
         self.id = id
         self.student_id = student_id
@@ -35,28 +40,34 @@ class Student():
         self.college_id = college_id
         self.course_id = course_id
         self.university_id = university_id
+        self.created_at = created_at
+        self.college_name = college_name
+        self.college_photo = college_photo
+        self.course_name = course_name
+        self.course_photo = course_photo
 
-    def find_one(self):
-        if self.id is None and self.university_id is None:
-            return "Cannot find without an ID and university ID"
-
-        SELECT_SQL = f"SELECT student.*, college.name AS college_name, college.photo AS college_photo, course.name AS course_name, course.photo AS course_photo FROM {self.__tablename__}"
-        SELECT_SQL += " LEFT JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id WHERE student.id=%s AND student.university_id=%s"
+    @classmethod
+    def find_by_id(cls, id: int, university_id: int):
+        sql = """
+            SELECT student.*, college.name AS college_name, college.photo AS college_photo, course.name AS course_name, course.photo AS course_photo FROM student
+            LEFT JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id 
+            WHERE student.id=%s AND student.university_id=%s"""
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(SELECT_SQL, (self.id, self.university_id))
+        cur.execute(sql, (id, university_id))
         student = cur.fetchone()
-        return student
+        if not student:
+            return None
+        return cls(**student)
 
-    def find_all(self, page_number: int, page_size: int, query: str, college_id: str, course_id: str, gender: str) -> dict:
+    @staticmethod
+    def find_all(university_id: int, page_number: int, page_size: int, query: str, college_id: int, course_id: int, gender: str):
         offset = (page_number - 1) * page_size
 
-        filter_params = []
-
         where_clause = "student.university_id = %s"
-        filter_params.extend([self.university_id])
+        filter_params = [university_id]
 
         if query:
-            where_clause += " AND student_id LIKE %s OR first_name LIKE %s OR last_name LIKE %s"
+            where_clause += " AND (student_id LIKE %s OR first_name LIKE %s OR last_name LIKE %s)"
             filter_params.append(f"%{query}%")
             filter_params.append(f"%{query}%")
             filter_params.append(f"%{query}%")
@@ -73,21 +84,25 @@ class Student():
             where_clause += " AND gender = %s"
             filter_params.append(gender)
 
-        SELECT_SQL = f"SELECT student.*, college.name AS college_name, college.photo AS college_photo, course.name AS course_name, course.photo AS course_photo FROM {self.__tablename__}"
-        SELECT_SQL += " JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id"
-        SELECT_SQL += f" WHERE {where_clause}"
-        SELECT_SQL += " LIMIT %s OFFSET %s"
+        sql = f"""
+                SELECT student.*, college.name AS college_name, college.photo AS college_photo, course.name AS course_name, course.photo AS course_photo FROM student
+                JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id"""
+        sql += f" WHERE {where_clause}"
+        sql += " LIMIT %s OFFSET %s"
+
+        print(sql)
+        print(filter_params)
 
         cur = mysql.new_cursor(dictionary=True)
 
-        cur.execute(SELECT_SQL, filter_params + [page_size, offset])
+        cur.execute(sql, filter_params + [page_size, offset])
 
         data = cur.fetchall()
 
-        COUNT_SQL = f"SELECT COUNT(*) FROM {self.__tablename__}"
-        COUNT_SQL += f" WHERE {where_clause}"
+        count_sql = f"SELECT COUNT(*) FROM student"
+        count_sql += f" WHERE {where_clause}"
 
-        cur.execute(COUNT_SQL, filter_params)
+        cur.execute(count_sql, filter_params)
         total_count = cur.fetchone()['COUNT(*)']
 
         has_previous_page = offset > 0
@@ -100,61 +115,48 @@ class Student():
             'total_count': total_count
         }
 
-    def insert(self) -> str:
-        INSERT_SQL = f"INSERT INTO {self.__tablename__} (student_id, first_name, last_name, gender, birthday, photo, college_id, course_id, university_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    @staticmethod
+    def insert(student_id: str, first_name: str, last_name: str, gender: str, birthday: datetime.datetime, photo: str, college_id: int, course_id: int, university_id: int) -> str:
+        sql = "INSERT INTO student (student_id, first_name, last_name, gender, birthday, photo, college_id, course_id, university_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(INSERT_SQL, (self.student_id, self.first_name, self.last_name, self.gender,
-                    self.birthday, self.photo, self.college_id, self.course_id, self.university_id))
+        cur.execute(sql, (student_id, first_name, last_name, gender,
+                    birthday, photo, college_id, course_id, university_id,))
         mysql.connection.commit()
-        return "Insert successful"
+        return cur.lastrowid
 
-    def update(self):
-        if self.id is None or self.university_id is None:
-            return "Cannot update without an ID and university ID"
-
-        UPDATE_SQL = f"UPDATE {self.__tablename__} SET student_id=%s, first_name=%s, last_name=%s, gender=%s, birthday=%s, photo=%s, college_id=%s, course_id=%s WHERE id=%s"
-
-        try:
-            cur = mysql.new_cursor(dictionary=True)
-            cur.execute(UPDATE_SQL, (self.student_id, self.first_name, self.last_name,
-                        self.gender, self.birthday, self.photo, self.college_id, self.course_id, self.id))
-            mysql.connection.commit()
-            return "Update successful"
-        except Exception as e:
-            return f"Update failed: {str(e)}"
-
-    def delete(self):
-        if self.id is None or self.university_id is None:
-            return "Cannot delete without an ID and university ID"
-
-        try:
-            DELETE_SQL = f"DELETE FROM {self.__tablename__} WHERE id=%s"
-            cur = mysql.new_cursor(dictionary=True)
-            cur.execute(DELETE_SQL, (self.id,))
-            mysql.connection.commit()
-        except Exception as e:
-            return f"Delete failed: {str(e)}"
-
-        return "Delete successful"
-
-    def count(self):
-        SELECT_SQL = f"SELECT COUNT(*) FROM {self.__tablename__} WHERE university_id=%s"
+    @staticmethod
+    def update(id: int, student_id: str, first_name: str, last_name: str, gender: str, birthday: datetime.datetime, photo: str, college_id: int, course_id: int, university_id: int) -> str:
+        sql = "UPDATE student SET student_id=%s, first_name=%s, last_name=%s, gender=%s, birthday=%s, photo=%s, college_id=%s, course_id=%s WHERE id=%s AND university_id=%s"
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(SELECT_SQL, (self.university_id,))
+        cur.execute(sql, (student_id, first_name, last_name, gender,
+                    birthday, photo, college_id, course_id, id, university_id,))
+        mysql.connection.commit()
+        return cur.lastrowid
+
+    @staticmethod
+    def delete(id: int, university_id: int) -> str:
+        sql = "DELETE FROM student WHERE id=%s AND university_id=%s"
+        cur = mysql.new_cursor(dictionary=True)
+        cur.execute(sql, (id, university_id,))
+        mysql.connection.commit()
+        return cur.lastrowid
+
+    @staticmethod
+    def count(university_id: int):
+        sql = "SELECT COUNT(*) FROM student WHERE university_id=%s"
+        cur = mysql.new_cursor(dictionary=True)
+        cur.execute(sql, (university_id,))
         return cur.fetchone()['COUNT(*)']
 
-    def check_if_student_id_exists(self, id: str = None):
-        if self.university_id is None or self.student_id is None:
-            raise Exception(
-                "Cannot check if student ID exists without university ID and student ID")
-
-        SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE university_id=%s AND student_id=%s"
-        params = [self.university_id, self.student_id]
+    @staticmethod
+    def check_if_student_id_exists(student_id: str, university_id: int, id: int = None):
+        sql = "SELECT * FROM student WHERE university_id=%s AND student_id=%s"
+        params = [university_id, student_id]
 
         if id is not None:
-            SELECT_SQL += " AND id != %s"
+            sql += " AND id != %s"
             params.append(id)
 
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(SELECT_SQL, params)
+        cur.execute(sql, params)
         return cur.fetchone() is not None

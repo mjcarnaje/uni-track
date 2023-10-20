@@ -25,8 +25,7 @@
         <div class="flex items-center gap-4">
           <a href="{{ url_for('college.update_college', id=college.id) }}"
              class="px-4 py-1 text-sm font-light transition-all duration-500 border rounded-full cursor-pointer text-primary-600 border-primary-600 hover:font-medium hover:bg-primary-50">Update</a>
-          <button data-csrf-token="{{ csrf_token() }}"
-                  data-id="{{ college.id }}"
+          <button data-id="{{ college.id }}"
                   class="px-4 py-1 text-sm font-light text-red-600 transition-all duration-500 border border-red-600 rounded-full cursor-pointer hover:font-medium hover:bg-red-50"
                   onclick="deleteCollege(this)">Delete</button>
         </div>
@@ -95,10 +94,15 @@
     </div>
   </div>
   <script type="text/javascript">
+    const csrf_token = document.querySelector("meta[name='csrf_token']").content;
+    
     function deleteCourse(button) {
       const id = button.dataset.id;
       fetch(`/course/${id}`, {
         method: "DELETE",
+        headers: {
+          "X-CSRFToken": csrf_token,
+        },
       })
         .then((response) => response.json())
         .then((data) => {
@@ -110,12 +114,11 @@
 
     function deleteCollege(button) {
       const id = button.dataset.id;
-      const csrfToken = button.dataset.csrfToken;
       
       fetch(`/college/delete/${id}`, {
         method: "DELETE",
         headers: {
-          "X-CSRFToken": csrfToken,
+          "X-CSRFToken": csrf_token,
         },
       })
         .then((response) => response.json())

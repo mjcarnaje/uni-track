@@ -63,6 +63,35 @@ def save_file_wtf(data: str or None, default_filename: str or None = None) -> st
     return file_name
 
 
+def upload_file(key: str):
+    file = request.files.get(key)
+
+    if not file:
+        print("No file part")
+        return None
+
+    if file.filename == '':
+        print("No selected file")
+        return None
+
+    if allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        ext = filename.rsplit('.', 1)[1].lower()
+        filename = f"{uuid4()}.{ext}"
+
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+        if (os.path.exists(file_path)):
+            print("File already exists")
+            return filename
+
+        file.save(file_path)
+
+        print("File saved")
+
+        return filename
+
+
 def delete_file(filename: str or None):
     if not filename:
         print("No filename")

@@ -1,10 +1,9 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, url_for
 from flask_login import login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..models.University import University
-from ..utils.upload_file import save_file_wtf
-from ..validations import SignInValidation, AddUniversityValidation
+from ..validations import AddUniversityValidation, SignInValidation
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -14,16 +13,8 @@ def signup():
     form = AddUniversityValidation()
 
     if form.validate_on_submit():
-        university = University(
-            email=form.email.data,
-            logo=save_file_wtf(data=form.logo.data),
-            display_name=form.display_name.data,
-            name=form.display_name.data,
-            primary_color=form.primary_color.data,
-            secondary_color=form.secondary_color.data,
-            password=generate_password_hash(password=form.password.data))
-
-        university.insert()
+        University.insert(email=form.email.data, logo=form.logo.data, display_name=form.display_name.data, name=form.display_name.data,
+                          primary_color=form.primary_color.data, secondary_color=form.secondary_color.data, password=generate_password_hash(form.password.data))
 
         return redirect(url_for('auth.login'))
 
@@ -35,13 +26,7 @@ def login():
     form = SignInValidation()
 
     if form.validate_on_submit():
-        university = University(email=form.email.data).find_by_email()
-
-        if not university:
-            return redirect(url_for('auth.login'))
-
-        if not check_password_hash(university.password, form.password.data):
-            return redirect(url_for('auth.login'))
+        university = University.find_by_email(email=form.email.data)
 
         login_user(university, remember=True)
 

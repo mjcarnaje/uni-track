@@ -1,10 +1,10 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired
-from wtforms import StringField, PasswordField, validators, widgets, HiddenField
+from wtforms import StringField, PasswordField, HiddenField, validators, widgets
 from ..models.University import University
 
 
-class BaseUniversityValidation(FlaskForm):
+class UniversityValidationMixin:
+    logo = StringField('Logo', [validators.DataRequired()])
     email = StringField('Email Address', [
         validators.Length(min=6, max=64)
     ])
@@ -31,9 +31,7 @@ class BaseUniversityValidation(FlaskForm):
                 'Primary and Secondary colors should not be the same')
 
 
-class AddUniversityValidation(BaseUniversityValidation):
-    logo = FileField('Logo', validators=[FileRequired()])
-
+class AddUniversityValidation(FlaskForm, UniversityValidationMixin):
     password = PasswordField('New Password', [
         validators.Length(min=8, max=25),
         validators.EqualTo('confirm_password', message='Passwords must match')
@@ -44,18 +42,13 @@ class AddUniversityValidation(BaseUniversityValidation):
     ])
 
     def validate_email(self, field):
-        university = University.check_if_email_exists(field.data)
-        if university:
-            raise validators.ValidationError(
-                'Email address already exists')
+        if University.check_if_email_exists(field.data):
+            raise validators.ValidationError('Email address already exists')
 
 
-class UpdateUniversityValidation(BaseUniversityValidation):
+class UpdateUniversityValidation(FlaskForm, UniversityValidationMixin):
     id = HiddenField('ID')
-    logo = FileField('Logo')
 
     def validate_email(self, field):
-        university = University.check_if_email_exists(field.data, self.id.data)
-        if university:
-            raise validators.ValidationError(
-                'Email address already exists')
+        if University.check_if_email_exists(field.data, self.id.data):
+            raise validators.ValidationError('Email address already exists')
