@@ -31,7 +31,7 @@ def settings():
     university = University.find_by_id(id=current_user.id)
 
     if form.validate_on_submit():
-        University.update(id=current_user.id, email=form.email.data, logo=form.data.logo, name=form.name.data,
+        University.update(id=current_user.id, email=form.email.data, logo=form.logo.data, name=form.name.data,
                           display_name=form.display_name.data, primary_color=form.primary_color.data, secondary_color=form.secondary_color.data)
 
         return redirect("/settings")

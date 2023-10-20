@@ -19,7 +19,7 @@ class SignInValidation(FlaskForm):
 
     def validate_password(self, field):
         university = University.find_by_email(email=self.email.data)
-        print(university.password, field.data)
+
         if not check_password_hash(university.password, field.data):
             raise validators.ValidationError(
                 'Password is incorrect')
