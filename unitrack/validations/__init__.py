@@ -2,4 +2,4 @@ from .university_validation import AddUniversityValidation, UpdateUniversityVali
 from .sign_in_validation import SignInValidation
 from .college_validation import AddCollegeValidation, UpdateCollegeValidation
 from .course_validation import AddCourseValidation, UpdateCourseValidation
-from .student_validation import AddStudentValidation, UpdateStudentValidation
+from .student_validation import AddStudentValidation, UpdateStudentValidation, get_year_choices

@@ -1,5 +1,5 @@
 {% from "./macros/empty-svg.html" import empty_svg %}
-{% extends "layout.html" %} {% set active_page = "student" %} {% set genders = ["Female", "Male", "Others"] %}
+{% extends "layout.html" %} {% set active_page = "student" %}
 {% block title %}
   Students
 {% endblock title %}
@@ -13,7 +13,7 @@
             <select class="w-full col-span-2 px-4 py-3 bg-white border-2 appearance-none rounded-2xl"
                     name="gender">
               <option value="">Select Gender</option>
-              {% for gender in genders %}
+              {% for gender in options['genders'] %}
                 {% if gender == filters['gender']['name'] %}
                   <option value="{{ gender }}" selected>{{ gender }}</option>
                 {% else %}
@@ -36,7 +36,7 @@
             <select class="w-full col-span-2 px-4 py-3 bg-white border-2 appearance-none rounded-2xl"
                     name="college_id">
               <option value="">Select College</option>
-              {% for college in colleges %}
+              {% for college in options['colleges'] %}
                 {% if college['id'] == filters['college']['id'] %}
                   <option value="{{ college.id }}" selected>{{ college.name }}</option>
                 {% else %}
@@ -59,11 +59,34 @@
             <select class="w-full col-span-2 px-4 py-3 bg-white border-2 appearance-none rounded-2xl"
                     name="course_id">
               <option value="">Select Course</option>
-              {% for course in courses %}
+              {% for course in options['courses'] %}
                 {% if course['id'] == filters['course']['id'] %}
                   <option value="{{ course.id }}" selected>{{ course.name }}</option>
                 {% else %}
                   <option value="{{ course.id }}">{{ course.name }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
+              <svg class="w-4 h-4 fill-current"
+                   xmlns="http://www.w3.org/2000/svg"
+                   viewBox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="col-span-2">
+          <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Year Enrolled</label>
+          <div id="course-select" class="relative">
+            <select class="w-full col-span-2 px-4 py-3 bg-white border-2 appearance-none rounded-2xl"
+                    name="year_enrolled">
+              <option value="">Select Year Enrolled</option>
+              {% for key,value in options['years_enrolled'] %}
+                {% if key == filters['year_enrolled']['name'] %}
+                  <option value="{{ key }}" selected>{{ key }}</option>
+                {% else %}
+                  <option value="{{ key }}">{{ key }}</option>
                 {% endif %}
               {% endfor %}
             </select>

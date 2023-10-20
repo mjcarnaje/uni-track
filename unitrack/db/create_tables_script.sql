@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS student (
     birthday DATE NOT NULL,
     photo TEXT,
     year_enrolled INTEGER NOT NULL,
-    college_id INTEGER NOT NULL REFERENCES college(id),
-    course_id INTEGER NOT NULL REFERENCES course(id),
-    university_id INTEGER NOT NULL REFERENCES university(id),
+    college_id INTEGER NOT NULL REFERENCES college(id) ON DELETE CASCADE,
+    course_id INTEGER NOT NULL REFERENCES course(id) ON DELETE CASCADE,
+    university_id INTEGER NOT NULL REFERENCES university(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT NOW()
 );

@@ -1,7 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   mode: "jit",
-  content: ["./unitrack/templates/**/*.{html,htm}"],
+  content: [
+    "./unitrack/templates/**/*.{html,htm}",
+    "./unitrack/static/**/*.js",
+  ],
   theme: {
     fontFamily: {
       display: ['"Mochiy Pop P One"'],

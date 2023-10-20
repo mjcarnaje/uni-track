@@ -31,18 +31,19 @@ const showNotification = (type, message) => {
 
   div.innerHTML = `
     <div class="p-4">
-      <div class="flex items-start">
-        <div class="flex-shrink-0">
-          ${icon}
+      <div class="flex items-start space-x-4">
+        <div class="flex space-x-4">
+          <div class="flex-shrink-0">
+            ${icon}
+          </div>
+          <div class="flex-1">
+            <p class="font-medium ${textColor}">${title}</p>
+            <p class="text-sm text-gray-600">${description}</p>
+          </div>
         </div>
-        <div class="ml-3 w-0 flex-1">
-          <p class="font-medium ${textColor}">${title}</p>
-          <p class="mt-1 text-sm text-gray-600">${description}</p>
-        </div>
-        <div class="flex flex-shrink-0 ml-4">
+        <div class="flex flex-shrink-0">
           <button type="button"
-            class="inline-flex text-gray-600 w-5 h-5 bg-white rounded-md hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2">
-            <span class="sr-only">Close</span>
+            class="flex justify-center items-center text-gray-600 w-5 h-5 bg-white rounded-md hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2">
            <i class="fa-solid fa-xmark"></i>
           </button>
         </div>

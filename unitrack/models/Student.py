@@ -62,7 +62,7 @@ class Student():
         return cls(**student)
 
     @staticmethod
-    def find_all(university_id: int, page_number: int, page_size: int, query: str, college_id: int, course_id: int, gender: str):
+    def find_all(university_id: int, page_number: int, page_size: int, query: str, college_id: int, course_id: int, gender: str, year_enrolled: int):
         offset = (page_number - 1) * page_size
 
         where_clause = "student.university_id = %s"
@@ -86,11 +86,17 @@ class Student():
             where_clause += " AND gender = %s"
             filter_params.append(gender)
 
+        if year_enrolled:
+            where_clause += " AND year_enrolled = %s"
+            filter_params.append(year_enrolled)
+
         sql = f"""
                 SELECT student.*, college.code AS college_code, college.photo AS college_photo, course.code AS course_code, course.photo AS course_photo FROM student
                 JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id"""
         sql += f" WHERE {where_clause}"
         sql += " LIMIT %s OFFSET %s"
+
+        print(sql)
 
         cur = mysql.new_cursor(dictionary=True)
 

@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from ..models.College import College
 from ..models.Course import Course
 from ..models.Student import Student
-from ..validations import AddStudentValidation, UpdateStudentValidation
+from ..validations import AddStudentValidation, UpdateStudentValidation, get_year_choices
 
 student_bp = Blueprint('student', __name__)
 
@@ -19,6 +19,7 @@ def students():
     college_id = request.args.get('college_id', '', type=int)
     course_id = request.args.get('course_id', '', type=int)
     gender = request.args.get('gender', '', type=str)
+    year_enrolled = request.args.get('year_enrolled', '', type=int)
 
     students_query = Student.find_all(
         university_id=current_user.id,
@@ -28,6 +29,7 @@ def students():
         college_id=college_id,
         course_id=course_id,
         gender=gender,
+        year_enrolled=year_enrolled
     )
 
     students = students_query.get("data")
@@ -41,7 +43,8 @@ def students():
     filters = {
         'gender': None,
         'college': None,
-        'course': None
+        'course': None,
+        'year_enrolled': None
     }
     show_filters = False
 
@@ -52,6 +55,13 @@ def students():
             'name': gender
         }
 
+    if year_enrolled:
+        show_filters = True
+        filters["year_enrolled"] = {
+            'key': 'year_enrolled',
+            'name': year_enrolled
+        }
+
     if college_id:
         show_filters = True
         college = College.find_by_id(
@@ -59,18 +69,32 @@ def students():
         courses = Course.find_by_college_id(
             university_id=current_user.id, college_id=college_id)
 
-        filters["college"] = {'key': 'college_id', **college}
+        filters["college"] = {
+            'key': 'college_id',
+            'id': college.id,
+            'name': college.name
+        }
 
         if course_id:
             course = Course.find_by_id(course_id)
-            filters["course"] = {'key': 'course_id', **course}
+            filters["course"] = {
+                'key': 'course_id',
+                'id': course.id,
+                'name': course.name
+            }
+
+    options = {
+        'genders': ["Female", "Male", "Others"],
+        'colleges': colleges,
+        'courses': courses,
+        'years_enrolled': get_year_choices()
+    }
 
     can_add_student = Course.count(university_id=current_user.id) > 0
 
     return render_template("students.html",
                            students=students,
-                           colleges=colleges,
-                           courses=courses,
+                           options=options,
                            page=page,
                            has_previous_page=has_previous_page,
                            has_next_page=has_next_page,
