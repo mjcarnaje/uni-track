@@ -6,8 +6,6 @@ from flask_login import current_user
 
 
 class BaseCourseValidation(FlaskForm):
-    id = HiddenField('Id')
-
     name = StringField('Name', [
         validators.Length(min=4, max=256)
     ])
@@ -23,15 +21,26 @@ class AddCourseValidation(BaseCourseValidation):
     ])
 
     def validate_code(self, code):
-        print("AddCourseValidation")
         if Course(university_id=current_user.id).check_if_code_exists(code=code.data):
-            raise validators.ValidationError('Code already exists')
+            raise validators.ValidationError(
+                'Code already exists in this university')
+
+    def validate_name(self, name):
+        if Course(university_id=current_user.id).check_if_name_exists(name=name.data):
+            raise validators.ValidationError(
+                'Name already exists in this university')
 
 
 class UpdateCourseValidation(BaseCourseValidation):
+    id = HiddenField('Id')
     photo = FileField('Photo')
 
     def validate_code(self, code):
-        print("UpdateCourseValidation")
         if Course(university_id=current_user.id).check_if_code_exists(code=code.data, id=self.id.data):
-            raise validators.ValidationError('Code already exists')
+            raise validators.ValidationError(
+                'Code already exists in this university')
+
+    def validate_name(self, name):
+        if Course(university_id=current_user.id).check_if_name_exists(name=name.data, id=self.id.data):
+            raise validators.ValidationError(
+                'Name already exists in this university')

@@ -8,8 +8,7 @@ from flask_login import current_user, login_required
 from ..models.College import College
 from ..models.Course import Course
 from ..utils.upload_file import save_file_wtf
-from ..validations import (AddCollegeValidation, AddCourseValidation,
-                           UpdateCollegeValidation)
+from ..validations import AddCollegeValidation, AddCourseValidation, UpdateCollegeValidation, UpdateCourseValidation
 
 college_bp = Blueprint('college', __name__)
 
@@ -109,3 +108,50 @@ def view_college(id):
     courses = college_query.find_courses()
 
     return render_template("college.html", college=college, courses=courses)
+
+
+@college_bp.route('/<string:id>/add-course', methods=['GET', 'POST'])
+@login_required
+def add_course(id):
+    form = AddCourseValidation()
+
+    if form.validate_on_submit():
+        course_query = Course(
+            name=form.name.data,
+            code=form.code.data,
+            photo=save_file_wtf(data=form.photo.data),
+            college_id=id,
+            university_id=current_user.id
+        )
+
+        course_query.insert()
+
+        return redirect(f"/college/{id}")
+
+    return render_template("add-course.html", form=form)
+
+
+@college_bp.route('/<int:college_id>/update-course/<int:course_id>', methods=['GET', 'POST'])
+@login_required
+def update_course(college_id, course_id):
+    course_query = Course(id=course_id, college_id=college_id,
+                          university_id=current_user.id)
+    course = course_query.find_one()
+
+    form = UpdateCourseValidation()
+
+    if form.validate_on_submit():
+        course_query.name = form.name.data
+        course_query.code = form.code.data
+        course_query.photo = save_file_wtf(
+            data=form.photo.data,
+            default_filename=course.get("photo"))
+        course_query.update()
+        return redirect(f"/college/{college_id}")
+
+    form.id.data = course.get("id")
+    form.name.data = course.get("name")
+    form.code.data = course.get("code")
+    form.photo.data = course.get("photo")
+
+    return render_template("update-course.html", form=form, course=course)

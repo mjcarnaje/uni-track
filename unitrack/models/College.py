@@ -133,7 +133,7 @@ class College():
         if self.university_id is None:
             return "Cannot check without an university ID"
 
-        SELECT_SQL = f"SELECT * FROM {College.__tablename__} WHERE code=%s AND university_id=%s"
+        SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE code=%s AND university_id=%s"
         params = [code, self.university_id]
 
         if id:
@@ -148,7 +148,7 @@ class College():
         if self.university_id is None:
             return "Cannot check without an university ID"
 
-        SELECT_SQL = f"SELECT * FROM {College.__tablename__} WHERE name=%s AND university_id=%s"
+        SELECT_SQL = f"SELECT * FROM {self.__tablename__} WHERE name=%s AND university_id=%s"
         params = [name, self.university_id]
 
         if id:
