@@ -78,6 +78,10 @@ class College():
         }
 
     def insert(self):
+        if self.university_id is None:
+            raise Exception(
+                "Cannot insert college without university ID")
+
         INSERT_SQL = f"INSERT INTO {self.__tablename__} (name, code, photo, university_id) VALUES (%s, %s, %s, %s)"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(INSERT_SQL, (self.name, self.code,
@@ -121,13 +125,15 @@ class College():
             raise Exception(
                 "Cannot find courses without an ID and university ID")
 
-        SELECT_SQL = f"SELECT course.*, COUNT(student.id) as student_count FROM {self.__tablename__}"
-        SELECT_SQL += " LEFT JOIN course ON course.college_id = college.id"
-        SELECT_SQL += " LEFT JOIN student ON student.course_id = course.id"
-        SELECT_SQL += " WHERE college.id=%s AND college.university_id=%s"
-        SELECT_SQL += " GROUP BY course.id"
         cur = mysql.new_cursor(dictionary=True)
-        cur.execute(SELECT_SQL, (self.id, self.university_id))
+        cur.execute(
+            """
+            SELECT course.*, COUNT(student.id) as student_count FROM course
+            LEFT JOIN college ON college.id = course.college_id
+            LEFT JOIN student ON student.course_id = course.id
+            WHERE college.id=%s AND college.university_id=%s
+            GROUP BY course.id
+            """, (self.id, self.university_id))
         return cur.fetchall()
 
     def count(self):

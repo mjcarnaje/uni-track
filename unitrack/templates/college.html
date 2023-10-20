@@ -38,8 +38,10 @@
           <i class="text-4xl text-gray-800 fa-solid fa-certificate"></i>
           <h1 class="text-3xl font-bold text-gray-800">No courses found</h1>
           <p class="text-gray-600">Add a course to get started</p>
-          <a href="{{ url_for('college.add_course', id=college.id) }}"
-             class="px-4 py-2 font-thin text-white bg-primary-500 rounded-2xl">Add Course</a>
+          <div>
+            <a href="{{ url_for('college.add_course', id=college.id) }}"
+               class="px-4 py-2 font-thin text-white bg-primary-500 rounded-2xl">Add Course</a>
+          </div>
         </div>
       {% else %}
         <div class="w-full py-8 space-y-2">
@@ -51,44 +53,42 @@
             </a>
           </div>
           {% for course in courses %}
-            {% if course.id %}
-              <div class="flex items-center justify-between w-full p-4 border rounded-3xl">
-                <div class="flex gap-4">
-                  <div class="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full">
-                    {% if course.photo %}
-                      <img src="{{ url_for('download_file', filename=course.photo) }}"
-                           alt="{{ course.photo }}"
-                           class="w-12 h-12 border border-gray-300 rounded-full"
-                           height="auto"
-                           width="auto" />
-                    {% else %}
-                      <i class="text-xl text-gray-800 fa-solid fa-building-columns"></i>
-                    {% endif %}
-                  </div>
-                  <div class="space-y-2">
-                    <a class="text-lg font-bold leading-4 text-gray-800">{{ course.name }}</a>
-                    <p class="font-medium leading-3 text-gray-600 text-md">{{ course.code }}</p>
-                    <div class="flex items-center space-x-2">
-                      <i class="text-xs text-gray-600 fa-solid fa-users"></i>
-                      <span class="text-gray-800 text-thin">{{ course.student_count }}</span>
-                    </div>
+            <div class="flex items-center justify-between w-full p-4 border rounded-3xl">
+              <div class="flex gap-4">
+                <div class="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full">
+                  {% if course.photo %}
+                    <img src="{{ url_for('download_file', filename=course.photo) }}"
+                         alt="{{ course.photo }}"
+                         class="w-12 h-12 border border-gray-300 rounded-full"
+                         height="auto"
+                         width="auto" />
+                  {% else %}
+                    <i class="text-xl text-gray-800 fa-solid fa-building-columns"></i>
+                  {% endif %}
+                </div>
+                <div class="space-y-2">
+                  <a class="text-lg font-bold leading-4 text-gray-800">{{ course.name }}</a>
+                  <p class="font-medium leading-3 text-gray-600 text-md">{{ course.code }}</p>
+                  <div class="flex items-center space-x-2">
+                    <i class="text-xs text-gray-600 fa-solid fa-users"></i>
+                    <span class="text-gray-800 text-thin">{{ course.student_count }}</span>
                   </div>
                 </div>
-                {% if current_user.is_authenticated %}
-                  <div class="flex space-x-4">
-                    <button data-id="{{ course.id }}"
-                            onclick="deleteCourse(this)"
-                            class="flex items-center justify-center w-8 h-8 text-red-500 border border-red-500 rounded-full hover:bg-red-50 hover:text-red-600">
-                      <i class="text-xs fa-solid fa-trash"></i>
-                    </button>
-                    <a href="{{ url_for('college.update_course', college_id=college.id, course_id=course.id) }}"
-                       class="flex items-center justify-center w-8 h-8 border rounded-full text-primary-500 border-primary-500 hover:bg-primary-50 hover:text-primary-600">
-                      <i class="text-xs fa-solid fa-pen"></i>
-                    </a>
-                  </div>
-                {% endif %}
               </div>
-            {% endif %}
+              {% if current_user.is_authenticated %}
+                <div class="flex space-x-4">
+                  <button data-id="{{ course.id }}"
+                          onclick="deleteCourse(this)"
+                          class="flex items-center justify-center w-8 h-8 text-red-500 border border-red-500 rounded-full hover:bg-red-50 hover:text-red-600">
+                    <i class="text-xs fa-solid fa-trash"></i>
+                  </button>
+                  <a href="{{ url_for('college.update_course', college_id=college.id, course_id=course.id) }}"
+                     class="flex items-center justify-center w-8 h-8 border rounded-full text-primary-500 border-primary-500 hover:bg-primary-50 hover:text-primary-600">
+                    <i class="text-xs fa-solid fa-pen"></i>
+                  </a>
+                </div>
+              {% endif %}
+            </div>
           {% endfor %}
         </div>
       {% endif %}
