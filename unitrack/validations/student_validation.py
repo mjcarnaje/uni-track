@@ -1,7 +1,14 @@
+import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, validators, HiddenField, SelectField, DateField
 from ..models.Student import Student
 from flask_login import current_user
+
+
+def get_year_choices():
+    year_from = 1900
+    year_to = datetime.datetime.now().year
+    return [(year, year) for year in range(year_to, year_from - 1, -1)]
 
 
 class StudentValidationMixin:
@@ -18,6 +25,8 @@ class StudentValidationMixin:
     gender = SelectField('Gender', choices=[
                          ("Male", "Male"), ("Female", "Female"), ("Other", "Other")])
     birthday = DateField('Birthday', format='%Y-%m-%d')
+    year_enrolled = SelectField(
+        'Year Enrolled', choices=get_year_choices(), coerce=int)
     college_id = SelectField('College', validators=[
                              validators.DataRequired()], coerce=int, validate_choice=False)
     course_id = SelectField('Course',  validators=[

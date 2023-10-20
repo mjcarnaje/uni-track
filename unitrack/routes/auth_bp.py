@@ -16,7 +16,7 @@ def signup():
         University.insert(email=form.email.data, logo=form.logo.data, display_name=form.display_name.data, name=form.display_name.data,
                           primary_color=form.primary_color.data, secondary_color=form.secondary_color.data, password=generate_password_hash(form.password.data))
 
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('main.dashboard'))
 
     return render_template('signup.html', form=form)
 

@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS student (
     gender VARCHAR(16) NOT NULL,
     birthday DATE NOT NULL,
     photo TEXT,
+    year_enrolled INTEGER NOT NULL,
     college_id INTEGER NOT NULL REFERENCES college(id),
     course_id INTEGER NOT NULL REFERENCES course(id),
     university_id INTEGER NOT NULL REFERENCES university(id),

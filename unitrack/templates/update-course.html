@@ -7,22 +7,25 @@
   Update Course
 {% endblock title %}
 {% block content %}
-  <div class="w-full max-w-3xl p-8 mx-auto bg-white border shadow-md rounded-2xl">
-    <form class="grid w-full grid-cols-2 gap-8"
-          method="post"
-          enctype="multipart/form-data"
-          novalidate>
-      {{ csrf_input() }}
-      {{ form.id }}
-      <div class="col-span-2">
-        {{ render_photo_field(form.photo, add_text="Add Course Logo", remove_text="Remove Course Logo", is_circle=true) }}
-      </div>
-      {{ render_field(form.name, container_class="col-span-2") }}
-      {{ render_field(form.code, container_class="col-span-2") }}
-      <button type="submit"
-              class="col-span-2 px-4 py-4 font-thin text-white cursor-pointer bg-primary-500 rounded-xl hover:bg-primary-600">
-        Save
-      </button>
-    </form>
+  <div class="w-full max-w-3xl space-y-12">
+    <h1 class="text-5xl font-extrabold tracking-tight text-center text-gray-800">Update Course</h1>
+    <div class="w-full p-8 mx-auto bg-white border shadow-md rounded-2xl">
+      <form class="grid w-full grid-cols-2 gap-8"
+            method="post"
+            enctype="multipart/form-data"
+            novalidate>
+        {{ csrf_input() }}
+        {{ form.id }}
+        <div class="col-span-2">
+          {{ render_photo_field(form.photo, add_text="Change Course Logo", remove_text="Remove Course Logo", is_circle=true) }}
+        </div>
+        {{ render_field(form.name, container_class="col-span-2") }}
+        {{ render_field(form.code, container_class="col-span-2") }}
+        <button type="submit"
+                class="col-span-2 px-4 py-4 font-thin text-white cursor-pointer bg-primary-500 rounded-xl hover:bg-primary-600">
+          Save
+        </button>
+      </form>
+    </div>
   </div>
 {% endblock content %}

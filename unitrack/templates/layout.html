@@ -21,7 +21,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Mochiy+Pop+P+One&display=swap"
           rel="stylesheet" />
     <script type="text/javascript"
-            src="{{ url_for('static', filename='index.js') }}"></script>
+            src="{{ url_for('static', filename='index.js') }}"
+            defer></script>
     <link href="{{ url_for('static',filename='css/main.css') }}"
           rel="stylesheet" />
     <script src="https://kit.fontawesome.com/2bb85d79b4.js"
@@ -50,6 +51,11 @@
     <div class="flex justify-center flex-1 w-full min-h-full py-24 {{ 'ml-80' if current_user.is_authenticated else '' }}">
       {% block content %}
       {% endblock content %}
+    </div>
+    <div aria-live="assertive"
+         class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:items-start sm:p-6">
+      <div id="notifications"
+           class="flex flex-col items-center justify-end w-full h-full space-y-4 sm:items-end"></div>
     </div>
   </body>
 </html>

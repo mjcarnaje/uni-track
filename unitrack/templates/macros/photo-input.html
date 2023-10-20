@@ -55,7 +55,7 @@
     const data = await response.json();
     
     if (data && data.url) {
-      photoPreview.innerHTML = `<img src="/upload/${data.url}" class="w-full h-full" height="auto" width="auto" alt="" />`;
+      photoPreview.innerHTML = `<img src="/upload/${data.url}" class="object-cover w-full h-full" height="auto" width="auto" alt="" />`;
       photo.value = data.url;
     }
     

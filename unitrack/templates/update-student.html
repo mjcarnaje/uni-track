@@ -7,31 +7,34 @@
   Update Student
 {% endblock title %}
 {% block content %}
-  <div class="w-full max-w-3xl p-8 mx-auto bg-white border shadow-md rounded-2xl">
-    <form class="grid w-full grid-cols-2 gap-8 py-4"
-          method="post"
-          enctype="multipart/form-data"
-          novalidate>
-      {{ csrf_input() }}
-      {{ form.id }}
-      <div class="col-span-2">
-        {{ render_photo_field(form.photo, add_text="Add College Logo", remove_text="Remove College Logo", is_circle=true) }}
-      </div>
-      {{ render_field(form.student_id, container_class="col-span-2") }}
-      {{ render_field(form.first_name, container_class="col-span-2") }}
-      {{ render_field(form.last_name, container_class="col-span-2") }}
-      {{ render_field(form.gender, container_class="col-span-1") }}
-      {{ render_field(form.birthday, container_class="col-span-1") }}
-      {{ render_field(form.college_id, container_class="col-span-2") }}
-      {{ render_field(form.course_id, container_class="col-span-2") }}
-      <button type="submit"
-              class="col-span-2 px-4 py-4 font-thin text-white cursor-pointer bg-primary-500 rounded-2xl hover:bg-primary-600">
-        Save Changes
-      </button>
-    </form>
+  <div class="w-full max-w-3xl space-y-12">
+    <h1 class="text-5xl font-extrabold tracking-tight text-center text-gray-800">Update Student</h1>
+    <div class="w-full p-8 mx-auto bg-white border shadow-md rounded-2xl">
+      <form class="grid w-full grid-cols-2 gap-8 py-4"
+            method="post"
+            enctype="multipart/form-data"
+            novalidate>
+        {{ csrf_input() }}
+        {{ form.id }}
+        <div class="col-span-2">
+          {{ render_photo_field(form.photo, add_text="Change Student Photo", remove_text="Remove Student Photo") }}
+        </div>
+        {{ render_field(form.student_id, container_class="col-span-2") }}
+        {{ render_field(form.first_name, container_class="col-span-2") }}
+        {{ render_field(form.last_name, container_class="col-span-2") }}
+        {{ render_field(form.gender, container_class="col-span-1") }}
+        {{ render_field(form.birthday, container_class="col-span-1") }}
+        {{ render_field(form.year_enrolled, container_class="col-span-2") }}
+        {{ render_field(form.college_id, container_class="col-span-2") }}
+        {{ render_field(form.course_id, container_class="col-span-2") }}
+        <button type="submit"
+                class="col-span-2 px-4 py-4 font-thin text-white cursor-pointer bg-primary-500 rounded-2xl hover:bg-primary-600">
+          Save Changes
+        </button>
+      </form>
+    </div>
   </div>
-  {% block javascript %}
-    <script type="text/javascript">
+  <script type="text/javascript">
   const collegeSelect = document.querySelector("select[name=college_id]");
   const courseSelect = document.querySelector("select[name=course_id]");
 
@@ -81,6 +84,5 @@
       })
       .catch((error) => console.log(error));
   }
-    </script>
-  {% endblock javascript %}
+  </script>
 {% endblock content %}

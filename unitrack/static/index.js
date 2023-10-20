@@ -1,27 +1,61 @@
-function setAsyncPhotoInput(photo) {
-  fetchPhoto(photo).then((file) => {
-    setPhotoInput(file);
-  });
-}
+const notifications = document.getElementById("notifications");
 
-function fetchPhoto(photo) {
-  return fetch(`/uploads/${photo}`)
-    .then((response) => response.blob())
-    .then((blob) => new File([blob], photo, { type: blob.type }));
-}
+const showNotification = (type, message) => {
+  let className, icon, title, description, textColor;
 
-function setPhotoInput(file) {
-  const photoInput = document.querySelector('input[name="photo"]');
-  const fileList = fileListFrom([file]);
-  photoInput.files = fileList;
-  photoInput.dispatchEvent(new Event("change"));
-}
+  switch (type) {
+    case "success":
+      icon = `<i class="fa-solid fa-circle-check text-green-600"></i>`;
+      textColor = "text-green-600";
+      title = "Success!";
+      description = message;
+      break;
 
-function fileListFrom(files) {
-  const clipboardData =
-    new ClipboardEvent("").clipboardData || new DataTransfer();
-  for (const file of files) {
-    clipboardData.items.add(file);
+    case "error":
+      icon = `<i class="fa-solid fa-circle-exclamation text-red-600"></i>`;
+      textColor = "text-red-600";
+      title = "Error!";
+      description = message;
+      break;
+
+    case "warning":
+      icon = `<i class="fa-solid fa-triangle-exclamation text-yellow-600"></i>`;
+      textColor = "text-yellow-600";
+      title = "Warning!";
+      description = message;
+      break;
   }
-  return clipboardData.files;
-}
+
+  const div = document.createElement("div");
+  div.className = `w-full max-w-sm overflow-hidden bg-white rounded-lg shadow-lg pointer-events-auto ring-1 ring-black ring-opacity-5 ${className}`;
+
+  div.innerHTML = `
+    <div class="p-4">
+      <div class="flex items-start">
+        <div class="flex-shrink-0">
+          ${icon}
+        </div>
+        <div class="ml-3 w-0 flex-1">
+          <p class="font-medium ${textColor}">${title}</p>
+          <p class="mt-1 text-sm text-gray-600">${description}</p>
+        </div>
+        <div class="flex flex-shrink-0 ml-4">
+          <button type="button"
+            class="inline-flex text-gray-600 w-5 h-5 bg-white rounded-md hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2">
+            <span class="sr-only">Close</span>
+           <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+  </div>`;
+
+  div.querySelector("button").onclick = () => {
+    notifications.removeChild(div);
+  };
+
+  notifications.appendChild(div);
+
+  setTimeout(() => {
+    notifications.removeChild(div);
+  }, 3000);
+};

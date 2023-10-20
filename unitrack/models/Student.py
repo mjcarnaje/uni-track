@@ -21,6 +21,7 @@ class Student():
                  gender: Gender = None,
                  birthday: datetime.datetime = None,
                  photo: str | None = None,
+                 year_enrolled: int = None,
                  college_id: int = None,
                  course_id: int = None,
                  university_id: int = None,
@@ -38,6 +39,7 @@ class Student():
         self.birthday = birthday
         self.photo = photo
         self.college_id = college_id
+        self.year_enrolled = year_enrolled
         self.course_id = course_id
         self.university_id = university_id
         self.created_at = created_at
@@ -85,13 +87,10 @@ class Student():
             filter_params.append(gender)
 
         sql = f"""
-                SELECT student.*, college.name AS college_name, college.photo AS college_photo, course.name AS course_name, course.photo AS course_photo FROM student
+                SELECT student.*, college.code AS college_code, college.photo AS college_photo, course.code AS course_code, course.photo AS course_photo FROM student
                 JOIN college ON student.college_id = college.id JOIN course ON student.course_id = course.id"""
         sql += f" WHERE {where_clause}"
         sql += " LIMIT %s OFFSET %s"
-
-        print(sql)
-        print(filter_params)
 
         cur = mysql.new_cursor(dictionary=True)
 
@@ -116,20 +115,20 @@ class Student():
         }
 
     @staticmethod
-    def insert(student_id: str, first_name: str, last_name: str, gender: str, birthday: datetime.datetime, photo: str, college_id: int, course_id: int, university_id: int) -> str:
-        sql = "INSERT INTO student (student_id, first_name, last_name, gender, birthday, photo, college_id, course_id, university_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    def insert(student_id: str, first_name: str, last_name: str, gender: str, birthday: datetime.datetime, photo: str, year_enrolled: int, college_id: int, course_id: int, university_id: int) -> str:
+        sql = "INSERT INTO student (student_id, first_name, last_name, gender, birthday, photo, year_enrolled, college_id, course_id, university_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(sql, (student_id, first_name, last_name, gender,
-                    birthday, photo, college_id, course_id, university_id,))
+                    birthday, photo, year_enrolled, college_id, course_id, university_id,))
         mysql.connection.commit()
         return cur.lastrowid
 
     @staticmethod
-    def update(id: int, student_id: str, first_name: str, last_name: str, gender: str, birthday: datetime.datetime, photo: str, college_id: int, course_id: int, university_id: int) -> str:
-        sql = "UPDATE student SET student_id=%s, first_name=%s, last_name=%s, gender=%s, birthday=%s, photo=%s, college_id=%s, course_id=%s WHERE id=%s AND university_id=%s"
+    def update(id: int, student_id: str, first_name: str, last_name: str, gender: str, birthday: datetime.datetime, photo: str, year_enrolled: int, college_id: int, course_id: int, university_id: int) -> str:
+        sql = "UPDATE student SET student_id=%s, first_name=%s, last_name=%s, gender=%s, birthday=%s, photo=%s, year_enrolled=%s, college_id=%s, course_id=%s WHERE id=%s AND university_id=%s"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(sql, (student_id, first_name, last_name, gender,
-                    birthday, photo, college_id, course_id, id, university_id,))
+                    birthday, photo, year_enrolled, college_id, course_id, id, university_id,))
         mysql.connection.commit()
         return cur.lastrowid
 

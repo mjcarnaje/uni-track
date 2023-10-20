@@ -43,14 +43,17 @@ def students():
         'college': None,
         'course': None
     }
+    show_filters = False
 
     if gender:
+        show_filters = True
         filters["gender"] = {
             'key': 'gender',
             'name': gender
         }
 
     if college_id:
+        show_filters = True
         college = College.find_by_id(
             university_id=current_user.id, id=college_id)
         courses = Course.find_by_college_id(
@@ -62,6 +65,8 @@ def students():
             course = Course.find_by_id(course_id)
             filters["course"] = {'key': 'course_id', **course}
 
+    can_add_student = Course.count(university_id=current_user.id) > 0
+
     return render_template("students.html",
                            students=students,
                            colleges=colleges,
@@ -72,14 +77,18 @@ def students():
                            total_count=total_count,
                            query=query,
                            filters=filters,
-                           show_filters=len(
-                               list(filter(lambda filter: filter, filters.values()))) > 0
+                           show_filters=show_filters,
+                           can_add_student=can_add_student
                            )
 
 
 @student_bp.route("/add", methods=["GET", "POST"])
 @login_required
 def add_student():
+    can_add_student = Course.count(university_id=current_user.id) > 0
+
+    if not can_add_student:
+        return redirect("/student/")
 
     form = AddStudentValidation()
 
@@ -99,7 +108,7 @@ def add_student():
 
     if form.validate_on_submit():
         Student.insert(student_id=form.student_id.data, first_name=form.first_name.data, last_name=form.last_name.data, gender=form.gender.data,
-                       birthday=form.birthday.data, college_id=form.college_id.data, course_id=form.course_id.data, photo=form.photo.data, university_id=current_user.id)
+                       birthday=form.birthday.data, photo=form.photo.data, year_enrolled=form.year_enrolled.data, college_id=form.college_id.data, course_id=form.course_id.data, university_id=current_user.id)
 
         return redirect("/student/")
 
@@ -122,7 +131,7 @@ def update_student(id):
 
     if form.validate_on_submit():
         Student.update(id=id, student_id=form.student_id.data, first_name=form.first_name.data, last_name=form.last_name.data, gender=form.gender.data,
-                       birthday=form.birthday.data, photo=form.photo.data, college_id=form.college_id.data, course_id=form.course_id.data, university_id=current_user.id)
+                       birthday=form.birthday.data, photo=form.photo.data, year_enrolled=form.year_enrolled.data, college_id=form.college_id.data, course_id=form.course_id.data, university_id=current_user.id)
         return redirect("/student")
 
     form.id.data = student.id
@@ -131,9 +140,10 @@ def update_student(id):
     form.last_name.data = student.last_name
     form.gender.data = student.gender
     form.birthday.data = student.birthday
+    form.photo.data = student.photo
+    form.year_enrolled.data = student.year_enrolled
     form.college_id.data = student.college_id
     form.course_id.data = student.course_id
-    form.photo.data = student.photo
 
     if (form.college_id.data):
         courses = Course.find_by_college_id(

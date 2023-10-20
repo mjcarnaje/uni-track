@@ -5,7 +5,7 @@
 {% endblock title %}
 {% block content %}
   <div class="w-full max-w-6xl">
-    <dialog data-modal class="w-full max-w-lg p-8 rounded-2xl">
+    <dialog data-modal class="w-full max-w-lg p-8 border shadow-lg rounded-2xl">
       <form id="filter-form"  class="grid w-full space-y-4">
         <div class="col-span-2">
           <label class="block mb-2 text-xs font-medium tracking-wide text-gray-700 uppercase">Gender</label>
@@ -125,14 +125,15 @@
         {% endif %}
       </div>
       {% if current_user.is_authenticated %}
-        <a class="px-6 py-2 font-thin text-white bg-green-500 rounded-2xl hover:bg-green-600"
-           href="{{ url_for('student.add_student',) }}">Add Student</a>
+        <button id="add-student"
+                data-can-add="{{ can_add_student }}"
+                class="px-6 py-2 font-thin text-white bg-green-500 rounded-2xl hover:bg-green-600">Add Student</button>
       {% endif %}
     </div>
     <div class="w-full py-16 space-y-8 border-t">
       {% if students | length == 0 %}
         <div class="flex flex-col items-center justify-center w-full gap-12 py-8">
-          <div>
+          <div class="space-y-8">
             {{ empty_svg() }}
             <h1 class="text-2xl font-bold text-gray-800">Add a student to get started</h1>
           </div>
@@ -149,28 +150,33 @@
                        height="auto"
                        width="auto" />
                 </div>
-                <div class="w-full space-y-2">
+                <div class="w-full space-y-4">
                   <a href="{{ url_for('student.view_student', id=student.id) }}"
                      class="text-xl font-semibold leading-snug tracking-tight text-gray-700">{{ student.first_name }} {{ student.last_name }}</a>
                   <h3 class="font-medium leading-snug text-gray-500 text-md">{{ student.student_id }}</h3>
-                  <div class="flex">
+                  <div class="flex gap-2">
+                    <a href="{{ url_for('college.view_college', id=student.college_id) }}">
+                      <div class="flex items-center px-3 py-1 space-x-2 transition duration-500 border rounded-full cursor-pointer hover:bg-gray-100">
+                        <img src="{{ url_for('media', filename=student.college_photo or 'default.png') }}"
+                             alt="{{ student.college_photo }}"
+                             class="object-cover w-5 h-5 border-2 rounded-full"
+                             height="auto"
+                             width="auto" />
+                        <h3 class="text-sm font-thin text-gray-800 cursor-pointer">{{ student.college_code }}</h3>
+                      </div>
+                    </a>
+                    <a href="{{ url_for('college.view_college', id=student.college_id) }}">
+                      <div class="flex items-center px-3 py-1 space-x-2 transition duration-500 border rounded-full cursor-pointer hover:bg-gray-100">
+                        <img src="{{ url_for('media', filename=student.course_photo or 'default.png') }}"
+                             alt="{{ student.course_photo }}"
+                             class="object-cover w-5 h-5 border-2 rounded-full"
+                             height="auto"
+                             width="auto" />
+                        <h3 class="text-sm font-thin text-gray-800 cursor-pointer">{{ student.course_code }}</h3>
+                      </div>
+                    </a>
                     <div class="flex items-center px-3 py-1 space-x-2 transition duration-500 border rounded-full cursor-pointer hover:bg-gray-100">
-                      <img src="{{ url_for('media', filename=student.college_photo or 'default.png') }}"
-                           alt="{{ student.college_photo }}"
-                           class="object-cover w-5 h-5 border-2 rounded-full"
-                           height="auto"
-                           width="auto" />
-                      <h3 class="text-sm font-thin text-gray-800 cursor-pointer">{{ student.college_name }}</h3>
-                    </div>
-                  </div>
-                  <div class="flex">
-                    <div class="flex items-center px-3 py-1 space-x-2 transition duration-500 border rounded-full cursor-pointer hover:bg-gray-100">
-                      <img src="{{ url_for('media', filename=student.course_photo or 'default.png') }}"
-                           alt="{{ student.course_photo }}"
-                           class="object-cover w-5 h-5 border-2 rounded-full"
-                           height="auto"
-                           width="auto" />
-                      <h3 class="text-sm font-thin text-gray-800 cursor-pointer">{{ student.course_name }}</h3>
+                      <h3 class="text-sm font-thin text-gray-800 cursor-pointer">{{ student.year_enrolled }}</h3>
                     </div>
                   </div>
                 </div>
@@ -180,19 +186,18 @@
         </div>
         <div class="flex justify-center space-x-6">
           <a href="{{ url_for('student.students', page=page - 1) }}"
-             class="{{ 'pointer-events-none opacity-50' if not has_previous_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
+             class="{{ 'pointer-events-none opacity-50' if not has_previous_page }} rounded-2xl w-14 h-14 border-2 flex items-center justify-center">
             <i class="text-gray-700 fa-solid fa-arrow-left"></i>
           </a>
           <a href="{{ url_for('student.students', page=page + 1) }}"
-             class="{{ 'pointer-events-none opacity-50' if not has_next_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
+             class="{{ 'pointer-events-none opacity-50' if not has_next_page }} rounded-2xl w-14 h-14 border-2 flex items-center justify-center">
             <i class="text-gray-700 fa-solid fa-arrow-right"></i>
           </a>
         </div>
       {% endif %}
     </div>
   </div>
-  {% block javascript %}
-    <script type="text/javascript">
+  <script type="text/javascript">
   const collegeSelect = document.querySelector("select[name=college_id]");
   const courseSelect = document.querySelector("select[name=course_id]");
   const courseSelectContainer = document.querySelector("#course-select");
@@ -200,6 +205,19 @@
   const modal = document.querySelector("[data-modal]");
   const filterForm = document.querySelector("#filter-form");
   const deleteFilterButtons = document.querySelectorAll("#delete-filter");
+
+  const addStudentButton = document.querySelector("#add-student");
+
+  addStudentButton.addEventListener("click", (e) => {
+    const canAdd = e.target.dataset.canAdd;
+
+    if (canAdd === "True") {
+      window.location.href = "/student/add";
+      return;
+    } 
+  
+    showNotification("error", "You need to add a college and course first");
+  });
 
   openModal.addEventListener("click", () => {
     modal.showModal();
@@ -290,6 +308,5 @@
       deleteStudent(id);
     });
   });
-    </script>
-  {% endblock javascript %}
+  </script>
 {% endblock content %}

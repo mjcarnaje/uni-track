@@ -73,11 +73,11 @@
         </div>
         <div class="flex justify-center space-x-6">
           <a href="{{ url_for('college.colleges', page=page - 1) }}"
-             class="{{ 'pointer-events-none opacity-50' if not has_previous_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
+             class="{{ 'pointer-events-none opacity-50' if not has_previous_page }} rounded-2xl w-14 h-14 border-2 flex items-center justify-center">
             <i class="fa-solid fa-arrow-left"></i>
           </a>
           <a href="{{ url_for('college.colleges', page=page + 1) }}"
-             class="{{ 'pointer-events-none opacity-50' if not has_next_page }} rounded-full w-14 h-14 border-2 flex items-center justify-center">
+             class="{{ 'pointer-events-none opacity-50' if not has_next_page }} rounded-2xl w-14 h-14 border-2 flex items-center justify-center">
             <i class="fa-solid fa-arrow-right"></i>
           </a>
         </div>

@@ -73,7 +73,7 @@ class Course():
         sql = "SELECT COUNT(*) FROM course WHERE university_id=%s"
         cur = mysql.new_cursor(dictionary=True)
         cur.execute(sql, (university_id,))
-        return cur.fetchone()['COUNT(*)']
+        return int(cur.fetchone()['COUNT(*)'])
 
     @staticmethod
     def check_if_code_exists(code: str, university_id: int, id: int = None) -> bool:
