@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, jsonify
+from flask import Flask, jsonify, redirect, request, send_from_directory, render_template
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 
@@ -6,6 +6,7 @@ from unitrack.config import Config
 
 from .db import mysql
 from .db.create_tables import create_tables
+from .db.seed import seed
 from .models.University import University
 from .utils.upload_file import upload_file
 
@@ -35,6 +36,13 @@ def create_app():
     def media(filename):
         pathlike = filename or 'default.png'
         return send_from_directory(Config.UPLOAD_FOLDER, pathlike, as_attachment=True)
+
+    @app.route('/seed', methods=['POST', 'GET'])
+    def seed_database():
+        if request.method == 'POST':
+            seed()
+            return redirect('/')
+        return render_template('seed_database.html')
 
     from unitrack.routes.auth_bp import auth_bp
     from unitrack.routes.college_bp import college_bp

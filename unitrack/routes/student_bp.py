@@ -76,7 +76,8 @@ def students():
         }
 
         if course_id:
-            course = Course.find_by_id(course_id)
+            course = Course.find_by_id(
+                id=course_id, university_id=current_user.id)
             filters["course"] = {
                 'key': 'course_id',
                 'id': course.id,
