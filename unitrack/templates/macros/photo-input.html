@@ -5,7 +5,7 @@
     <div id="photo-preview"
          class="flex items-center justify-center overflow-hidden w-48 h-48 border bg-slate-200 {{ 'rounded-full' if is_circle else 'rounded-3xl' }} {{ 'border-red-500' if field.errors }}">
       {% if photo %}
-        <img src="{{ url_for('media', filename=photo) }}"
+        <img src="{{ get_image(photo) }}"
              class="object-cover w-full h-full"
              height="auto"
              width="auto"
@@ -47,16 +47,16 @@
     formData.append("upload", file);
     formData.append("csrf_token", csrfToken);
 
-    const response = await fetch("{{ url_for('upload') }}", {
+    const response = await fetch("{{ url_for('main.upload_to_cloudinary') }}", {
       method: "POST",
       body: formData,
     });
 
     const data = await response.json();
     
-    if (data && data.url) {
-      photoPreview.innerHTML = `<img src="/upload/${data.url}" class="object-cover w-full h-full" height="auto" width="auto" alt="" />`;
-      photo.value = data.url;
+    if (data?.is_success){
+      photoPreview.innerHTML = `<img src="${data.url}" class="object-cover w-full h-full" height="auto" width="auto" alt="" />`;
+      photo.value = data.public_id;
     }
     
     removePhoto.hidden = false;

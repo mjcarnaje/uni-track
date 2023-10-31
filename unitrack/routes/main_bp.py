@@ -1,11 +1,18 @@
-from flask import Blueprint, render_template, redirect
+import cloudinary
+from cloudinary.uploader import upload as cloudinary_upload
+from cloudinary.utils import cloudinary_url
+from flask import (Blueprint, jsonify, redirect, render_template, request,
+                   send_from_directory)
 from flask_login import current_user, login_required
 
+from unitrack.config import Config
+
+from ..db.seed import seed
 from ..models.College import College
 from ..models.Course import Course
 from ..models.Student import Student
 from ..models.University import University
-
+from ..utils.upload_file import upload_file
 from ..validations import UpdateUniversityValidation
 
 main_bp = Blueprint('main', __name__)
@@ -45,3 +52,42 @@ def settings():
     form.logo.data = university.logo
 
     return render_template("settings.html", form=form, university=university)
+
+
+@main_bp.route('/upload', methods=['POST'])
+def upload_to_dir():
+    return jsonify({'url': upload_file('upload')})
+
+
+@main_bp.route('/upload/<path:filename>')
+def get_image_dir(filename):
+    pathlike = filename or 'default.png'
+    return send_from_directory(Config.UPLOAD_FOLDER, pathlike, as_attachment=True)
+
+
+@main_bp.route('/upload/cloudinary', methods=['POST'])
+def upload_to_cloudinary():
+    file = request.files.get('upload')
+
+    if file:
+        upload_result = cloudinary_upload(
+            file, folder=Config.CLOUDINARY_FOLDER)
+
+        return jsonify({
+            'is_success': True,
+            'public_id': upload_result['public_id'],
+            'url': upload_result['secure_url']
+        })
+
+    return jsonify({
+        'is_success': False,
+        'error': 'Missing file'
+    })
+
+
+@main_bp.route('/seed', methods=['POST', 'GET'])
+def seed_database():
+    if request.method == 'POST':
+        seed()
+        return redirect('/')
+    return render_template('seed_database.html')

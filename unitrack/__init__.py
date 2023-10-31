@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, redirect, request, send_from_directory, render_template
+from flask import Flask
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 
@@ -6,9 +6,9 @@ from unitrack.config import Config
 
 from .db import mysql
 from .db.create_tables import create_tables
-from .db.seed import seed
 from .models.University import University
-from .utils.upload_file import upload_file
+import cloudinary
+from cloudinary.utils import cloudinary_url
 
 
 def create_app():
@@ -17,6 +17,11 @@ def create_app():
 
     mysql.init_app(app)
     CSRFProtect(app)
+
+    cloudinary.config(cloud_name=Config.CLOUDINARY_CLOUD_NAME,
+                      api_key=Config.CLOUDINARY_API_KEY,
+                      api_secret=Config.CLOUDINARY_API_SECRET,
+                      )
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
@@ -28,21 +33,12 @@ def create_app():
     def load_user(user_id):
         return University.find_by_id(user_id)
 
-    @app.route('/upload', methods=['POST'])
-    def upload():
-        return jsonify({'url': upload_file('upload')})
-
-    @app.route('/upload/<path:filename>')
-    def media(filename):
-        pathlike = filename or 'default.png'
-        return send_from_directory(Config.UPLOAD_FOLDER, pathlike, as_attachment=True)
-
-    @app.route('/seed', methods=['POST', 'GET'])
-    def seed_database():
-        if request.method == 'POST':
-            seed()
-            return redirect('/')
-        return render_template('seed_database.html')
+    @app.context_processor
+    def utility_processor():
+        def get_image(public_id):
+            url, options = cloudinary_url(public_id, format="jpg", crop="fill")
+            return url
+        return dict(get_image=get_image)
 
     from unitrack.routes.auth_bp import auth_bp
     from unitrack.routes.college_bp import college_bp

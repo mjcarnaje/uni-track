@@ -45,7 +45,7 @@
               <div class="flex gap-4">
                 {% if college.photo %}
                   <div class="box-content w-24 h-24 rounded-full aspect-square ring-1 ring-gray-200">
-                    <img src="{{ url_for('media', filename=college.photo or 'default.png') }}"
+                    <img src="{{ get_image(college.photo) }}"
                          alt="{{ college.photo }}"
                          class="object-cover w-24 h-24 bg-gray-100 border rounded-full"
                          height="auto"

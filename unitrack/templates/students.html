@@ -167,7 +167,7 @@
             <div class="flex flex-col justify-between grid-cols-1 gap-8 p-6 bg-white border shadow-md rounded-3xl">
               <div class="flex gap-4">
                 <div class="box-content w-20 h-20 rounded-3xl aspect-square ring-1 ring-gray-200">
-                  <img src="{{ url_for('media', filename=student.photo or 'default.png') }}"
+                  <img src="{{ get_image(student.photo) }}"
                        alt="{{ student.photo }}"
                        class="object-cover w-20 h-20 rounded-3xl"
                        height="auto"
@@ -180,7 +180,7 @@
                   <div class="flex gap-2">
                     <a href="{{ url_for('college.view_college', id=student.college_id) }}">
                       <div class="flex items-center px-3 py-1 space-x-2 transition duration-500 border rounded-full cursor-pointer hover:bg-gray-100">
-                        <img src="{{ url_for('media', filename=student.college_photo or 'default.png') }}"
+                        <img src="{{ get_image(student.college_photo) }}"
                              alt="{{ student.college_photo }}"
                              class="object-cover w-5 h-5 border-2 rounded-full"
                              height="auto"
@@ -190,7 +190,7 @@
                     </a>
                     <a href="{{ url_for('college.view_college', id=student.college_id) }}">
                       <div class="flex items-center px-3 py-1 space-x-2 transition duration-500 border rounded-full cursor-pointer hover:bg-gray-100">
-                        <img src="{{ url_for('media', filename=student.course_photo or 'default.png') }}"
+                        <img src="{{ get_image(student.course_photo) }}"
                              alt="{{ student.course_photo }}"
                              class="object-cover w-5 h-5 border-2 rounded-full"
                              height="auto"
