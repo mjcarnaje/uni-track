@@ -36,6 +36,7 @@ def create_app():
     @app.context_processor
     def utility_processor():
         def get_image(public_id):
+            source = public_id if public_id else f"{Config.CLOUDINARY_FOLDER}/default"
             url, options = cloudinary_url(public_id, format="jpg", crop="fill")
             return url
         return dict(get_image=get_image)

@@ -1,6 +1,6 @@
 {% extends "layout.html" %} {% set active_page = "college" %}
 {% from "./macros/input.html" import render_field %}
-{% from "./macros/photo-input.html" import render_photo_field %}
+{% from "./macros/photo-input.html" import render_photo_field with context %}
 {% from './macros/csrf_input.html' import csrf_input %}
 {% block title %}
   Update College

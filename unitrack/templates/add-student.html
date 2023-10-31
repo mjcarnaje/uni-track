@@ -1,5 +1,5 @@
 {% from "./macros/input.html" import render_field %}
-{% from "./macros/photo-input.html" import render_photo_field %}
+{% from "./macros/photo-input.html" import render_photo_field with context %}
 {% from './macros/csrf_input.html' import csrf_input %}
 {% set active_page = "student" %} {% extends "layout.html" %}
 {% block title %}
