@@ -1,4 +1,5 @@
-import cloudinary
+import os
+from werkzeug.exceptions import RequestEntityTooLarge
 from cloudinary.uploader import upload as cloudinary_upload
 from cloudinary.utils import cloudinary_url
 from flask import (Blueprint, jsonify, redirect, render_template, request,
@@ -68,6 +69,23 @@ def get_image_dir(filename):
 @main_bp.route('/upload/cloudinary', methods=['POST'])
 def upload_to_cloudinary():
     file = request.files.get('upload')
+
+    if not file:
+        return jsonify({
+            'is_success': False,
+            'error': 'Missing file'
+        })
+
+    size = len(file.read())
+    file.seek(0)
+
+    one_mb = 1000 * 1000
+
+    if size > one_mb:
+        return jsonify({
+            'is_success': False,
+            'error': 'File too large'
+        }), 413
 
     if file:
         upload_result = cloudinary_upload(
